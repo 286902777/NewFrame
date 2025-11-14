@@ -5,6 +5,8 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frame/admob_max/admob_max_tool.dart';
+import 'package:frame/event/http_manager.dart';
 import 'package:get/get.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
@@ -79,11 +81,11 @@ class _PlayPageState extends State<PlayPage>
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     // TODO: implement didChangeAppLifecycleState
     super.didChangeAppLifecycleState(state);
-    // if (isCurrentPage == false ||
-    //     MaxManager.maxState == MaxState.showing ||
-    //     isBackPage) {
-    //   return;
-    // }
+    if (isCurrentPage == false ||
+        AdmobMaxTool.adsState == AdsState.showing ||
+        isBackPage) {
+      return;
+    }
     if (state == AppLifecycleState.paused) {
       savePlayTime();
       await player.pause();
@@ -215,19 +217,17 @@ class _PlayPageState extends State<PlayPage>
           _isShowSpeedView(model!);
         }
       }
-      // if (position.inSeconds.toInt() %
-      //     MaxManager.instance.playShowTime ==
-      //     0) {
-      //   eventAdsSource = AdsSource.play_10;
-      //   if (isCurrentPage) {
-      //     bool suc = await MaxManager.disPlayAdmobOrMax(MaxSceneType.play);
-      //     if (suc) {
-      //       _controller?.pause();
-      //       isPlay.value = false;
-      //       tempPlaying = true;
-      //     }
-      //   }
-      // }
+      if (position.inSeconds.toInt() %
+          AdmobMaxTool.instance.playShowTime ==
+          0) {
+        eventAdsSource = AdmobSource.play_10;
+        if (isCurrentPage) {
+          bool suc = await AdmobMaxTool.showAdsScreen(AdsSceneType.play);
+          if (suc) {
+            player.pause();
+          }
+        }
+      }
     });
     player.stream.duration.listen((Duration duration) {
       total.value = duration;
@@ -249,92 +249,87 @@ class _PlayPageState extends State<PlayPage>
       playEventUpload = true;
       _goNextEvent(true);
     });
-    // eventAdsSource = AdsSource.play;
-    // MaxManager.addListener(hashCode.toString(), (
-    //   state, {
-    //   adsType,
-    //   ad,
-    //   sceneType,
-    // }) async {
-    //   if (isCurrentPage == false || isBackPage) {
-    //     return;
-    //   }
-    //   if (state == MaxState.showing && MaxManager.scene == MaxSceneType.play) {
-    //     String linkId = await AppKey.getString(AppKey.appLinkId) ?? '';
-    //     ServiceEvent.instance.getAdsValue(
-    //       model?.netMovie == 0
-    //           ? BackEventName.appAdvProfit
-    //           : BackEventName.advProfit,
-    //       model?.platform == 0 ? PlatformType.first : PlatformType.end,
-    //       ad,
-    //       model?.linkId ?? linkId,
-    //       model?.userId ?? '',
-    //       model?.movieId ?? '',
-    //     );
-    //     if (_controller != null &&
-    //         (_controller?.value.isInitialized ?? false) &&
-    //         tempPlaying) {
-    //       _controller?.pause();
-    //       isPlay.value = false;
-    //     }
-    //     if (adsType == MaxType.native) {
-    //       Get.to(
-    //         () => AdmobNativePage(
-    //           ad: ad,
-    //           sceneType: sceneType ?? MaxSceneType.play,
-    //         ),
-    //       )?.then((result) {
-    //         MaxManager.instance.nativeDismiss(
-    //           MaxState.dismissed,
-    //           adsType: MaxType.native,
-    //           ad: ad,
-    //           sceneType: sceneType ?? MaxSceneType.play,
-    //         );
-    //       });
-    //     }
-    //   }
-    //
-    //   if (state == MaxState.dismissed &&
-    //       MaxManager.scene == MaxSceneType.play) {
-    //     if (sceneType == MaxSceneType.plus || adsType == MaxType.rewarded) {
-    //       if (isBackPage) {
-    //         Get.back(result: true);
-    //       } else {
-    //         _showAlertVipView();
-    //       }
-    //     } else {
-    //       displayPlusAds();
-    //     }
-    //   }
-    // });
+    eventAdsSource = AdmobSource.play;
+    AdmobMaxTool.addListener(hashCode.toString(), (
+      state, {
+      adsType,
+      ad,
+      sceneType,
+    }) async {
+      if (isCurrentPage == false || isBackPage) {
+        return;
+      }
+      if (state == AdsState.showing && AdmobMaxTool.scene == AdsSceneType.play) {
+        String linkId = await AppKey.getString(AppKey.appLinkId) ?? '';
+        BackEventManager.instance.getAdsValue(
+          model?.netMovie == 0
+              ? BackEventName.appAdvProfit
+              : BackEventName.advProfit,
+          model?.platform == 0 ? PlatformType.india : PlatformType.east,
+          ad,
+          model?.linkId ?? linkId,
+          model?.userId ?? '',
+          model?.movieId ?? '',
+        );
+        await player.pause();
+        // if (adsType == MaxType.native) {
+        //   Get.to(
+        //     () => AdmobNativePage(
+        //       ad: ad,
+        //       sceneType: sceneType ?? MaxSceneType.play,
+        //     ),
+        //   )?.then((result) {
+        //     MaxManager.instance.nativeDismiss(
+        //       MaxState.dismissed,
+        //       adsType: MaxType.native,
+        //       ad: ad,
+        //       sceneType: sceneType ?? MaxSceneType.play,
+        //     );
+        //   });
+        // }
+      }
+
+      if (state == AdsState.dismissed &&
+          AdmobMaxTool.scene == AdsSceneType.play) {
+        if (sceneType == AdsSceneType.plus || adsType == AdsType.rewarded) {
+          if (isBackPage) {
+            Get.back(result: true);
+          } else {
+            _showAlertVipView();
+          }
+        } else {
+          showPlusAds();
+        }
+      }
+    });
   }
 
-  // void displayPlusAds() async {
-  //   bool s = await MaxManager.disPlayAdmobOrMax(MaxSceneType.plus);
-  //   if (s == false) {
-  //     subscriberSource = SubscriberSource.ad;
-  //     if (isBackPage) {
-  //       Get.back(result: true);
-  //     } else {
-  //       if (Platform.isIOS) {
-  //         if (_controller != null &&
-  //             (_controller?.value.isInitialized ?? false)) {
-  //           _controller?.play();
-  //           isPlay.value = true;
-  //           newVideoSuccess = true;
-  //           tempPlaying = false;
-  //         }
-  //       } else {
-  //         isAutoLoadShow = false;
-  //         if (isLoadShow.value == false) {
-  //           isLoadShow.value = true;
-  //           _disPlaySpeedView();
-  //         }
-  //         await _configPlayer();
-  //       }
-  //     }
-  //   }
-  // }
+  void showPlusAds() async {
+    // bool s = await MaxManager.disPlayAdmobOrMax(MaxSceneType.plus);
+    // if (s == false) {
+    //   subscriberSource = SubscriberSource.ad;
+    //   if (isBackPage) {
+    //     Get.back(result: true);
+    //   } else {
+    //     if (Platform.isIOS) {
+    //       if (_controller != null &&
+    //           (_controller?.value.isInitialized ?? false)) {
+    //         _controller?.play();
+    //         isPlay.value = true;
+    //         newVideoSuccess = true;
+    //         tempPlaying = false;
+    //       }
+    //     } else {
+    //       isAutoLoadShow = false;
+    //       if (isLoadShow.value == false) {
+    //         isLoadShow.value = true;
+    //         _disPlaySpeedView();
+    //       }
+    //       await _configPlayer();
+    //     }
+    //   }
+    // }
+  }
 
   @override
   void dispose() async {
@@ -352,7 +347,7 @@ class _PlayPageState extends State<PlayPage>
     _progressPromptEvent.dispose();
     _disTimer?.cancel();
     speedTimer?.cancel();
-    // MaxManager.removeListener(hashCode.toString());
+    AdmobMaxTool.removeListener(hashCode.toString());
     WidgetsBinding.instance.removeObserver(this);
     VolumeController.instance.showSystemUI = true;
   }
@@ -364,9 +359,9 @@ class _PlayPageState extends State<PlayPage>
     if (isBackPage) {
       return;
     }
-    // if (isCurrentPage) {
-    //   await MaxManager.disPlayAdmobOrMax(MaxSceneType.play);
-    // }
+    if (isCurrentPage) {
+      await AdmobMaxTool.showAdsScreen(AdsSceneType.play);
+    }
 
     isAutoLoadShow = false;
     if (isLoadShow.value == false) {
@@ -397,8 +392,8 @@ class _PlayPageState extends State<PlayPage>
     } else {
       if (model != null && model!.movieUrl.isNotEmpty) {
         await _configPlayer();
-        // } else {
-        //   await networkPlayUrl();
+        } else {
+          await requestPlayUrl();
       }
     }
   }
@@ -456,48 +451,48 @@ class _PlayPageState extends State<PlayPage>
     }
   }
 
-  // Future<void> networkPlayUrl() async {
-  //   await ServiceClentManager.getRequest(
-  //     ApiKey.video,
-  //     model?.platform == 0 ? PlatformType.first : PlatformType.end,
-  //     '/${model?.userId}/${model?.movieId}',
-  //     false,
-  //     para: {},
-  //     successHandle: (data) async {
-  //       if (data is String) {
-  //         final videoUrl = ServiceClentManager.instance.writeSSH(data);
-  //         model?.movieUrl = videoUrl;
-  //         if (model != null) {
-  //           var result = AppDataBase.instance.items
-  //               .where((item) => item.movieId == model!.movieId)
-  //               .toList();
-  //           if (result.isEmpty) {
-  //             AppDataBase.instance.addVideoModel(model!);
-  //           } else {
-  //             AppDataBase.instance.updateVideoModel(model!);
-  //           }
-  //         }
-  //         if (model != null && model!.movieUrl.isNotEmpty) {
-  //           await _configPlayer();
-  //         } else {
-  //           _goNextEvent(true);
-  //           CusToast.show(message: 'request failed!', type: CusToastType.fail);
-  //         }
-  //       } else {
-  //         _goNextEvent(true);
-  //         CusToast.show(message: 'request failed!', type: CusToastType.fail);
-  //       }
-  //     },
-  //     failHandle: (refresh, code, msg) async {
-  //       if (refresh) {
-  //         await networkPlayUrl();
-  //       } else {
-  //         _goNextEvent(true);
-  //         CusToast.show(message: 'request failed!', type: CusToastType.fail);
-  //       }
-  //     },
-  //   );
-  // }
+  Future<void> requestPlayUrl() async {
+    await HttpManager.getRequest(
+      ApiKey.video,
+      model?.platform == 0 ? PlatformType.india : PlatformType.east,
+      '/${model?.userId}/${model?.movieId}',
+      false,
+      para: {},
+      successHandle: (data) async {
+        if (data is String) {
+          final videoUrl = HttpManager.instance.writeSSH(data);
+          model?.movieUrl = videoUrl;
+          if (model != null) {
+            var result = AppDataBase.instance.items
+                .where((item) => item.movieId == model!.movieId)
+                .toList();
+            if (result.isEmpty) {
+              AppDataBase.instance.addVideoModel(model!);
+            } else {
+              AppDataBase.instance.updateVideoModel(model!);
+            }
+          }
+          if (model != null && model!.movieUrl.isNotEmpty) {
+            await _configPlayer();
+          } else {
+            _goNextEvent(true);
+            CusToast.show(message: 'request failed!', type: CusToastType.fail);
+          }
+        } else {
+          _goNextEvent(true);
+          CusToast.show(message: 'request failed!', type: CusToastType.fail);
+        }
+      },
+      failHandle: (refresh, code, msg) async {
+        if (refresh) {
+          await requestPlayUrl();
+        } else {
+          _goNextEvent(true);
+          CusToast.show(message: 'request failed!', type: CusToastType.fail);
+        }
+      },
+    );
+  }
 
   void savePlayTime() {
     if (newVideoSuccess == false) {
@@ -980,7 +975,11 @@ class _PlayPageState extends State<PlayPage>
               }
               displayTool(true);
               isDragging = false;
-              sliderValue.value = value;
+              if (value.isNaN)  {
+                sliderValue.value = 0.0;
+              } else {
+                sliderValue.value = value;
+              }
               if (newVideoSuccess) {
                 changeTime.value = total.value * value - start.value;
                 movedTime.value = total.value * value;

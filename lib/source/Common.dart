@@ -76,13 +76,19 @@ ChannelSource channelSource = ChannelSource.landpage_avtor;
 AdmobSource eventAdsSource = AdmobSource.cold_open;
 
 String appLinkId = '';
-String AppName = 'Frame';
-String appBunldeId = 'com.frame.lumistream';
+String deepLink = '';
+String app_Name = 'Frame';
+String app_Bunlde_Id = 'com.frame.lumistream';
 bool isFullScreen = false;
 bool isDeepComment = false;
 String playFileId = '';
+bool isDeepLink = false;
+
+Function()? clickNativeAction;
 
 Function(int index)? clickTabItem;
+
+Function()? pushDeepPageInfo;
 
 class Common {
   static Common instance = Common();

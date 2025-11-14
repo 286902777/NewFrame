@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:frame/event/event_manager.dart';
 import 'package:get/get.dart';
 import 'package:frame/controller/set_page.dart';
 import 'package:frame/controller/upload_page.dart';
 import 'package:frame/source/app_key.dart';
+import '../admob_max/admob_max_tool.dart';
+import '../event/back_event_manager.dart';
 import '../generated/assets.dart';
 import '../source/Common.dart';
+import 'deep_page.dart';
 import 'index_page.dart';
 
 class TabPage extends StatefulWidget {
@@ -17,7 +21,22 @@ class _TabPageState extends State<TabPage>
     with WidgetsBindingObserver, RouteAware {
   final PageController _tabPageController = PageController();
   int _currentTabIdx = 0;
+  AppLifecycleState? _lastLifecycleState;
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    // 记录上次的生命周期状态
+    if (_lastLifecycleState == AppLifecycleState.paused &&
+        state == AppLifecycleState.resumed) {
+       if (AdmobMaxTool.adsState != AdsState.showing) {
+         eventAdsSource = AdmobSource.hot_open;
+         // MyUserManager.instance.restore(appStart: true);
+         await AdmobMaxTool.showAdsScreen(AdsSceneType.open);
+       }
+    }
+    _lastLifecycleState = state;
+  }
+  
   @override
   void initState() {
     super.initState();
@@ -29,63 +48,63 @@ class _TabPageState extends State<TabPage>
       });
     };
 
-    // getDeepLinkInfo = () {
-    //   openDeepPage();
-    // };
+    pushDeepPageInfo = () {
+      pushDeepVC();
+    };
 
     WidgetsBinding.instance.addObserver(this);
-    // MaxManager.addListener(hashCode.toString(), (
-    //     state, {
-    //       adsType,
-    //       ad,
-    //       sceneType,
-    //     }) async {
-    //   if (state == MaxState.showing && MaxManager.scene == MaxSceneType.open) {
-    //     String linkId = await MyUserData.getString(MyUserData.appLinkId) ?? '';
-    //     ServiceEvent.instance.getAdsValue(
-    //       BackEventName.advProfit,
-    //       apiPlatform,
-    //       ad,
-    //       linkId,
-    //       '',
-    //       '',
-    //     );
-    //     if (adsType == MaxType.native) {
-    //       Get.to(
-    //             () => AdmobNativePage(
-    //           ad: ad,
-    //           sceneType: sceneType ?? MaxSceneType.open,
-    //         ),
-    //       )?.then((result) {
-    //         MaxManager.instance.nativeDismiss(
-    //           MaxState.dismissed,
-    //           adsType: MaxType.native,
-    //           ad: ad,
-    //           sceneType: sceneType ?? MaxSceneType.open,
-    //         );
-    //       });
-    //     }
-    //   }
-    //   if (state == MaxState.dismissed &&
-    //       MaxManager.scene == MaxSceneType.open) {
-    //     if (sceneType == MaxSceneType.plus || adsType == MaxType.rewarded) {
-    //       openDeepPage();
-    //     } else {
-    //       loadPlusAds();
-    //     }
-    //   }
-    // });
-    // Future.delayed(Duration(milliseconds: 500), () {
-    //   openDeepPage();
-    // });
+    AdmobMaxTool.addListener(hashCode.toString(), (
+        state, {
+          adsType,
+          ad,
+          sceneType,
+        }) async {
+      if (state == AdsState.showing && AdmobMaxTool.scene == AdsSceneType.open) {
+        String linkId = await AppKey.getString(AppKey.appLinkId) ?? '';
+        BackEventManager.instance.getAdsValue(
+          BackEventName.advProfit,
+          apiPlatform,
+          ad,
+          linkId,
+          '',
+          '',
+        );
+        // if (adsType == AdsType.native) {
+        //   Get.to(
+        //         () => AdmobNativePage(
+        //       ad: ad,
+        //       sceneType: sceneType ?? MaxSceneType.open,
+        //     ),
+        //   )?.then((result) {
+        //     AdmobMaxTool.instance.nativeDismiss(
+        //       MaxState.dismissed,
+        //       adsType: MaxType.native,
+        //       ad: ad,
+        //       sceneType: sceneType ?? MaxSceneType.open,
+        //     );
+        //   });
+        // }
+      }
+      if (state == AdsState.dismissed &&
+          AdmobMaxTool.scene == AdsSceneType.open) {
+        if (sceneType == AdsSceneType.plus || adsType == AdsType.rewarded) {
+          pushDeepVC();
+        } else {
+          loadPlusAds();
+        }
+      }
+    });
+    Future.delayed(Duration(milliseconds: 500), () {
+      pushDeepVC();
+    });
   }
 
-  // void loadPlusAds() async {
-  //   bool s = await MaxManager.disPlayAdmobOrMax(MaxSceneType.plus);
-  //   if (s == false) {
-  //     openDeepPage();
-  //   }
-  // }
+  void loadPlusAds() async {
+    // bool s = await AdmobMaxTool.showAdsScreen(AdsSceneType.plus);
+    // if (s == false) {
+    //   pushDeepVC();
+    // }
+  }
 
   void openSelectIndex(int index) {
     _tabPageController.jumpToPage(index);
@@ -99,32 +118,32 @@ class _TabPageState extends State<TabPage>
     // TODO: implement dispose
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
-    // MaxManager.removeListener(hashCode.toString());
+    AdmobMaxTool.removeListener(hashCode.toString());
   }
 
   void listenAppState() {
     // AppStateEventNotifier.startListening();
     // AppStateEventNotifier.appStateStream.listen((state) async {
     //   if (state == AppState.foreground &&
-    //       MaxManager.maxState != MaxState.showing) {
+    //       AdmobMaxTool.maxState != MaxState.showing) {
     //     eventAdsSource = AdsSource.hot_open;
     //     MyUserManager.instance.restore(appStart: true);
-    //     await MaxManager.disPlayAdmobOrMax(MaxSceneType.open);
+    //     await AdmobMaxTool.disPlayAdmobOrMax(MaxSceneType.open);
     //   }
     // });
   }
 
-  // void openDeepPage() {
-  //   if (deepLink.isNotEmpty) {
-  //     Get.offAll(() => MyTabbarPage());
-  //     Get.to(() => MyDeepPage(linkId: appLinkId))?.then((_) {
-  //       subscriberSource = SubscriberSource.home;
-  //       goCommentPage();
-  //       PlayerManager.showResult(true);
-  //     });
-  //     deepLink = '';
-  //   }
-  // }
+  void pushDeepVC() {
+    if (deepLink.isNotEmpty) {
+      Get.offAll(() => TabPage());
+      Get.to(() => DeepPage(linkId: appLinkId))?.then((_) {
+        // subscriberSource = SubscriberSource.home;
+        // goCommentPage();
+        // PlayerManager.showResult(true);
+      });
+      deepLink = '';
+    }
+  }
 
   // void goCommentPage() async {
   //   bool clickCommendStar =

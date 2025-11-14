@@ -78,7 +78,7 @@ class IndexListModel {
     fileMeta: FileMeta.fromJson(json["choyaroot"]),
     namespace: Namespace.fromJson(json["5uuu1au8wp"]),
     createTime: json["harems"] ?? 0,
-    disPlayName: DisPlayName.fromJson(json["paramarine"]), //grippingly/azotemia
+    disPlayName: DisPlayName.fromJson(json["paramarine"]),
     invalid: json["unascribed"] ?? false,
     directory: json["vxz_38but7"] ?? false,
     video: json["klong"] ?? false,
@@ -154,10 +154,15 @@ class NoModel {
   Homonid homonid;
   NoModel({required this.homonid});
 
-  factory NoModel.fromJson(Map<String, dynamic> json) =>
-      NoModel(homonid: Homonid.fromJson(json["Homonid"]));
+  factory NoModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+        return NoModel(homonid: Homonid.fromJson({}));
+    }
+    return NoModel(homonid: Homonid.fromJson(json["homonid"]));
+  }
 
-  Map<String, dynamic> toJson() => {"Homonid": homonid.toJson()};
+
+  Map<String, dynamic> toJson() => {"homonid": homonid.toJson()};
 }
 
 class Homonid {
@@ -173,19 +178,24 @@ class Homonid {
     required this.name,
   });
 
-  factory Homonid.fromJson(Map<String, dynamic> json) => Homonid(
-    id: json["apojove"] ?? '',
-    createTime: json["harems"] ?? 0,
-    name: json["binous"] ?? '',
-    tenant: Tenant.fromJson(json["cowcatcher"]),
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "create_time": createTime,
-    "name": name,
-    "tenant": tenant.toJson(),
-  };
+  factory Homonid.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return Homonid(
+          id: '', createTime: 0, name: '', tenant: Tenant.fromJson({}));
+    }
+    return Homonid(
+      id: json["apojove"] ?? '',
+      createTime: json["harems"] ?? 0,
+      name: json["binous"] ?? '',
+      tenant: Tenant.fromJson(json["cowcatcher"]),
+    );
+  }
+    Map<String, dynamic> toJson() => {
+      "id": id,
+      "create_time": createTime,
+      "name": name,
+      "tenant": tenant.toJson(),
+    };
 }
 
 class Tenant {
@@ -203,13 +213,19 @@ class Tenant {
     required this.name,
   });
 
-  factory Tenant.fromJson(Map<String, dynamic> json) => Tenant(
-    id: json["apojove"] ?? '',
-    createTime: json["harems"] ?? 0,
-    accessExpiredTime: json["reddy"] ?? 0,
-    name: json["binous"] ?? '',
-    accessId: json["repps"] ?? '',
-  );
+  factory Tenant.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return Tenant(
+          id: '', createTime: 0, accessExpiredTime: 0, name: '', accessId: '');
+    }
+    return Tenant(
+      id: json["apojove"] ?? '',
+      createTime: json["harems"] ?? 0,
+      accessExpiredTime: json["reddy"] ?? 0,
+      name: json["binous"] ?? '',
+      accessId: json["repps"] ?? '',
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     "id": id,
@@ -226,9 +242,6 @@ class User {
   String name;
   String email;
   String picture;
-  String telegramUrl;
-  String bannerPictureUrl;
-  String telegramAddress;
   List<Label> labels;
 
   User({
@@ -237,9 +250,6 @@ class User {
     required this.name,
     required this.email,
     required this.picture,
-    required this.telegramUrl,
-    required this.bannerPictureUrl,
-    required this.telegramAddress,
     required this.labels,
   });
 
@@ -248,23 +258,16 @@ class User {
     account: json["parolable"] ?? '',
     name: json["binous"] ?? '',
 
-    telegramUrl: json["sirras"] ?? '',
-    bannerPictureUrl: json["unhumoured"] ?? '',
     labels: List<Label>.from(json["miscalling"].map((x) => Label.fromJson(x))),
-    telegramAddress: json["schnapper"] ?? '',
     email: json["befleck"] ?? '',
     picture: json["orvietan"] ?? '',
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-
-    "telegram_url": telegramUrl,
-    "banner_picture_url": bannerPictureUrl,
     "picture": picture,
     "labels": List<dynamic>.from(labels.map((x) => x.toJson())),
 
-    "telegram_address": telegramAddress,
     "account": account,
     "name": name,
     "email": email,

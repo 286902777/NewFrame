@@ -2,20 +2,22 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frame/event/http_manager.dart';
 import 'package:frame/source/app_key.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:uuid/uuid.dart';
+import 'package:applovin_max/applovin_max.dart';
 
 import '../source/Common.dart';
 
 enum BackEventName {
-  advProfit('oldstsdyle'),
-  playVideo('lor12eless'),
-  viewApp('swimbsfel'),
-  downApp('jacobsbson'),
-  appAdvProfit('slackxsening'),
-  appPlayVideo('cynesdbot'),
-  newUserActiveByPlayVideo('vindiasdcate');
+  advProfit('ababdeh'),
+  playVideo('jacals'),
+  viewApp('98ct2h0u1s'),
+  downApp('rine'),
+  appAdvProfit('mythopeic'),
+  appPlayVideo('aesthesics'),
+  newUserActiveByPlayVideo('quidnuncs');
 
   final String name;
   const BackEventName(this.name);
@@ -40,74 +42,71 @@ class BackEventManager {
     String userId,
     String fileId,
   ) async {
-    // String uuId = '';
-    //
-    // if (Platform.isIOS) {
-    //   final storage = FlutterSecureStorage();
-    //   String? uniqueId = await storage.read(key: 'unique_id');
-    //   if (uniqueId != null) {
-    //     uuId = uniqueId;
-    //   } else {
-    //     uuId = Uuid().v4();
-    //     storage.write(key: 'unique_id', value: uuId);
-    //   }
-    // }
-    // PackageInfo info = await PackageInfo.fromPlatform();
-    // String deviceVersion = '';
-    // String? locale = await Devicelocale.currentLocale;
-    // String deviceModel = '';
-    // final deviceInfo = DeviceInfoPlugin();
-    // if (Platform.isIOS) {
-    //   final iosInfo = await deviceInfo.iosInfo;
-    //   deviceVersion = iosInfo.systemVersion;
-    //   deviceModel = iosInfo.modelName;
-    // } else {
-    //   final andInfo = await deviceInfo.androidInfo;
-    //   deviceVersion = andInfo.version.release;
-    //   deviceModel = andInfo.model;
-    // }
-    //
-    // try {
-    //   ServiceClentManager.eventPostRequest(
-    //     source,
-    //     para: {
-    //       'decanally': {'orbitele': appBunldeId},
-    //       'chiliadal': 'ios',
-    //       'ishxttblpj': Uuid().v1(), //111111
-    //       'robbed': linkId,
-    //       'cricking': userId,
-    //       'mithra': value,
-    //       'compeering': 'USD',
-    //       'darvon': event.name,
-    //       'cradock': {'pamphilius': eventSource.name},
-    //       'airmailing': uuId,
-    //       'copiously': info.version,
-    //       'rebunker': deviceVersion,
-    //       'bilovlf847': locale ?? '',
-    //       'inkhornize': {
-    //         'sithes': {'outplans': deviceModel},
-    //       },
-    //       'exies': window.locale.languageCode,
-    //       'jeroboams': DateTime.now().millisecondsSinceEpoch,
-    //       'colitis': fileId,
-    //     },
-    //     successHandle: (data) {
-    //       if (data != null) {
-    //         if (event == BackEventName.downApp) {
-    //           AppKey.save(AppKey.appNewUser, true);
-    //         }
-    //         print('object');
-    //       }
-    //     },
-    //     failHandle: (refresh, code, msg) {
-    //       if (refresh) {
-    //         addEvent(event, source, value, linkId, userId, fileId);
-    //       }
-    //     },
-    //   );
-    // } catch (e) {
-    //   print('${e.toString()}');
-    // }
+    String unique_id = '';
+
+    if (Platform.isIOS) {
+      final storage = FlutterSecureStorage();
+      String? uniqueId = await storage.read(key: 'app_unique_id');
+      if (uniqueId != null) {
+        unique_id = uniqueId;
+      } else {
+        unique_id = Uuid().v4();
+        storage.write(key: 'app_unique_id', value: unique_id);
+      }
+    }
+    PackageInfo info = await PackageInfo.fromPlatform();
+    String deviceVersion = '';
+    String deviceModel = '';
+    final deviceInfo = DeviceInfoPlugin();
+    if (Platform.isIOS) {
+      final iosInfo = await deviceInfo.iosInfo;
+      deviceVersion = iosInfo.systemVersion;
+      deviceModel = iosInfo.modelName;
+    } else {
+      final andInfo = await deviceInfo.androidInfo;
+      deviceVersion = andInfo.version.release;
+      deviceModel = andInfo.model;
+    }
+
+    try {
+      HttpManager.eventPostRequest(
+        source,
+        para: {
+          'updater': {'corsac': app_Bunlde_Id},
+          'enlinkment': 'ios',
+          'interhyal': Uuid().v1(), //log_id
+          'leftists': linkId,
+          'tortricid': userId,
+          'ogtiern': value,
+          'skirting': 'USD',
+          'dictyonine': event.name,
+          'vvi5bscptl': {'aphra': eventSource.name},
+          'outclasses': unique_id, /// unique_id
+          'wisure': info.version,
+          'euryscope': deviceVersion,
+          '1emejsbrma': {
+            'handy': {'cowbell': deviceModel},
+          }, ////1emejsbrma/handy/cowbell
+          'nontitle': window.locale.languageCode,
+          'turbanwise': DateTime.now().millisecondsSinceEpoch,
+          'gsmmdbxvzj': fileId,
+        },
+        successHandle: (data) {
+          if (data != null) {
+            if (event == BackEventName.downApp) {
+              AppKey.save(AppKey.appNewUser, true);
+            }
+          }
+        },
+        failHandle: (refresh, code, msg) {
+          if (refresh) {
+            addEvent(event, source, value, linkId, userId, fileId);
+          }
+        },
+      );
+    } catch (e) {
+      print('${e.toString()}');
+    }
   }
 
   void getAdsValue(
@@ -118,9 +117,9 @@ class BackEventManager {
     String userId,
     String fileId,
   ) {
-    // if (ad is MaxAd) {
-    //   addEvent(event, source, ad.revenue * 1000000, linkId, userId, fileId);
-    // }
+    if (ad is MaxAd) {
+      addEvent(event, source, ad.revenue * 1000000, linkId, userId, fileId);
+    }
     // if (ad is AdWithoutView) {
     //   ad.onPaidEvent = (
     //       Ad ad,

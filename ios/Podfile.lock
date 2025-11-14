@@ -1,9 +1,56 @@
 PODS:
+  - Ads-Global (7.7.0.6):
+    - Ads-Global/BUAdSDK (= 7.7.0.6)
+  - Ads-Global/BUAdSDK (7.7.0.6):
+    - Ads-Global/PangleSDK
+    - Ads-Global/TikTokBusinessSDK
+  - Ads-Global/PangleSDK (7.7.0.6)
+  - Ads-Global/TikTokBusinessSDK (7.7.0.6)
   - app_tracking_transparency (0.0.1):
     - Flutter
   - applovin_max (4.5.2):
     - AppLovinSDK (= 13.4.0)
     - Flutter
+  - AppLovinMediationBidMachineAdapter (3.5.0.0.0):
+    - AppLovinSDK (>= 13.0.0)
+    - BidMachine (= 3.5.0)
+  - AppLovinMediationBigoAdsAdapter (5.0.0.0):
+    - AppLovinSDK (>= 12.4.1)
+    - BigoADS (= 5.0.0)
+  - AppLovinMediationByteDanceAdapter (7.7.0.6.0):
+    - Ads-Global (= 7.7.0.6)
+    - AppLovinSDK (>= 13.0.0)
+  - AppLovinMediationFacebookAdapter (6.20.1.0):
+    - AppLovinSDK (>= 13.0.0)
+    - FBAudienceNetwork (= 6.20.1)
+  - AppLovinMediationFyberAdapter (8.4.1.0):
+    - AppLovinSDK (>= 13.0.0)
+    - Fyber_Marketplace_SDK (= 8.4.1)
+  - AppLovinMediationGoogleAdapter (12.2.0.0):
+    - AppLovinSDK (>= 13.0.0)
+    - Google-Mobile-Ads-SDK (= 12.2.0)
+  - AppLovinMediationGoogleAdManagerAdapter (12.2.0.0):
+    - AppLovinSDK (>= 13.0.0)
+    - Google-Mobile-Ads-SDK (= 12.2.0)
+  - AppLovinMediationInMobiAdapter (11.0.0.0):
+    - AppLovinSDK (>= 13.0.0)
+    - InMobiSDK (= 11.0.0)
+  - AppLovinMediationIronSourceAdapter (9.0.0.0.0):
+    - AppLovinSDK (>= 13.0.0)
+    - IronSourceSDK/Ads (= 9.0.0.0)
+  - AppLovinMediationMintegralAdapter (7.7.9.0.0):
+    - AppLovinSDK (>= 13.0.0)
+    - MintegralAdSDK (= 7.7.9)
+    - MintegralAdSDK/BidSplashAd (= 7.7.9)
+  - AppLovinMediationMolocoAdapter (4.1.0.0):
+    - AppLovinSDK (>= 13.0.0)
+    - MolocoSDKiOS (= 4.1.0)
+  - AppLovinMediationUnityAdsAdapter (4.16.3.0):
+    - AppLovinSDK (>= 13.0.0)
+    - UnityAds (= 4.16.3)
+  - AppLovinMediationVungleAdapter (7.6.1.0):
+    - AppLovinSDK (>= 13.0.0)
+    - VungleAds (= 7.6.1)
   - AppLovinSDK (13.4.0)
   - appsflyer_sdk (6.17.3):
     - appsflyer_sdk/Core (= 6.17.3)
@@ -13,6 +60,11 @@ PODS:
   - AppsFlyerFramework (6.17.5):
     - AppsFlyerFramework/Main (= 6.17.5)
   - AppsFlyerFramework/Main (6.17.5)
+  - BidMachine (3.5.0):
+    - BidMachine/Static (= 3.5.0)
+  - BidMachine/Static (3.5.0):
+    - StackModules/Static (~> 3.4.0)
+  - BigoADS (5.0.0)
   - connectivity_plus (0.0.1):
     - Flutter
   - device_info_plus (0.0.1):
@@ -48,6 +100,7 @@ PODS:
   - DKPhotoGallery/Resource (0.0.19):
     - SDWebImage
     - SwiftyGif
+  - FBAudienceNetwork (6.20.1)
   - file_picker (0.0.1):
     - DKImagePickerController/PhotoGallery
     - Flutter
@@ -56,8 +109,54 @@ PODS:
     - Flutter
   - flutter_secure_storage (6.0.0):
     - Flutter
+  - Fyber_Marketplace_SDK (8.4.1)
+  - Google-Mobile-Ads-SDK (12.2.0):
+    - GoogleUserMessagingPlatform (>= 1.1)
+  - google_mobile_ads (6.0.0):
+    - Flutter
+    - Google-Mobile-Ads-SDK (~> 12.2.0)
+    - webview_flutter_wkwebview
+  - GoogleMobileAdsMediationAppLovin (13.4.0.0):
+    - AppLovinSDK (= 13.4.0)
+    - Google-Mobile-Ads-SDK (~> 12.0)
+  - GoogleMobileAdsMediationFacebook (6.20.1.0):
+    - FBAudienceNetwork (= 6.20.1)
+    - Google-Mobile-Ads-SDK (~> 12.0)
+  - GoogleMobileAdsMediationFyber (8.4.1.0):
+    - Fyber_Marketplace_SDK (= 8.4.1)
+    - Google-Mobile-Ads-SDK (~> 12.0)
+  - GoogleMobileAdsMediationInMobi (11.0.0.0):
+    - Google-Mobile-Ads-SDK (~> 12.0)
+    - InMobiSDK (= 11.0.0)
+  - GoogleMobileAdsMediationIronSource (9.0.0.0.0):
+    - Google-Mobile-Ads-SDK (~> 12.0)
+    - IronSourceSDK (= 9.0.0.0)
+  - GoogleMobileAdsMediationMaio (2.2.0.0):
+    - Google-Mobile-Ads-SDK (~> 12.0)
+    - MaioSDK-v2 (= 2.2.0)
+  - GoogleMobileAdsMediationMintegral (7.7.9.1):
+    - Google-Mobile-Ads-SDK (~> 12.0)
+    - MintegralAdSDK/All (= 7.7.9)
+  - GoogleMobileAdsMediationPangle (7.7.0.6.0):
+    - Ads-Global (= 7.7.0.6)
+    - Google-Mobile-Ads-SDK (~> 12.0)
+  - GoogleMobileAdsMediationUnity (4.16.3.0):
+    - Google-Mobile-Ads-SDK (~> 12.0)
+    - UnityAds (= 4.16.3)
+  - GoogleMobileAdsMediationVungle (7.6.1.0):
+    - Google-Mobile-Ads-SDK (~> 12.0)
+    - VungleAds (= 7.6.1)
+  - GoogleUserMessagingPlatform (3.1.0)
   - image_picker_ios (0.0.1):
     - Flutter
+  - InMobiSDK (11.0.0)
+  - IronSourceAdQualitySDK (9.0.2)
+  - IronSourceSDK (9.0.0.0):
+    - IronSourceSDK/AdQuality (= 9.0.0.0)
+    - IronSourceSDK/Ads (= 9.0.0.0)
+  - IronSourceSDK/AdQuality (9.0.0.0):
+    - IronSourceAdQualitySDK (~> 9.0.0)
+  - IronSourceSDK/Ads (9.0.0.0)
   - libwebp (1.5.0):
     - libwebp/demux (= 1.5.0)
     - libwebp/mux (= 1.5.0)
@@ -70,10 +169,64 @@ PODS:
   - libwebp/sharpyuv (1.5.0)
   - libwebp/webp (1.5.0):
     - libwebp/sharpyuv
+  - MaioSDK-v2 (2.2.0)
   - media_kit_libs_ios_video (1.0.4):
     - Flutter
   - media_kit_video (0.0.1):
     - Flutter
+  - MintegralAdSDK (7.7.9):
+    - MintegralAdSDK/BannerAd (= 7.7.9)
+    - MintegralAdSDK/BidBannerAd (= 7.7.9)
+    - MintegralAdSDK/BidInterstitialVideoAd (= 7.7.9)
+    - MintegralAdSDK/BidNativeAd (= 7.7.9)
+    - MintegralAdSDK/BidNewInterstitialAd (= 7.7.9)
+    - MintegralAdSDK/BidRewardVideoAd (= 7.7.9)
+    - MintegralAdSDK/InterstitialVideoAd (= 7.7.9)
+    - MintegralAdSDK/NativeAd (= 7.7.9)
+    - MintegralAdSDK/NewInterstitialAd (= 7.7.9)
+    - MintegralAdSDK/RewardVideoAd (= 7.7.9)
+  - MintegralAdSDK/All (7.7.9):
+    - MintegralAdSDK/BannerAd
+    - MintegralAdSDK/BidNativeAd
+    - MintegralAdSDK/InterstitialVideoAd
+    - MintegralAdSDK/NativeAd
+    - MintegralAdSDK/NativeAdvancedAd
+    - MintegralAdSDK/NewInterstitialAd
+    - MintegralAdSDK/RewardVideoAd
+    - MintegralAdSDK/SplashAd
+  - MintegralAdSDK/BannerAd (7.7.9):
+    - MintegralAdSDK/NativeAd
+  - MintegralAdSDK/BidBannerAd (7.7.9):
+    - MintegralAdSDK/BannerAd
+    - MintegralAdSDK/BidNativeAd
+  - MintegralAdSDK/BidInterstitialVideoAd (7.7.9):
+    - MintegralAdSDK/BidNativeAd
+    - MintegralAdSDK/InterstitialVideoAd
+  - MintegralAdSDK/BidNativeAd (7.7.9):
+    - MintegralAdSDK/NativeAd
+  - MintegralAdSDK/BidNewInterstitialAd (7.7.9):
+    - MintegralAdSDK/BidNativeAd
+    - MintegralAdSDK/NewInterstitialAd
+  - MintegralAdSDK/BidRewardVideoAd (7.7.9):
+    - MintegralAdSDK/BidNativeAd
+    - MintegralAdSDK/RewardVideoAd
+  - MintegralAdSDK/BidSplashAd (7.7.9):
+    - MintegralAdSDK/BidNativeAd
+    - MintegralAdSDK/SplashAd
+  - MintegralAdSDK/InterstitialVideoAd (7.7.9):
+    - MintegralAdSDK/NativeAd
+  - MintegralAdSDK/NativeAd (7.7.9)
+  - MintegralAdSDK/NativeAdvancedAd (7.7.9):
+    - MintegralAdSDK/NativeAd
+  - MintegralAdSDK/NewInterstitialAd (7.7.9):
+    - MintegralAdSDK/InterstitialVideoAd
+    - MintegralAdSDK/NativeAd
+  - MintegralAdSDK/RewardVideoAd (7.7.9):
+    - MintegralAdSDK/NativeAd
+  - MintegralAdSDK/SplashAd (7.7.9):
+    - MintegralAdSDK/NativeAd
+  - MolocoSDKiOS (4.1.0)
+  - OMSDK_Appodeal (1.5.2)
   - package_info_plus (0.4.5):
     - Flutter
   - path_provider_foundation (0.0.1):
@@ -90,7 +243,19 @@ PODS:
   - sqflite_darwin (0.0.4):
     - Flutter
     - FlutterMacOS
+  - StackModules/Core-Static (3.4.1)
+  - StackModules/ProductPresentation-Static (3.4.1):
+    - StackModules/Core-Static
+  - StackModules/Rendering-Static (3.4.1):
+    - OMSDK_Appodeal (= 1.5.2)
+    - StackModules/Core-Static
+    - StackModules/ProductPresentation-Static
+  - StackModules/Static (3.4.1):
+    - StackModules/Core-Static
+    - StackModules/ProductPresentation-Static
+    - StackModules/Rendering-Static
   - SwiftyGif (5.4.5)
+  - UnityAds (4.16.3)
   - url_launcher_ios (0.0.1):
     - Flutter
   - video_thumbnail (0.0.1):
@@ -98,6 +263,7 @@ PODS:
     - libwebp
   - volume_controller (0.0.1):
     - Flutter
+  - VungleAds (7.6.1)
   - wakelock_plus (0.0.1):
     - Flutter
   - webview_flutter_wkwebview (0.0.1):
@@ -107,6 +273,19 @@ PODS:
 DEPENDENCIES:
   - app_tracking_transparency (from `.symlinks/plugins/app_tracking_transparency/ios`)
   - applovin_max (from `.symlinks/plugins/applovin_max/ios`)
+  - AppLovinMediationBidMachineAdapter
+  - AppLovinMediationBigoAdsAdapter
+  - AppLovinMediationByteDanceAdapter
+  - AppLovinMediationFacebookAdapter
+  - AppLovinMediationFyberAdapter
+  - AppLovinMediationGoogleAdapter
+  - AppLovinMediationGoogleAdManagerAdapter
+  - AppLovinMediationInMobiAdapter
+  - AppLovinMediationIronSourceAdapter
+  - AppLovinMediationMintegralAdapter
+  - AppLovinMediationMolocoAdapter
+  - AppLovinMediationUnityAdsAdapter
+  - AppLovinMediationVungleAdapter
   - appsflyer_sdk (from `.symlinks/plugins/appsflyer_sdk/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
@@ -114,6 +293,17 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
+  - google_mobile_ads (from `.symlinks/plugins/google_mobile_ads/ios`)
+  - GoogleMobileAdsMediationAppLovin
+  - GoogleMobileAdsMediationFacebook
+  - GoogleMobileAdsMediationFyber
+  - GoogleMobileAdsMediationInMobi
+  - GoogleMobileAdsMediationIronSource
+  - GoogleMobileAdsMediationMaio
+  - GoogleMobileAdsMediationMintegral
+  - GoogleMobileAdsMediationPangle
+  - GoogleMobileAdsMediationUnity
+  - GoogleMobileAdsMediationVungle
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - media_kit_libs_ios_video (from `.symlinks/plugins/media_kit_libs_ios_video/ios`)
   - media_kit_video (from `.symlinks/plugins/media_kit_video/ios`)
@@ -130,13 +320,53 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Ads-Global
+    - AppLovinMediationBidMachineAdapter
+    - AppLovinMediationBigoAdsAdapter
+    - AppLovinMediationByteDanceAdapter
+    - AppLovinMediationFacebookAdapter
+    - AppLovinMediationFyberAdapter
+    - AppLovinMediationGoogleAdapter
+    - AppLovinMediationGoogleAdManagerAdapter
+    - AppLovinMediationInMobiAdapter
+    - AppLovinMediationIronSourceAdapter
+    - AppLovinMediationMintegralAdapter
+    - AppLovinMediationMolocoAdapter
+    - AppLovinMediationUnityAdsAdapter
+    - AppLovinMediationVungleAdapter
     - AppLovinSDK
     - AppsFlyerFramework
+    - BidMachine
+    - BigoADS
     - DKImagePickerController
     - DKPhotoGallery
+    - FBAudienceNetwork
+    - Fyber_Marketplace_SDK
+    - Google-Mobile-Ads-SDK
+    - GoogleMobileAdsMediationAppLovin
+    - GoogleMobileAdsMediationFacebook
+    - GoogleMobileAdsMediationFyber
+    - GoogleMobileAdsMediationInMobi
+    - GoogleMobileAdsMediationIronSource
+    - GoogleMobileAdsMediationMaio
+    - GoogleMobileAdsMediationMintegral
+    - GoogleMobileAdsMediationPangle
+    - GoogleMobileAdsMediationUnity
+    - GoogleMobileAdsMediationVungle
+    - GoogleUserMessagingPlatform
+    - InMobiSDK
+    - IronSourceAdQualitySDK
+    - IronSourceSDK
     - libwebp
+    - MaioSDK-v2
+    - MintegralAdSDK
+    - MolocoSDKiOS
+    - OMSDK_Appodeal
     - SDWebImage
+    - StackModules
     - SwiftyGif
+    - UnityAds
+    - VungleAds
 
 EXTERNAL SOURCES:
   app_tracking_transparency:
@@ -157,6 +387,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
+  google_mobile_ads:
+    :path: ".symlinks/plugins/google_mobile_ads/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   media_kit_libs_ios_video:
@@ -185,36 +417,77 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
 
 SPEC CHECKSUMS:
+  Ads-Global: 95dbcb40c73d8f7a2cba223b06700fda083c7b1f
   app_tracking_transparency: 3d84f147f67ca82d3c15355c36b1fa6b66ca7c92
   applovin_max: 83a9a6aa424f8ce69b52b3440fe5a6399879f3d9
+  AppLovinMediationBidMachineAdapter: 9c4c1fb29dee235a5b8b209602534ffe12bfc52a
+  AppLovinMediationBigoAdsAdapter: ccfc2387d774c9e10aa784a21cbb5f940a6bf1a6
+  AppLovinMediationByteDanceAdapter: e16cccf2a175119b3a26ee943058f9fe0796a989
+  AppLovinMediationFacebookAdapter: 7c9837eb64a43823812dc23609eac01973ff8b74
+  AppLovinMediationFyberAdapter: 1c35089d48d1c5e35652d45411f65ff992c49417
+  AppLovinMediationGoogleAdapter: 0d6dad9666ad53ee8e72ce561497404f48d04726
+  AppLovinMediationGoogleAdManagerAdapter: 81632098ebc9ddde903a47bf21fe18014cd8c9be
+  AppLovinMediationInMobiAdapter: 91e2897ae3d849a6197fa1384f047cf8a0cb5edb
+  AppLovinMediationIronSourceAdapter: 2472fee4ca9e2f77fc31571acb21ae9656ecb5a2
+  AppLovinMediationMintegralAdapter: c73b2cbce91600868c49c08adae5cc2664bc330c
+  AppLovinMediationMolocoAdapter: 2e0a390ee06c1e8e254fd9f100b42dcf25e5e24d
+  AppLovinMediationUnityAdsAdapter: aeed58dc56508ee76f52b2385ca4208226b4d2f2
+  AppLovinMediationVungleAdapter: a8f71336d2650feaa97df108ebea5df9b254cd27
   AppLovinSDK: 33fcc783889e2d522ae26886b31e5551246a5b2f
   appsflyer_sdk: 23e08a1f2a2a0c3f5d58c91a5820dba768d738c8
   AppsFlyerFramework: da52a40c07c9f81a7829952e0fd854b6eacf5a7d
+  BidMachine: 7722254fdf6641a354ceef845bcb6cc3ff8dc0f3
+  BigoADS: 789ca51394adb1adb405e7e01ec8e43d3dc14f15
   connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
   device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
+  FBAudienceNetwork: 08e86d63a05b3a5a59414af12e4af8d756943c80
   file_picker: a0560bc09d61de87f12d246fc47d2119e6ef37be
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_keyboard_visibility: 4625131e43015dbbe759d9b20daaf77e0e3f6619
   flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
+  Fyber_Marketplace_SDK: c908580dc3d65e67f2862df137f8ae7dad6e3321
+  Google-Mobile-Ads-SDK: 1dfb0c3cb46c7e2b00b0f4de74a1e06d9ea25d67
+  google_mobile_ads: 535223588a6791b7a3cc3513a1bc7b89d12f3e62
+  GoogleMobileAdsMediationAppLovin: 604d93a0913908be064558a90170004f35b57a96
+  GoogleMobileAdsMediationFacebook: b11a92ae3bfdae19853b882252b7e62791c18162
+  GoogleMobileAdsMediationFyber: 77d6b48d531842d2565d20525f63b5426810a89f
+  GoogleMobileAdsMediationInMobi: f745abf3c87700f83f0a02b148b0ac57fc23c421
+  GoogleMobileAdsMediationIronSource: 9bcd7657d1c133ed89f01540cae735eb40352ca3
+  GoogleMobileAdsMediationMaio: b1a1685512b8d4927696b559157c4e50fe6349dc
+  GoogleMobileAdsMediationMintegral: 850a80c9cda83b28a12b0bcff690cd7daaaa14a4
+  GoogleMobileAdsMediationPangle: e3f9769fd775f67b19574244ea7d41ee386b3656
+  GoogleMobileAdsMediationUnity: 2861f3dc5abe7c13fafd11bd4484fbd5a762778c
+  GoogleMobileAdsMediationVungle: 37752604d3b49e6507c210f87d0a3e9f0cb5bfd2
+  GoogleUserMessagingPlatform: befe603da6501006420c206222acd449bba45a9c
   image_picker_ios: e0ece4aa2a75771a7de3fa735d26d90817041326
+  InMobiSDK: 4145c551ff376e4db648e39379e2f919dde2d155
+  IronSourceAdQualitySDK: b34d46a52db89ac9d9d4169ceb41f44421e07606
+  IronSourceSDK: b64660084bc4b162f30a4e846f7b763ce0074664
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
+  MaioSDK-v2: 566025577e43c02a8325dd9913d79ff242c6fd30
   media_kit_libs_ios_video: 5a18affdb97d1f5d466dc79988b13eff6c5e2854
   media_kit_video: 1746e198cb697d1ffb734b1d05ec429d1fcd1474
+  MintegralAdSDK: 054814f99bb7e967b8974fe635d9005b225cbe42
+  MolocoSDKiOS: b88d7d70a3e419cba14ac1913426a16600f8a424
+  OMSDK_Appodeal: 066f9da2c77d560e319341c6bd4739828bc65842
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   path_provider_foundation: bb55f6dbba17d0dccd6737fe6f7f34fbd0376880
   screen_brightness_ios: 9953fd7da5bd480f1a93990daeec2eb42d4f3b52
   SDWebImage: 16309af6d214ba3f77a7c6f6fdda888cb313a50a
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
+  StackModules: 2cdc4fe670b6536c8024c4ae24d4c2c76dc15006
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
+  UnityAds: 64164885dd38214bfc556eb074ab1995cc613fbf
   url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
   video_thumbnail: b637e0ad5f588ca9945f6e2c927f73a69a661140
   volume_controller: 3657a1f65bedb98fa41ff7dc5793537919f31b12
+  VungleAds: ab78d62721933672a83efcf7d2de8ae0610494be
   wakelock_plus: e29112ab3ef0b318e58cfa5c32326458be66b556
   webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
 
-PODFILE CHECKSUM: 3c63482e143d1b91d2d2560aee9fb04ecc74ac7e
+PODFILE CHECKSUM: f3da6d3a805df4f6bbe4b3c105488e46afb137f2
 
 COCOAPODS: 1.16.2

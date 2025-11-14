@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:frame/source/AppDataManager.dart';
 import 'package:frame/source/Common.dart';
+import 'package:frame/source/fire_manager.dart';
 import 'package:frame/source/start_page.dart';
 import 'package:get/get.dart';
 import 'package:media_kit/media_kit.dart';
@@ -10,10 +11,12 @@ import 'package:oktoast/oktoast.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 final RouteObserver<PageRoute> routeObserver = RouteObserver();
-void main() {
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
   Get.put(AppDataBase());
+  await FireManager.instance.addConfig();
   Common.instance.initTracking();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
   runApp(const MyApp());
@@ -22,7 +25,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return OKToast(

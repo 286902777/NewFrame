@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frame/controller/deep_page.dart';
 import 'package:get/get.dart';
 import 'package:frame/controller/channel_list_page.dart';
 import 'package:frame/controller/channel_page.dart';
@@ -336,13 +337,13 @@ class _IndexPageState extends State<IndexPage>
                               width: 72,
                               height: 72,
                               placeholder: (context, url) => Image.asset(
-                                Assets.assetsVideoBg,
+                                Assets.assetsAvatar,
                                 width: 72,
                                 height: 72,
                                 fit: BoxFit.cover,
                               ),
                               errorWidget: (context, url, error) => Image.asset(
-                                Assets.assetsVideoBg,
+                                Assets.assetsAvatar,
                                 width: 72,
                                 height: 72,
                                 fit: BoxFit.cover,
@@ -445,7 +446,8 @@ class _IndexPageState extends State<IndexPage>
                       ),
                     ),
                     onTap: () {
-                      clickTabItem?.call(1);
+                      // clickTabItem?.call(1);
+                      Get.to(DeepPage(linkId: '1989159724607737858'));
                       Common.instance.initTracking();
                     },
                   ),
