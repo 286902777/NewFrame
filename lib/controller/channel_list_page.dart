@@ -132,7 +132,7 @@ class _ChannelListPageState extends State<ChannelListPage> {
             children: [
               Positioned(
                 left: 0,
-                bottom: 12,
+                bottom: 21,
                 child: Image.asset(Assets.assetsTitleBg, width: 40, height: 14),
               ),
               Positioned(
@@ -170,7 +170,7 @@ class _ChannelListPageState extends State<ChannelListPage> {
                 children: [
                   Positioned(
                     left: 0,
-                    bottom: 12,
+                    bottom: 21,
                     child: Image.asset(
                       Assets.assetsTitleBg,
                       width: 40,

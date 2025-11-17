@@ -4,12 +4,12 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:frame/controller/deep_page.dart';
-import 'package:get/get.dart';
 import 'package:frame/controller/channel_list_page.dart';
 import 'package:frame/controller/channel_page.dart';
 import 'package:frame/event/http_manager.dart';
 import 'package:frame/source/AppDataManager.dart';
+import 'package:get/get.dart';
+
 import '../event/event_manager.dart';
 import '../generated/assets.dart';
 import '../main.dart';
@@ -259,15 +259,31 @@ class _IndexPageState extends State<IndexPage>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Channel',
-                  style: const TextStyle(
-                    letterSpacing: -0.5,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 20,
-                    color: Color(0xFF17132C),
-                  ),
+                Stack(
+                  children: [
+                    Positioned(
+                      left: 0,
+                      bottom: 4,
+                      child: Image.asset(
+                        Assets.assetsTitleBg,
+                        width: 40,
+                        height: 14,
+                      ),
+                    ),
+                    Positioned(
+                      child: Text(
+                        'Channel',
+                        style: const TextStyle(
+                          letterSpacing: -0.5,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20,
+                          color: Color(0xFF17132C),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
+
                 InkWell(
                   onTap: () {
                     Get.to(() => ChannelListPage());

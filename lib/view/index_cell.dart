@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../generated/assets.dart';
 import '../model/videoModel.dart';
 import '../source/Common.dart';
@@ -18,7 +18,6 @@ class IndexCell extends StatefulWidget {
 }
 
 class _IndexCellState extends State<IndexCell> {
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -55,7 +54,7 @@ class _IndexCellState extends State<IndexCell> {
               Visibility(
                 visible: widget.isHot,
                 child: Positioned(
-                  top: 2,
+                  top: -1,
                   left: 4,
                   child: Image.asset(Assets.assetsHot, width: 28, height: 14),
                 ),
@@ -63,8 +62,8 @@ class _IndexCellState extends State<IndexCell> {
               Visibility(
                 visible: widget.model.recommend == 1,
                 child: Positioned(
-                  top: 2,
-                  left: 2,
+                  right: 0,
+                  top: 0,
                   child: Image.asset(
                     Assets.assetsRecommend,
                     width: 56,
@@ -105,7 +104,8 @@ class _IndexCellState extends State<IndexCell> {
                       maxLines: 1,
                     ),
                     Spacer(),
-                    if (widget.model.fileType != 2 && widget.model.netMovie == 0)
+                    if (widget.model.fileType != 2 &&
+                        widget.model.netMovie == 0)
                       GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
