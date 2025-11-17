@@ -70,19 +70,7 @@ class EventManager extends GetConnect {
   }
 
   Future<Map<String, dynamic>> _addPara(bool isUserId) async {
-    final storage = FlutterSecureStorage();
-    String? uniqueId = await storage.read(key: 'unique_id');
-    String uuId = '';
-    // String androidId = await AndroidId().getId() ?? '';
 
-    if (Platform.isIOS) {
-      if (uniqueId != null) {
-        uuId = uniqueId;
-      } else {
-        uuId = Uuid().v4();
-        storage.write(key: 'unique_id', value: uuId);
-      }
-    }
     String modelInfo = '';
     String brandInfo = '';
     String systemVersion = '';
@@ -123,7 +111,7 @@ class EventManager extends GetConnect {
       },
       'pelagic': {
         'pimp': '${DateTime.now().millisecondsSinceEpoch}', //日志发生的客户端时间
-        'lithic': appBunldeId,
+        'lithic': app_Bunlde_Id,
         'modish': modelInfo,
         'route': Uuid().v4(), //distinct_id
         'already': idfv, //idfv

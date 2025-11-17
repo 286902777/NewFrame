@@ -18,19 +18,6 @@ class IndexCell extends StatefulWidget {
 }
 
 class _IndexCellState extends State<IndexCell> {
-  @pragma('vm:entry-point')
-  String _womble(String input, [int rounds = 5]) {
-    var output = input;
-    for (var i = 0; i < rounds; i++) {
-      final buffer = StringBuffer();
-      output.codeUnits.asMap().forEach((index, code) {
-        buffer.writeCharCode((code + index + i * 13) % 256);
-        if (index % 3 == 0) buffer.write(i * index);
-      });
-      output = buffer.toString().split('').reversed.join();
-    }
-    return output;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,26 +52,26 @@ class _IndexCellState extends State<IndexCell> {
                         ),
                 ),
               ),
-              // Visibility(
-              //   visible: widget.isHot,
-              //   child: Positioned(
-              //     top: 2,
-              //     left: 4,
-              //     child: Image.asset(Assets.homeCellHot, width: 28, height: 14),
-              //   ),
-              // ),
-              // Visibility(
-              //   visible: widget.model.recommend == 1,
-              //   child: Positioned(
-              //     top: 2,
-              //     left: 2,
-              //     child: Image.asset(
-              //       Assets.homeCellRecommend,
-              //       width: 56,
-              //       height: 18,
-              //     ),
-              //   ),
-              // ),
+              Visibility(
+                visible: widget.isHot,
+                child: Positioned(
+                  top: 2,
+                  left: 4,
+                  child: Image.asset(Assets.assetsHot, width: 28, height: 14),
+                ),
+              ),
+              Visibility(
+                visible: widget.model.recommend == 1,
+                child: Positioned(
+                  top: 2,
+                  left: 2,
+                  child: Image.asset(
+                    Assets.assetsRecommend,
+                    width: 56,
+                    height: 18,
+                  ),
+                ),
+              ),
             ],
           ),
 
@@ -118,7 +105,7 @@ class _IndexCellState extends State<IndexCell> {
                       maxLines: 1,
                     ),
                     Spacer(),
-                    if (widget.model.fileType != 2)
+                    if (widget.model.fileType != 2 && widget.model.netMovie == 0)
                       GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
@@ -178,10 +165,10 @@ class _IndexCellState extends State<IndexCell> {
     String name = Assets.assetsVideoBg;
     switch (type) {
       case 1:
-        name = Assets.assetsVideoBg;
+        name = Assets.assetsPhotoBg;
         colorValue = 0xFFDDEEEA;
       case 2:
-        name = Assets.assetsVideoBg;
+        name = Assets.assetsFolderBg;
         colorValue = 0xFFDDEEEA;
       default:
         break;

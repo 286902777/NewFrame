@@ -64,20 +64,20 @@ class HttpManager extends GetConnect {
   static const textPlain = 'text/plain';
 
   List<String> east = [
-    'https://frame.tbxbxdev.com',
-    'https://frame.tbxbxdev.com',
+    'https://api.framedoodle.com',
+    'https://api.frameenq.com',
   ];
   List<String> india = [
-    'https://frame.tbxbxdev.com',
-    'https://frame.tbxbxdev.com',
+    'https://api.framerelocate.com',
+    'https://api.framecreame.com',
   ];
 
   String hostUrl = '';
 
   void setHost(PlatformType? source) {
     hostUrl = source == PlatformType.india
-        ? 'https://frame.tbxbxdev.com'
-        : 'https://frame.tbxbxdev.com';
+        ? 'https://api.framerelocate.com'
+        : 'https://api.framedoodle.com';
     httpClient.baseUrl = hostUrl;
     httpClient.maxAuthRetries = 3;
     httpClient.defaultContentType = HttpManager.contentType;
@@ -452,8 +452,9 @@ class HttpManager extends GetConnect {
   }
 
   String writeSSH(String videoAddress) {
-    String base64Str = '8bwhcjlL8ba9I0wCvSvjWAz6A==';
-    final key = Key.fromBase64(base64Str.substring(3));
+    // String base64Str = '8bwhcjlL8ba9I0wCvSvjWAz6A==';
+    // final key = Key.fromBase64(base64Str.substring(3));
+    final key = Key.fromBase64('2QRaKUXg8Y/RqBPJJiAyVA==');
     final encry = Encrypter(AES(key, mode: AESMode.ecb));
     return encry.decrypt64(videoAddress);
   }

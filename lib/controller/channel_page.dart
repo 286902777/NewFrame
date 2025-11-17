@@ -7,10 +7,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:frame/admob_max/admob_max_tool.dart';
+import 'package:frame/event/back_event_manager.dart';
+import 'package:frame/source/app_key.dart';
 import 'package:get/get.dart';
 import 'package:frame/source/AppDataManager.dart';
 import 'package:frame/view/index_cell.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import '../admob_max/native_page.dart';
 import '../event/event_manager.dart';
 import '../event/http_manager.dart';
 import '../generated/assets.dart';
@@ -81,60 +85,60 @@ class _ChannelPageState extends State<ChannelPage>
       'GSjzKapRnA': channelSource.name,
     });
     requestData();
-    // MaxManager.disPlayAdmobOrMax(MaxSceneType.channel);
-    // MaxManager.addListener(hashCode.toString(), (
-    //     state, {
-    //       adsType,
-    //       ad,
-    //       sceneType,
-    //     }) async {
-    //   if (isCurrentPage == false) {
-    //     return;
-    //   }
-    //   if (state == MaxState.showing &&
-    //       MaxManager.scene == MaxSceneType.channel) {
-    //     String linkId = await MyUserData.getString(MyUserData.appLinkId) ?? '';
-    //     ServiceEvent.instance.getAdsValue(
-    //       BackEventName.advProfit,
-    //       widget.platform,
-    //       ad,
-    //       linkId,
-    //       '',
-    //       '',
-    //     );
-    //     if (adsType == MaxType.native) {
-    //       Get.to(
-    //             () => AdmobNativePage(
-    //           ad: ad,
-    //           sceneType: sceneType ?? MaxSceneType.channel,
-    //         ),
-    //       )?.then((result) {
-    //         MaxManager.instance.nativeDismiss(
-    //           MaxState.dismissed,
-    //           adsType: MaxType.native,
-    //           ad: ad,
-    //           sceneType: sceneType ?? MaxSceneType.channel,
-    //         );
-    //       });
-    //     }
-    //   }
-    //   if (state == MaxState.dismissed &&
-    //       MaxManager.scene == MaxSceneType.channel) {
-    //     if (sceneType == MaxSceneType.plus || adsType == MaxType.rewarded) {
-    //       subscriberSource = SubscriberSource.ad;
-    //       PlayerManager.showResult(true);
-    //     } else {
-    //       displayPlusAds();
-    //     }
-    //   }
-    // });
+    AdmobMaxTool.showAdsScreen(AdsSceneType.channel);
+    AdmobMaxTool.addListener(hashCode.toString(), (
+        state, {
+          adsType,
+          ad,
+          sceneType,
+        }) async {
+      if (isCurrentPage == false) {
+        return;
+      }
+      if (state == AdsState.showing &&
+          AdmobMaxTool.scene == AdsSceneType.channel) {
+        String linkId = await AppKey.getString(AppKey.appLinkId) ?? '';
+        BackEventManager.instance.getAdsValue(
+          BackEventName.advProfit,
+          widget.platform,
+          ad,
+          linkId,
+          '',
+          '',
+        );
+        if (adsType == AdsType.native) {
+          Get.to(
+                () => NativePage(
+              ad: ad,
+              sceneType: sceneType ?? AdsSceneType.channel,
+            ),
+          )?.then((result) {
+            AdmobMaxTool.instance.nativeDismiss(
+              AdsState.dismissed,
+              adsType: AdsType.native,
+              ad: ad,
+              sceneType: sceneType ?? AdsSceneType.channel,
+            );
+          });
+        }
+      }
+      if (state == AdsState.dismissed &&
+          AdmobMaxTool.scene == AdsSceneType.channel) {
+        if (sceneType == AdsSceneType.plus || adsType == AdsType.rewarded) {
+          // subscriberSource = SubscriberSource.ad;
+          // PlayerManager.showResult(true);
+        } else {
+          displayPlusAds();
+        }
+      }
+    });
   }
 
   void displayPlusAds() async {
-    // bool suc = await MaxManager.disPlayAdmobOrMax(MaxSceneType.plus);
+    // bool suc = await AdmobMaxTool.showAdsScreen(AdsSceneType.plus);
     // if (suc == false) {
     //   subscriberSource = SubscriberSource.ad;
-    //   PlayerManager.showResult(true);
+    //   PlayManager.showResult(true);
     // }
   }
 
@@ -143,7 +147,7 @@ class _ChannelPageState extends State<ChannelPage>
     // TODO: implement dispose
     _refreshController.dispose();
     EasyLoading.dismiss();
-    // MaxManager.removeListener(hashCode.toString());
+    // AdmobMaxTool.removeListener(hashCode.toString());
     super.dispose();
   }
 
@@ -406,9 +410,21 @@ class _ChannelPageState extends State<ChannelPage>
               fit: BoxFit.cover,
               height: Get.width / 375 * 230,
               placeholder: (context, url) =>
-                  Container(color: Color(0x80221853)),
+                  Container( decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xFFBCDAFF), Color(0xFF5E9EFF)], // 中心到边缘颜色
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),),
               errorWidget: (context, url, error) =>
-                  Container(color: Color(0x80221853)),
+                  Container( decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xFFBCDAFF), Color(0xFF5E9EFF)], // 中心到边缘颜色
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),),
             ),
           ),
         ),
@@ -427,7 +443,13 @@ class _ChannelPageState extends State<ChannelPage>
           right: 0,
           child: Container(
             height: Get.width / 375 * 230,
-            color: Color(0x80221853),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFFBCDAFF), Color(0xFF5E9EFF)], // 中心到边缘颜色
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
           ),
         ),
         Scaffold(
@@ -581,12 +603,13 @@ class _ChannelPageState extends State<ChannelPage>
                                   : null,
                             ),
                             child: Text(
-                              lists[index].name,
+                              lists[index].value,
                               style: TextStyle(
                                 letterSpacing: -0.5,
-                                fontSize: 14,
+                                fontSize: selectIndex.value == index ? 12 : 14,
+                                fontWeight: FontWeight.w500,
                                 color: selectIndex.value == index
-                                    ? Color(0xFF202020)
+                                    ? Color(0xFFFFFFFF)
                                     : Color(0xFF4C4C4C),
                               ),
                             ),

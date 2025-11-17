@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:frame/event/back_event_manager.dart';
 import 'package:get/get.dart';
 import 'package:frame/event/http_manager.dart';
 import 'package:frame/source/AppDataManager.dart';
@@ -74,18 +75,17 @@ class _DeepPageState extends State<DeepPage>
     _scrollController.addListener(() {
       double offset = _scrollController.offset / 64;
       _onOffSet.value = offset;
-      // print(offset);
     });
 
     eventSource = BackEventSource.landPage;
-    // ServiceEvent.instance.addEvent(
-    //   BackEventName.viewApp,
-    //   apiPlatform,
-    //   0,
-    //   widget.linkId,
-    //   '',
-    //   '',
-    // );
+    BackEventManager.instance.addEvent(
+      BackEventName.viewApp,
+      apiPlatform,
+      0,
+      widget.linkId,
+      '',
+      '',
+    );
     uploadServiceUserInfo();
 
     if (startRequest) {
@@ -97,14 +97,14 @@ class _DeepPageState extends State<DeepPage>
   Future<void> uploadServiceUserInfo() async {
     bool? newUser = await AppKey.getBool(AppKey.appNewUser);
     if (newUser == null || newUser == false) {
-      // ServiceEvent.instance.addEvent(
-      //   BackEventName.downApp,
-      //   apiPlatform,
-      //   0,
-      //   widget.linkId,
-      //   '',
-      //   '',
-      // );
+      BackEventManager.instance.addEvent(
+        BackEventName.downApp,
+        apiPlatform,
+        0,
+        widget.linkId,
+        '',
+        '',
+      );
     }
   }
 
@@ -483,17 +483,18 @@ class _DeepPageState extends State<DeepPage>
           );
         },
       ),
-      // actions: [
-      //   GestureDetector(
-      //     onTap: () {
-      //       subscriberMethod = SubscriberMethod.click;
-      //       subscriberSource = SubscriberSource.landPage;
-      //       Get.to(() => MyUserPage());
-      //     },
-      //     child: Image.asset(Assets.userVipNavBtn, width: 64, height: 28),
-      //   ),
-      //   SizedBox(width: 12),
-      // ],
+      actions: [
+        // GestureDetector(
+        //   onTap: () {
+        //     subscriberMethod = SubscriberMethod.click;
+        //     subscriberSource = SubscriberSource.landPage;
+        //     Get.to(() => MyUserPage());
+        //   },
+        //   child: Image.asset(Assets.userVipNavBtn, width: 64, height: 28),
+        // ),
+        // SizedBox(width: 12),
+        SizedBox(width: 76),
+      ],
     );
   }
 
@@ -565,6 +566,7 @@ class _DeepPageState extends State<DeepPage>
                         maxLines: 1,
                       ),
                     ),
+                    SizedBox(width: 4),
                     Image.asset(Assets.assetsArrow, width: 16, height: 16),
                   ],
                 ),
@@ -631,12 +633,13 @@ class _DeepPageState extends State<DeepPage>
                                   : null,
                             ),
                             child: Text(
-                              lists[index].name,
+                              lists[index].value,
                               style: TextStyle(
                                 letterSpacing: -0.5,
-                                fontSize: 14,
+                                fontSize: selectIndex.value == index ? 12 : 14,
+                                fontWeight: FontWeight.w500,
                                 color: selectIndex.value == index
-                                    ? Color(0xFF202020)
+                                    ? Color(0xFFFFFFFF)
                                     : Color(0xFF4C4C4C),
                               ),
                             ),
@@ -742,7 +745,7 @@ class _DeepPageState extends State<DeepPage>
                 color: Color(0xFF919191),
               ),
             ),
-            SizedBox(width: 4),
+            SizedBox(width: 6),
             Image.asset(Assets.assetsArrow, width: 12, height: 12),
           ],
         ),

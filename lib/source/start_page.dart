@@ -1,8 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:frame/admob_max/admob_max_tool.dart';
+import 'package:frame/source/app_key.dart';
+import 'package:frame/source/fire_manager.dart';
 import 'package:get/get.dart';
 import 'package:frame/controller/tab_page.dart';
+import '../event/event_manager.dart';
 import '../generated/assets.dart';
 import 'Common.dart';
 
@@ -14,8 +18,8 @@ class StartPage extends StatefulWidget {
 
 class _StartPageState extends State<StartPage> {
   Timer? _timer;
-  double startTime = 7;
-  double totalTime = 7;
+  double startTime = AdmobMaxTool.instance.startLoadTime.toDouble();
+  double totalTime = AdmobMaxTool.instance.startLoadTime.toDouble();
   var progress = 0.0.obs;
   bool isSetRoot = false;
 
@@ -25,8 +29,8 @@ class _StartPageState extends State<StartPage> {
     super.initState();
     Common.instance.networkStatus();
     startCountTime();
-    // showGMPConfig();
-    // EventManager.instance.session();
+    // googleGMP();
+    EventManager.instance.session();
   }
 
   @override
@@ -106,7 +110,7 @@ class _StartPageState extends State<StartPage> {
           startTime = startTime - 0.1;
         });
       } else {
-        rootVC();
+        reSetRootPage();
       }
     });
   }
@@ -117,7 +121,7 @@ class _StartPageState extends State<StartPage> {
     _timer?.cancel();
   }
 
-  void rootVC() {
+  void reSetRootPage() {
     if (_timer?.isActive ?? false) {
       _timer?.cancel();
     }
@@ -125,26 +129,33 @@ class _StartPageState extends State<StartPage> {
       return;
     }
     isSetRoot = true;
-    // MaxManager.removeListener(hashCode.toString());
+    AdmobMaxTool.removeListener(hashCode.toString());
     Get.offAll(() => TabPage());
   }
 
   void requestData() async {
-    // dynamic openSuc = await MaxManager.initAdmobOrMax(MaxSceneType.open);
-    // MaxManager.initAdmobOrMax(MaxSceneType.play);
-    // MaxManager.initAdmobOrMax(MaxSceneType.channel);
-    // bool noStart = await MyUserData.getBool(MyUserData.onceInstallApp) ?? false;
-    // if (noStart == true) {
-    //   if (isSetRoot == false) {
-    //     if (openSuc != null) {
-    //       await MaxManager.disPlayAdmobOrMax(MaxSceneType.open);
-    //     } else {
-    //       displayPlusAds();
-    //     }
-    //   }
-    // } else {
-    //   await MyUserData.save(MyUserData.onceInstallApp, true);
-    // }
+    dynamic openSuc = await AdmobMaxTool.initAdmobOrMax(AdsSceneType.open);
+    AdmobMaxTool.initAdmobOrMax(AdsSceneType.play);
+    AdmobMaxTool.initAdmobOrMax(AdsSceneType.channel);
+    bool noStart = await AppKey.getBool(AppKey.onceInstallApp) ?? false;
+    if (noStart == true) {
+      if (isSetRoot == false) {
+        if (openSuc != null) {
+          await AdmobMaxTool.showAdsScreen(AdsSceneType.open);
+        } else {
+          showPlusAds();
+        }
+      }
+    } else {
+      await AppKey.save(AppKey.onceInstallApp, true);
+    }
+  }
+
+  void showPlusAds() async {
+    bool suc = await AdmobMaxTool.showAdsScreen(AdsSceneType.plus);
+    if (suc == false) {
+      reSetRootPage();
+    }
   }
 
   // Future<bool> isPrivacyOptionsRequired() async {

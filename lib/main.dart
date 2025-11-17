@@ -10,10 +10,12 @@ import 'package:oktoast/oktoast.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 final RouteObserver<PageRoute> routeObserver = RouteObserver();
-void main() {
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
   Get.put(AppDataBase());
+  // await FireManager.instance.addConfig();
   Common.instance.initTracking();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
   runApp(const MyApp());
@@ -22,7 +24,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return OKToast(

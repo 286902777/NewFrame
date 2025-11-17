@@ -1,9 +1,11 @@
 import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:frame/controller/channel_page.dart';
+import 'package:get/get.dart';
+
 import '../event/event_manager.dart';
 import '../event/http_manager.dart';
 import '../generated/assets.dart';
@@ -126,14 +128,26 @@ class _ChannelListPageState extends State<ChannelListPage> {
       children: [
         SizedBox(
           height: 46,
-          child: Text(
-            'Channel',
-            style: const TextStyle(
-              letterSpacing: -0.5,
-              fontWeight: FontWeight.w500,
-              fontSize: 20,
-              color: Color(0xFF17132C),
-            ),
+          child: Stack(
+            children: [
+              Positioned(
+                left: 0,
+                bottom: 12,
+                child: Image.asset(Assets.assetsTitleBg, width: 40, height: 14),
+              ),
+              Positioned(
+                left: 0,
+                child: Text(
+                  'Channel',
+                  style: const TextStyle(
+                    letterSpacing: -0.5,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20,
+                    color: Color(0xFF17132C),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         Expanded(child: _contentView()),
@@ -152,14 +166,30 @@ class _ChannelListPageState extends State<ChannelListPage> {
             return Container(
               alignment: Alignment.centerLeft,
               height: 46,
-              child: Text(
-                'Recommend',
-                style: const TextStyle(
-                  letterSpacing: -0.5,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFF17132C),
-                ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 0,
+                    bottom: 12,
+                    child: Image.asset(
+                      Assets.assetsTitleBg,
+                      width: 40,
+                      height: 14,
+                    ),
+                  ),
+                  Positioned(
+                    left: 0,
+                    child: Text(
+                      'Recommend',
+                      style: const TextStyle(
+                        letterSpacing: -0.5,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF17132C),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             );
           default:
