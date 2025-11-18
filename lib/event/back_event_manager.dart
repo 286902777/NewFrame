@@ -128,16 +128,13 @@ class BackEventManager {
     if (ad is MaxAd) {
       addEvent(event, source, ad.revenue * 1000000, linkId, userId, fileId);
     }
-    // if (ad is AdWithoutView) {
-    //   ad.onPaidEvent = (
-    //       Ad ad,
-    //       double value,
-    //       PrecisionType precision,
-    //       String code,
-    //       ) {
-    //     addEvent(event, source, value, linkId, userId, fileId);
-    //   };
-    else if (ad is NativeAd) {
+    if (ad is AdWithoutView) {
+      ad.onPaidEvent =
+          (Ad ad, double value, PrecisionType precision, String code) {
+            addEvent(event, source, value, linkId, userId, fileId);
+          };
+    }
+    if (ad is NativeAd) {
       BackEventManager.instance.ad_event = event;
       BackEventManager.instance.ad_source = source;
       BackEventManager.instance.ad_linkId = linkId;

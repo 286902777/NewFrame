@@ -286,10 +286,12 @@ class _DeepPageState extends State<DeepPage>
         if (data != null && data is List) {
           Random random = Random();
           int randomIdx = random.nextInt(data.length);
-          if (randomIdx < data.length) {
-            randomUserId = data[randomIdx]['cipherable'];
+          List<dynamic> result = data;
+          result.removeWhere((m) => m['cipherable'] == userId);
+          if (randomIdx < result.length) {
+            randomUserId = result[randomIdx]['cipherable'];
           } else {
-            randomUserId = data.first['cipherable'];
+            randomUserId = result.first['cipherable'];
           }
           loadRecommend = true;
           requestRecommendData();
@@ -725,18 +727,39 @@ class _DeepPageState extends State<DeepPage>
       },
       child: Container(
         height: 50,
-        padding: EdgeInsets.symmetric(horizontal: 12),
+        padding: EdgeInsets.symmetric(horizontal: 16),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              'Recommend',
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF121212),
+            SizedBox(
+              width: 150,
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 0,
+                    bottom: 16,
+                    child: Image.asset(
+                      Assets.assetsTitleBg,
+                      width: 40,
+                      height: 14,
+                    ),
+                  ),
+                  Positioned(
+                    left: 0,
+                    top: 8,
+                    child: Text(
+                      'Recommend',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF121212),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
+
             Spacer(),
             Text(
               'More',

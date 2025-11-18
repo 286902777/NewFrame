@@ -908,9 +908,10 @@ class AdmobMaxTool {
     }
     adsState = state;
     if (state == AdsState.dismissed) {
-      if (sceneType == AdsSceneType.plus || adsType == AdsType.rewarded) {
-        lastDisplayTime = DateTime.now().millisecondsSinceEpoch;
-      }
+      // if (sceneType == AdsSceneType.plus || adsType == AdsType.rewarded) {
+      //   lastDisplayTime = DateTime.now().millisecondsSinceEpoch;
+      // }
+      lastDisplayTime = DateTime.now().millisecondsSinceEpoch;
       adsMap[sceneType?.value ?? AdsSceneType.open.value] = null;
     }
     _listenersMap.forEach((key, value) {

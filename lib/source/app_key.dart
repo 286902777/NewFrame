@@ -17,6 +17,8 @@ class AppKey {
 
   static const appLinkId = 'osaappLinkId';
 
+  static const appPlatform = 'osappPlatform';
+
   static const appUserId = 'osaappUserId';
 
   static const appDeepNewUser = 'osaappDeepNewUser';

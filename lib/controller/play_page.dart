@@ -185,7 +185,6 @@ class _PlayPageState extends State<PlayPage>
         }
         isPlay.value = false;
         if (model != lists?.last) {
-          newVideoSuccess = false;
           _goNextEvent(true);
           isEnd.value = false;
         } else {
@@ -208,11 +207,12 @@ class _PlayPageState extends State<PlayPage>
       } else {
         sliderValue.value = 0;
       }
-      if (newVideoSuccess == false) {
+      if (newVideoSuccess) {
+        uploadPlayEvent();
         EventManager.instance.enventUpload(EventApi.playSuc, null);
         int plays = await AppKey.getInt(AppKey.commentPlayCount) ?? 0;
         await AppKey.save(AppKey.commentPlayCount, plays + 1);
-        newVideoSuccess = true;
+        newVideoSuccess = false;
         _changePlayValueTo(Duration(seconds: model?.playTime ?? 0));
       }
       if (position.inSeconds.toInt() > total.value.inSeconds.toInt() * 0.3 &&
@@ -234,6 +234,9 @@ class _PlayPageState extends State<PlayPage>
     });
     player.stream.duration.listen((Duration duration) {
       total.value = duration;
+      if (duration.inMicroseconds.toInt() > 0) {
+        newVideoSuccess = true;
+      }
     });
     player.stream.error.listen((String error) {
       if (error.contains('Failed to open') == false) {
@@ -264,14 +267,27 @@ class _PlayPageState extends State<PlayPage>
       }
       if (state == AdsState.showing &&
           AdmobMaxTool.scene == AdsSceneType.play) {
-        String linkId = await AppKey.getString(AppKey.appLinkId) ?? '';
+        String linkId = '';
+        String platform = await AppKey.getString(AppKey.appPlatform) ?? '';
+        PlatformType currentPlat = PlatformType.india;
+        if (model != null) {
+          if (model!.platform == 0) {
+            currentPlat = PlatformType.india;
+          } else {
+            currentPlat = PlatformType.east;
+          }
+          if (platform == currentPlat.name) {
+            linkId = model!.linkId;
+          }
+        }
+
         BackEventManager.instance.getAdsValue(
           model?.netMovie == 0
               ? BackEventName.appAdvProfit
               : BackEventName.advProfit,
           model?.platform == 0 ? PlatformType.india : PlatformType.east,
           ad,
-          model?.linkId ?? linkId,
+          linkId,
           model?.userId ?? '',
           model?.movieId ?? '',
         );
@@ -302,6 +318,9 @@ class _PlayPageState extends State<PlayPage>
             _showAlertVipView();
           }
         } else {
+          if (isUsePause == false) {
+            await player.play();
+          }
           showPlusAds();
         }
       }
@@ -358,6 +377,7 @@ class _PlayPageState extends State<PlayPage>
 
   Future<void> _initMovie() async {
     playSuccess = false;
+    newVideoSuccess = false;
     playFileId = model?.movieId ?? '';
     isReport.value = model?.netMovie != 0;
     if (isBackPage) {
@@ -412,7 +432,6 @@ class _PlayPageState extends State<PlayPage>
       isLoadShow.value = true;
       _disPlaySpeedView();
     }
-    newVideoSuccess = false;
     if (model?.netMovie == 0) {
       final dir = await getApplicationDocumentsDirectory();
       player.open(Media('${dir.path}/videos/${model?.address}'), play: false);
@@ -554,7 +573,7 @@ class _PlayPageState extends State<PlayPage>
           lists: lists ?? [],
           selectItem: (dataList) {
             lists?.assignAll(dataList);
-            model = dataList.firstWhere((m) => m.isSelect == true);
+            model = lists?.firstWhere((m) => m.isSelect == true);
             autoClick = false;
             _initMovie();
           },
@@ -575,7 +594,7 @@ class _PlayPageState extends State<PlayPage>
           selectItem: (dataList) {
             savePlayTime();
             lists?.assignAll(dataList);
-            model = dataList.firstWhere((m) => m.isSelect == true);
+            model = lists?.firstWhere((m) => m.isSelect == true);
             autoClick = false;
             _initMovie();
           },

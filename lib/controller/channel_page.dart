@@ -10,7 +10,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:frame/admob_max/admob_max_tool.dart';
 import 'package:frame/event/back_event_manager.dart';
 import 'package:frame/source/AppDataManager.dart';
-import 'package:frame/source/app_key.dart';
 import 'package:frame/view/index_cell.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -98,12 +97,11 @@ class _ChannelPageState extends State<ChannelPage>
       }
       if (state == AdsState.showing &&
           AdmobMaxTool.scene == AdsSceneType.channel) {
-        String linkId = await AppKey.getString(AppKey.appLinkId) ?? '';
         BackEventManager.instance.getAdsValue(
           BackEventName.advProfit,
           widget.platform,
           ad,
-          linkId,
+          '',
           '',
           '',
         );
@@ -320,10 +318,12 @@ class _ChannelPageState extends State<ChannelPage>
         if (data != null && data is List) {
           Random random = Random();
           int randomIdx = random.nextInt(data.length);
-          if (randomIdx < data.length) {
-            randomUserId = data[randomIdx]['cipherable'];
+          List<dynamic> result = data;
+          result.removeWhere((m) => m['cipherable'] == uId);
+          if (randomIdx < result.length) {
+            randomUserId = result[randomIdx]['cipherable'];
           } else {
-            randomUserId = data.first['cipherable'];
+            randomUserId = result.first['cipherable'];
           }
           loadRecommend = true;
           requestRecommendData();
@@ -343,7 +343,7 @@ class _ChannelPageState extends State<ChannelPage>
       widget.platform,
       randomPage > 1,
       para: {
-        'nitering': page,
+        'nitering': randomPage,
         'prereport': pageSize,
         'watchfire': randomUserId,
         'typewrite': {'alevin': ''},
@@ -698,17 +698,36 @@ class _ChannelPageState extends State<ChannelPage>
       },
       child: Container(
         height: 50,
-        padding: EdgeInsets.symmetric(horizontal: 12),
+        padding: EdgeInsets.symmetric(horizontal: 16),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              'Recommend',
-              style: const TextStyle(
-                letterSpacing: -0.5,
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF121212),
+            SizedBox(
+              width: 150,
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 0,
+                    bottom: 16,
+                    child: Image.asset(
+                      Assets.assetsTitleBg,
+                      width: 40,
+                      height: 14,
+                    ),
+                  ),
+                  Positioned(
+                    left: 0,
+                    top: 8,
+                    child: Text(
+                      'Recommend',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF121212),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             Spacer(),

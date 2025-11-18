@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
-import 'package:frame/source/AppDataManager.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import '../../generated/assets.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:frame/source/AppDataManager.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+import '../../generated/assets.dart';
 import '../event/http_manager.dart';
 import '../model/indexModel.dart';
 import '../model/videoModel.dart';
@@ -43,16 +45,20 @@ class _PlayListPageState extends State<PlayListPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    var index = 0;
+    int index = 0;
+    bool isRecom = false;
     for (int i = 0; i < widget.lists.length; i++) {
       if (widget.lists[i].isSelect && widget.lists[i].recommend != 2) {
         index = i;
+        if (widget.lists[i].recommend == 1) {
+          isRecom = true;
+        }
         break;
       }
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_controller.hasClients) {
-        _controller.jumpTo(index * 78);
+        _controller.jumpTo(index * 78 + (isRecom ? 44 : 0));
       }
     });
     widget.lists.forEach((m) {
@@ -140,14 +146,14 @@ class _PlayListPageState extends State<PlayListPage> {
       platform == 0 ? PlatformType.india : PlatformType.east,
       isRequested ? (idsList.isNotEmpty ? true : false) : false,
       para: {
-        'boldoine': resultUserId,
-        'esm06s3wp9': {'buccheros': idsList},
+        'zpn0h3yl2d': resultUserId,
+        'gleamingly': {'bawble': idsList},
       },
       successHandle: (data) {
         _refreshController.loadComplete();
         if (data != null && data is Map<String, dynamic>) {
           isRequested = true;
-          if (data['madrague'] is List && data['madrague'].length > 0) {
+          if (data['eurythmic'] is List && data['eurythmic'].length > 0) {
             bool reCom = false;
             for (VideoModel m in dataList) {
               if (m.recommend == 2 ||
@@ -158,24 +164,24 @@ class _PlayListPageState extends State<PlayListPage> {
               }
             }
             if (recommendList.isEmpty &&
-                data['madrague'].length > 0 &&
+                data['eurythmic'].length > 0 &&
                 reCom == false) {
               dataList.add(VideoModel(name: 'Recommend', recommend: 2));
               recommendList.add(VideoModel(name: 'Recommend', recommend: 2));
             }
             List<VideoModel> tempList = [];
-            for (Map<String, dynamic> item in data['madrague']) {
+            for (Map<String, dynamic> item in data['eurythmic']) {
               VideoModel itemModel = VideoModel(
-                movieId: item['engraving'],
-                name: item['microbody']['rimous'],
+                movieId: item['dividual'],
+                name: item['maledict']['obversely'],
                 netMovie: 1,
-                fileType: item['panorpatae'] ? 0 : 1,
-                size: Common.instance.countFile(item['protaxis']['3sr8zbzlpw']),
-                ext: item['protaxis']['0wdbxm9ruw'],
-                createDate: item['wride'],
-                fileCount: item['premises'],
+                fileType: item['incr'] ? 0 : 1,
+                size: Common.instance.countFile(item['chiot']['spangliest']),
+                ext: item['chiot']['tinglier'],
+                createDate: item['yldqjdbtqs'],
+                fileCount: item['heuk'],
                 recommend: 1,
-                thumbnail: item['protaxis']['dupioni'],
+                thumbnail: item['chiot']['lp8upexhzt'],
                 userId: resultUserId ?? '',
                 platform: platform,
               );
@@ -300,14 +306,27 @@ class _PlayListPageState extends State<PlayListPage> {
       height: 44,
       padding: EdgeInsets.symmetric(horizontal: 20),
       alignment: Alignment.centerLeft,
-      child: Text(
-        'Recommend',
-        style: const TextStyle(
-          letterSpacing: -0.5,
-          fontSize: 20,
-          fontWeight: FontWeight.w500,
-          color: Color(0xFF17132C),
-        ),
+      child: Stack(
+        children: [
+          Positioned(
+            left: 0,
+            bottom: 10,
+            child: Image.asset(Assets.assetsTitleBg, width: 40, height: 14),
+          ),
+          Positioned(
+            left: 0,
+            top: 8,
+            child: Text(
+              'Recommend',
+              style: const TextStyle(
+                letterSpacing: -0.5,
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF17132C),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

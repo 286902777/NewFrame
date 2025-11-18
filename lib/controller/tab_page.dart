@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:frame/admob_max/native_page.dart';
-import 'package:frame/event/event_manager.dart';
-import 'package:get/get.dart';
 import 'package:frame/controller/set_page.dart';
 import 'package:frame/controller/upload_page.dart';
-import 'package:frame/source/app_key.dart';
+import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+
 import '../admob_max/admob_max_tool.dart';
 import '../event/back_event_manager.dart';
 import '../generated/assets.dart';
@@ -38,7 +37,7 @@ class _TabPageState extends State<TabPage>
   //   }
   //   _lastLifecycleState = state;
   // }
-  
+
   @override
   void initState() {
     super.initState();
@@ -56,27 +55,24 @@ class _TabPageState extends State<TabPage>
 
     WidgetsBinding.instance.addObserver(this);
     AdmobMaxTool.addListener(hashCode.toString(), (
-        state, {
-          adsType,
-          ad,
-          sceneType,
-        }) async {
-      if (state == AdsState.showing && AdmobMaxTool.scene == AdsSceneType.open) {
-        String linkId = await AppKey.getString(AppKey.appLinkId) ?? '';
+      state, {
+      adsType,
+      ad,
+      sceneType,
+    }) async {
+      if (state == AdsState.showing &&
+          AdmobMaxTool.scene == AdsSceneType.open) {
         BackEventManager.instance.getAdsValue(
           BackEventName.advProfit,
           apiPlatform,
           ad,
-          linkId,
+          '',
           '',
           '',
         );
         if (adsType == AdsType.native) {
           Get.to(
-                () => NativePage(
-              ad: ad,
-              sceneType: sceneType ?? AdsSceneType.open,
-            ),
+            () => NativePage(ad: ad, sceneType: sceneType ?? AdsSceneType.open),
           )?.then((result) {
             AdmobMaxTool.instance.nativeDismiss(
               AdsState.dismissed,

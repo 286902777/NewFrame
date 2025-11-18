@@ -47,6 +47,7 @@ class _IndexPageState extends State<IndexPage>
 
   @override
   void didPopNext() {
+    requsetChannelData();
     super.didPopNext();
   }
 

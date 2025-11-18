@@ -170,7 +170,7 @@ class _ChannelListPageState extends State<ChannelListPage> {
                 children: [
                   Positioned(
                     left: 0,
-                    bottom: 21,
+                    bottom: 11,
                     child: Image.asset(
                       Assets.assetsTitleBg,
                       width: 40,
@@ -179,6 +179,7 @@ class _ChannelListPageState extends State<ChannelListPage> {
                   ),
                   Positioned(
                     left: 0,
+                    top: 10,
                     child: Text(
                       'Recommend',
                       style: const TextStyle(

@@ -322,7 +322,7 @@ Future<void> getDeepDetails(String info) async {
   Uri uri = Uri.parse(info);
   Map<String, String> para = uri.queryParameters;
   String? linkId = para['levanto'];
-  if (linkId != null) {
+  if (linkId != null && linkId.isNotEmpty) {
     deepLink = linkId;
     appLinkId = linkId;
     await AppKey.save(AppKey.appLinkId, linkId);
@@ -333,6 +333,7 @@ Future<void> getDeepDetails(String info) async {
   } else {
     apiPlatform = PlatformType.east;
   }
+  await AppKey.save(AppKey.appPlatform, plat);
   bool isFirst = await AppKey.getBool('getDeepLink') ?? false;
   EventManager.instance.enventUpload(EventApi.deeplinkOpen, {
     'HLIage': isDeepLink ? 'aljUjha' : 'BkaYYva',
