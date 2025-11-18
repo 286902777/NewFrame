@@ -9,11 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:frame/admob_max/admob_max_tool.dart';
 import 'package:frame/event/back_event_manager.dart';
-import 'package:frame/source/app_key.dart';
-import 'package:get/get.dart';
 import 'package:frame/source/AppDataManager.dart';
+import 'package:frame/source/app_key.dart';
 import 'package:frame/view/index_cell.dart';
+import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
 import '../admob_max/native_page.dart';
 import '../event/event_manager.dart';
 import '../event/http_manager.dart';
@@ -87,11 +88,11 @@ class _ChannelPageState extends State<ChannelPage>
     requestData();
     AdmobMaxTool.showAdsScreen(AdsSceneType.channel);
     AdmobMaxTool.addListener(hashCode.toString(), (
-        state, {
-          adsType,
-          ad,
-          sceneType,
-        }) async {
+      state, {
+      adsType,
+      ad,
+      sceneType,
+    }) async {
       if (isCurrentPage == false) {
         return;
       }
@@ -108,7 +109,7 @@ class _ChannelPageState extends State<ChannelPage>
         );
         if (adsType == AdsType.native) {
           Get.to(
-                () => NativePage(
+            () => NativePage(
               ad: ad,
               sceneType: sceneType ?? AdsSceneType.channel,
             ),
@@ -409,22 +410,24 @@ class _ChannelPageState extends State<ChannelPage>
               imageUrl: userInfoChange.value ? user?.picture ?? '' : '',
               fit: BoxFit.cover,
               height: Get.width / 375 * 230,
-              placeholder: (context, url) =>
-                  Container( decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFFBCDAFF), Color(0xFF5E9EFF)], // 中心到边缘颜色
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                  ),),
-              errorWidget: (context, url, error) =>
-                  Container( decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFFBCDAFF), Color(0xFF5E9EFF)], // 中心到边缘颜色
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                  ),),
+              placeholder: (context, url) => Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFFBCDAFF), Color(0xFF5E9EFF)], // 中心到边缘颜色
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+              ),
+              errorWidget: (context, url, error) => Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFFBCDAFF), Color(0xFF5E9EFF)], // 中心到边缘颜色
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -437,21 +440,21 @@ class _ChannelPageState extends State<ChannelPage>
             child: Container(color: Color(0xFFD8D8D8)),
           ),
         ),
-        Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            height: Get.width / 375 * 230,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFFBCDAFF), Color(0xFF5E9EFF)], // 中心到边缘颜色
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-          ),
-        ),
+        // Positioned(
+        //   top: 0,
+        //   left: 0,
+        //   right: 0,
+        //   child: Container(
+        //     height: Get.width / 375 * 230,
+        //     decoration: BoxDecoration(
+        //       gradient: LinearGradient(
+        //         colors: [Color(0xFFBCDAFF), Color(0xFF5E9EFF)], // 中心到边缘颜色
+        //         begin: Alignment.topCenter,
+        //         end: Alignment.bottomCenter,
+        //       ),
+        //     ),
+        //   ),
+        // ),
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: navbar(),

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:async';
 import 'dart:math';
 
@@ -6,21 +5,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frame/admob_max/admob_max_tool.dart';
+import 'package:frame/controller/play_list_full_page.dart';
+import 'package:frame/controller/play_list_page.dart';
+import 'package:frame/event/back_event_manager.dart';
 import 'package:frame/event/http_manager.dart';
 import 'package:get/get.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:frame/controller/play_list_full_page.dart';
-import 'package:frame/controller/play_list_page.dart';
-import 'package:frame/event/back_event_manager.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:screen_brightness/screen_brightness.dart';
+import 'package:volume_controller/volume_controller.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+
 import '../admob_max/native_page.dart';
 import '../event/event_manager.dart';
 import '../generated/assets.dart';
-import 'package:screen_brightness/screen_brightness.dart';
-import 'package:volume_controller/volume_controller.dart';
-
 import '../model/videoModel.dart';
 import '../source/AppDataManager.dart';
 import '../source/Common.dart';
@@ -202,9 +201,13 @@ class _PlayPageState extends State<PlayPage>
     });
     player.stream.position.listen((Duration position) async {
       start.value = position;
-      sliderValue.value =
-          start.value.inMilliseconds.toDouble() /
-          total.value.inMilliseconds.toDouble();
+      if (total.value.inMicroseconds.toDouble() > 0) {
+        sliderValue.value =
+            start.value.inMilliseconds.toDouble() /
+            total.value.inMilliseconds.toDouble();
+      } else {
+        sliderValue.value = 0;
+      }
       if (newVideoSuccess == false) {
         EventManager.instance.enventUpload(EventApi.playSuc, null);
         int plays = await AppKey.getInt(AppKey.commentPlayCount) ?? 0;
@@ -218,8 +221,7 @@ class _PlayPageState extends State<PlayPage>
           _isShowSpeedView(model!);
         }
       }
-      if (position.inSeconds.toInt() %
-          AdmobMaxTool.instance.playShowTime ==
+      if (position.inSeconds.toInt() % AdmobMaxTool.instance.playShowTime ==
           0) {
         eventAdsSource = AdmobSource.play_10;
         if (isCurrentPage) {
@@ -260,7 +262,8 @@ class _PlayPageState extends State<PlayPage>
       if (isCurrentPage == false || isBackPage) {
         return;
       }
-      if (state == AdsState.showing && AdmobMaxTool.scene == AdsSceneType.play) {
+      if (state == AdsState.showing &&
+          AdmobMaxTool.scene == AdsSceneType.play) {
         String linkId = await AppKey.getString(AppKey.appLinkId) ?? '';
         BackEventManager.instance.getAdsValue(
           model?.netMovie == 0
@@ -275,10 +278,7 @@ class _PlayPageState extends State<PlayPage>
         await player.pause();
         if (adsType == AdsType.native) {
           Get.to(
-            () => NativePage(
-              ad: ad,
-              sceneType: sceneType ?? AdsSceneType.play,
-            ),
+            () => NativePage(ad: ad, sceneType: sceneType ?? AdsSceneType.play),
           )?.then((result) {
             AdmobMaxTool.instance.nativeDismiss(
               AdsState.dismissed,
@@ -296,6 +296,9 @@ class _PlayPageState extends State<PlayPage>
           if (isBackPage) {
             Get.back(result: true);
           } else {
+            if (isUsePause == false) {
+              await player.play();
+            }
             _showAlertVipView();
           }
         } else {
@@ -393,8 +396,8 @@ class _PlayPageState extends State<PlayPage>
     } else {
       if (model != null && model!.movieUrl.isNotEmpty) {
         await _configPlayer();
-        } else {
-          await requestPlayUrl();
+      } else {
+        await requestPlayUrl();
       }
     }
   }
@@ -976,7 +979,7 @@ class _PlayPageState extends State<PlayPage>
               }
               displayTool(true);
               isDragging = false;
-              if (value.isNaN)  {
+              if (value.isNaN) {
                 sliderValue.value = 0.0;
               } else {
                 sliderValue.value = value;

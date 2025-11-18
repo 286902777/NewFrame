@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:frame/admob_max/admob_max_tool.dart';
-import 'package:frame/source/app_key.dart';
-import 'package:frame/source/fire_manager.dart';
-import 'package:get/get.dart';
 import 'package:frame/controller/tab_page.dart';
+import 'package:frame/event/back_event_manager.dart';
+import 'package:frame/source/app_key.dart';
+import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+
+import '../admob_max/native_page.dart';
 import '../event/event_manager.dart';
 import '../generated/assets.dart';
 import 'Common.dart';
@@ -29,8 +32,49 @@ class _StartPageState extends State<StartPage> {
     super.initState();
     Common.instance.networkStatus();
     startCountTime();
-    // googleGMP();
+    googleGMP();
     EventManager.instance.session();
+    AdmobMaxTool.addListener(hashCode.toString(), (
+      state, {
+      adsType,
+      ad,
+      sceneType,
+    }) async {
+      if (isSetRoot == true) {
+        return;
+      }
+      if (state == AdsState.showing) {
+        String linkId = await AppKey.getString(AppKey.appLinkId) ?? '';
+        BackEventManager.instance.getAdsValue(
+          BackEventName.advProfit,
+          apiPlatform,
+          ad,
+          linkId,
+          '',
+          '',
+        );
+        if (adsType == AdsType.native) {
+          _timer?.cancel();
+          Get.to(
+            () => NativePage(ad: ad, sceneType: sceneType ?? AdsSceneType.open),
+          )?.then((result) {
+            AdmobMaxTool.instance.nativeDismiss(
+              AdsState.dismissed,
+              adsType: AdsType.native,
+              ad: ad,
+              sceneType: sceneType ?? AdsSceneType.open,
+            );
+          });
+        }
+      }
+      if (state == AdsState.dismissed) {
+        if (sceneType == AdsSceneType.plus || adsType == AdsType.rewarded) {
+          reSetRootPage();
+        } else {
+          showPlusAds();
+        }
+      }
+    });
   }
 
   @override
@@ -110,7 +154,9 @@ class _StartPageState extends State<StartPage> {
           startTime = startTime - 0.1;
         });
       } else {
-        reSetRootPage();
+        if (AdmobMaxTool.adsState != AdsState.showing) {
+          reSetRootPage();
+        }
       }
     });
   }
@@ -133,7 +179,7 @@ class _StartPageState extends State<StartPage> {
     Get.offAll(() => TabPage());
   }
 
-  void requestData() async {
+  void requestAds() async {
     dynamic openSuc = await AdmobMaxTool.initAdmobOrMax(AdsSceneType.open);
     AdmobMaxTool.initAdmobOrMax(AdsSceneType.play);
     AdmobMaxTool.initAdmobOrMax(AdsSceneType.channel);
@@ -158,63 +204,64 @@ class _StartPageState extends State<StartPage> {
     }
   }
 
-  // Future<bool> isPrivacyOptionsRequired() async {
-  //   return await ConsentInformation.instance
-  //       .getPrivacyOptionsRequirementStatus() ==
-  //       PrivacyOptionsRequirementStatus.required;
-  // }
-  //
-  // void showGMPConfig() async {
-  //   bool install = await UserInfo.getBool(UserInfo.onceInstallApp) ?? false;
-  //   bool requ = await isPrivacyOptionsRequired();
-  //   if (requ == false) {
-  //     // ConsentInformation.instance.reset();
-  //     // ConsentDebugSettings debugSettings = ConsentDebugSettings(
-  //     //   debugGeography: DebugGeography.debugGeographyEea,
-  //     //   testIdentifiers: ["61F857D9-E17F-4327-A20D-80039873F64B"],
-  //     // );
-  //     //
-  //     // ConsentRequestParameters params = ConsentRequestParameters(
-  //     //   consentDebugSettings: debugSettings,
-  //     // );
-  //
-  //     final params = ConsentRequestParameters();
-  //
-  //     // Request an update to consent information on every app launch.
-  //     ConsentInformation.instance.requestConsentInfoUpdate(
-  //       params,
-  //           () async {
-  //         ConsentForm.loadAndShowConsentFormIfRequired((
-  //             loadAndShowError,
-  //             ) async {
-  //           if (loadAndShowError != null) {
-  //             if (install == false) {
-  //               setRootPage();
-  //             }
-  //             await UserInfo.save(UserInfo.onceInstallApp, true);
-  //           } else {
-  //             final status =
-  //             await ConsentInformation.instance.getConsentStatus();
-  //             final config = RequestConfiguration(
-  //               // 对于欧盟用户未同意的情况
-  //               tagForUnderAgeOfConsent:
-  //               status == ConsentStatus.required
-  //                   ? TagForUnderAgeOfConsent.yes
-  //                   : null,
-  //             );
-  //             MobileAds.instance.updateRequestConfiguration(config);
-  //             if (install == false) {
-  //               setRootPage();
-  //             }
-  //             await UserInfo.save(UserInfo.onceInstallApp, true);
-  //           }
-  //         });
-  //       },
-  //           (FormError error) {
-  //         print('=--=-=-=-=-=-=-$error.message');
-  //         // setRootPage();
-  //       },
-  //     );
-  //   }
-  // }
+  Future<bool> isPrivacyOptionsRequired() async {
+    return await ConsentInformation.instance
+            .getPrivacyOptionsRequirementStatus() ==
+        PrivacyOptionsRequirementStatus.required;
+  }
+
+  void googleGMP() async {
+    bool install = await AppKey.getBool(AppKey.onceInstallApp) ?? false;
+    bool requ = await isPrivacyOptionsRequired();
+    if (requ == false) {
+      // ConsentInformation.instance.reset();
+      // ConsentDebugSettings debugSettings = ConsentDebugSettings(
+      //   debugGeography: DebugGeography.debugGeographyEea,
+      //   testIdentifiers: ["61F857D9-E17F-4327-A20D-80039873F64B"],
+      // );
+      //
+      // ConsentRequestParameters params = ConsentRequestParameters(
+      //   consentDebugSettings: debugSettings,
+      // );
+
+      final params = ConsentRequestParameters();
+
+      // Request an update to consent information on every app launch.
+      ConsentInformation.instance.requestConsentInfoUpdate(
+        params,
+        () async {
+          ConsentForm.loadAndShowConsentFormIfRequired((
+            loadAndShowError,
+          ) async {
+            if (loadAndShowError != null) {
+              if (install == false) {
+                reSetRootPage();
+              }
+              await AppKey.save(AppKey.onceInstallApp, true);
+            } else {
+              final status = await ConsentInformation.instance
+                  .getConsentStatus();
+              final config = RequestConfiguration(
+                // 对于欧盟用户未同意的情况
+                tagForUnderAgeOfConsent: status == ConsentStatus.required
+                    ? TagForUnderAgeOfConsent.yes
+                    : null,
+              );
+              MobileAds.instance.updateRequestConfiguration(config);
+              if (install == false) {
+                reSetRootPage();
+              }
+              await AppKey.save(AppKey.onceInstallApp, true);
+            }
+          });
+        },
+        (FormError error) {
+          print('=--=-=-=-=-=-=-$error.message');
+          requestAds();
+        },
+      );
+    } else {
+      requestAds();
+    }
+  }
 }

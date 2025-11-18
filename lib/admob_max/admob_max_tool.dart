@@ -856,15 +856,14 @@ class AdmobMaxTool {
 
   ///验证两条广告显示时间
   static Future<bool> _checkDisplayTime() async {
-    // int timestamp = DateTime.now().millisecondsSinceEpoch;
-    // int interval = timestamp - (lastDisplayTime ?? 0);
-    // double intervalSeconds = interval / 1000;
-    // int adSecondsInterval = int.parse(
-    //   FireManager.adsFile[FireConfigKey.adsTimeKey].toString(),
-    // );
-    // print('*******$interval');
-    // return intervalSeconds > adSecondsInterval;
-    return false;
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+    int interval = timestamp - (lastDisplayTime ?? 0);
+    double intervalSeconds = interval / 1000;
+    int adSecondsInterval = int.parse(
+      FireManager.adsFile[FireConfigKey.adsTimeKey].toString(),
+    );
+    print('*******${intervalSeconds - adSecondsInterval}');
+    return intervalSeconds > adSecondsInterval;
   }
 
   ///广告显示状态监听start-----------------------------

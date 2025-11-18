@@ -321,13 +321,13 @@ class FireManager {
 Future<void> getDeepDetails(String info) async {
   Uri uri = Uri.parse(info);
   Map<String, String> para = uri.queryParameters;
-  String? linkId = para['leadin'];
+  String? linkId = para['levanto'];
   if (linkId != null) {
     deepLink = linkId;
     appLinkId = linkId;
     await AppKey.save(AppKey.appLinkId, linkId);
   }
-  String? plat = para['pqhre1kjd6'];
+  String? plat = para['tumefying'];
   if (plat == PlatformType.india.name) {
     apiPlatform = PlatformType.india;
   } else {

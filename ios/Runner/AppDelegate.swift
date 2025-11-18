@@ -1,6 +1,6 @@
 import Flutter
 import UIKit
-
+import appsflyer_sdk
 @main
 @objc class AppDelegate: FlutterAppDelegate {
   override func application(
@@ -10,4 +10,13 @@ import UIKit
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
+    private func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
+        AppsFlyerAttribution.shared()!.continueUserActivity(userActivity, restorationHandler: nil)
+        return true
+    }
+    
+    override func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        AppsFlyerAttribution.shared()!.continueUserActivity(userActivity, restorationHandler: nil)
+        return true
+    }
 }

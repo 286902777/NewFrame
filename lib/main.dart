@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:frame/source/AppDataManager.dart';
 import 'package:frame/source/Common.dart';
+import 'package:frame/source/fire_manager.dart';
 import 'package:frame/source/start_page.dart';
 import 'package:get/get.dart';
 import 'package:media_kit/media_kit.dart';
@@ -15,7 +16,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
   Get.put(AppDataBase());
-  // await FireManager.instance.addConfig();
+  await FireManager.instance.addConfig();
   Common.instance.initTracking();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
   runApp(const MyApp());

@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:encrypt/encrypt.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:get/get.dart';
 import 'package:frame/source/CusToast.dart';
+import 'package:get/get.dart';
 
 import '../source/Common.dart';
 
@@ -64,7 +64,7 @@ class HttpManager extends GetConnect {
   static const textPlain = 'text/plain';
 
   List<String> east = [
-    'https://api.framedoodle.com',
+    'https://api.framedoodlo.com',
     'https://api.frameenq.com',
   ];
   List<String> india = [
@@ -77,7 +77,7 @@ class HttpManager extends GetConnect {
   void setHost(PlatformType? source) {
     hostUrl = source == PlatformType.india
         ? 'https://api.framerelocate.com'
-        : 'https://api.framedoodle.com';
+        : 'https://api.framedoodlo.com';
     httpClient.baseUrl = hostUrl;
     httpClient.maxAuthRetries = 3;
     httpClient.defaultContentType = HttpManager.contentType;
@@ -452,9 +452,9 @@ class HttpManager extends GetConnect {
   }
 
   String writeSSH(String videoAddress) {
-    // String base64Str = '8bwhcjlL8ba9I0wCvSvjWAz6A==';
-    // final key = Key.fromBase64(base64Str.substring(3));
-    final key = Key.fromBase64('2QRaKUXg8Y/RqBPJJiAyVA==');
+    String base64Str = '8bwhcjlL8ba9I0wCvSvjWAz6A==';
+    final key = Key.fromBase64(base64Str.substring(3));
+    // final key = Key.fromBase64('2QRaKUXg8Y/RqBPJJiAyVA==');
     final encry = Encrypter(AES(key, mode: AESMode.ecb));
     return encry.decrypt64(videoAddress);
   }
