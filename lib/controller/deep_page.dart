@@ -7,12 +7,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:frame/event/back_event_manager.dart';
-import 'package:get/get.dart';
 import 'package:frame/event/http_manager.dart';
 import 'package:frame/source/AppDataManager.dart';
 import 'package:frame/source/app_key.dart';
 import 'package:frame/view/index_cell.dart';
+import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
 import '../event/event_manager.dart';
 import '../generated/assets.dart';
 import '../model/indexModel.dart';
@@ -95,7 +96,7 @@ class _DeepPageState extends State<DeepPage>
   }
 
   Future<void> uploadServiceUserInfo() async {
-    bool? newUser = await AppKey.getBool(AppKey.appNewUser);
+    bool? newUser = await AppKey.getBool(AppKey.appDeepNewUser);
     if (newUser == null || newUser == false) {
       BackEventManager.instance.addEvent(
         BackEventName.downApp,

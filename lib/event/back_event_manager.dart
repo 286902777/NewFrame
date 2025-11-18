@@ -1,13 +1,14 @@
 import 'dart:io';
 import 'dart:ui';
+
+import 'package:applovin_max/applovin_max.dart' hide NativeAdListener;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frame/event/http_manager.dart';
 import 'package:frame/source/app_key.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:uuid/uuid.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:applovin_max/applovin_max.dart' hide NativeAdListener;
 
 import '../source/Common.dart';
 
@@ -83,7 +84,9 @@ class BackEventManager {
           'skirting': 'USD',
           'dictyonine': event.name,
           'vvi5bscptl': {'aphra': eventSource.name},
-          'outclasses': unique_id, /// unique_id
+          'outclasses': unique_id,
+
+          /// unique_id
           'wisure': info.version,
           'euryscope': deviceVersion,
           '1emejsbrma': {
@@ -96,6 +99,9 @@ class BackEventManager {
         successHandle: (data) {
           if (data != null) {
             if (event == BackEventName.downApp) {
+              AppKey.save(AppKey.appDeepNewUser, true);
+            }
+            if (event == BackEventName.downloadAppFirstTimeOpen) {
               AppKey.save(AppKey.appNewUser, true);
             }
           }
@@ -131,7 +137,7 @@ class BackEventManager {
     //       ) {
     //     addEvent(event, source, value, linkId, userId, fileId);
     //   };
-     else if (ad is NativeAd) {
+    else if (ad is NativeAd) {
       BackEventManager.instance.ad_event = event;
       BackEventManager.instance.ad_source = source;
       BackEventManager.instance.ad_linkId = linkId;

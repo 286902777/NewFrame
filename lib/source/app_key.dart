@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppKey {
@@ -17,6 +18,8 @@ class AppKey {
   static const appLinkId = 'osaappLinkId';
 
   static const appUserId = 'osaappUserId';
+
+  static const appDeepNewUser = 'osaappDeepNewUser';
 
   static const appNewUser = 'osaappNewUser';
 

@@ -44,13 +44,13 @@ class FireConfigKey {
   // 原生广告关闭机率
   static String nativeClickKey = 'nativeClickKey';
 
-  static String levelKey = 'Level_frame';
+  static String levelKey = 'frame_Level';
 
-  static String typeKey = 'type_frame';
+  static String typeKey = 'frame_type';
 
-  static String sourceKey = 'source_frame';
+  static String sourceKey = 'frame_source';
 
-  static String adsIdKey = 'Id_frame';
+  static String adsIdKey = 'frame_id';
 
   // static String userFileName = 'premuim_Config_AB';
   //

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frame/controller/channel_list_page.dart';
 import 'package:frame/controller/channel_page.dart';
+import 'package:frame/event/back_event_manager.dart';
 import 'package:frame/event/http_manager.dart';
 import 'package:frame/source/AppDataManager.dart';
 import 'package:get/get.dart';
@@ -17,6 +18,7 @@ import '../model/indexModel.dart';
 import '../model/videoModel.dart';
 import '../source/AppBasePage.dart';
 import '../source/Common.dart';
+import '../source/app_key.dart';
 import '../source/play_manager.dart';
 import '../view/index_histroy_cell.dart';
 import '../view/index_list_cell.dart';
@@ -65,6 +67,21 @@ class _IndexPageState extends State<IndexPage>
     Common.instance.initTracking();
     isNetwork.value = Common.instance.netStatus;
     requsetChannelData();
+    uploadOpenApp();
+  }
+
+  uploadOpenApp() async {
+    bool? newUser = await AppKey.getBool(AppKey.appNewUser);
+    if (newUser == null || newUser == false) {
+      BackEventManager.instance.addEvent(
+        BackEventName.downloadAppFirstTimeOpen,
+        apiPlatform,
+        0,
+        '',
+        '',
+        '',
+      );
+    }
   }
 
   @override
