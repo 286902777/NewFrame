@@ -271,12 +271,12 @@ class AdmobMaxTool {
       return false;
     }
     //检查广告时间
-    bool isOk = await _checkDisplayTime();
-    if (isOk == false) {
-      return false;
-    }
     if (sceneType != AdsSceneType.plus) {
       AdmobMaxTool.scene = sceneType;
+      bool isOk = await _checkDisplayTime();
+      if (isOk == false) {
+        return false;
+      }
     }
     currentScene = sceneType;
     dynamic ad = adsMap[sceneType.value];
@@ -911,11 +911,15 @@ class AdmobMaxTool {
       // if (sceneType == AdsSceneType.plus || adsType == AdsType.rewarded) {
       //   lastDisplayTime = DateTime.now().millisecondsSinceEpoch;
       // }
-      lastDisplayTime = DateTime.now().millisecondsSinceEpoch;
+      resetDisplayTime();
       adsMap[sceneType?.value ?? AdsSceneType.open.value] = null;
     }
     _listenersMap.forEach((key, value) {
       value(state, adsType: adsType, ad: ad, sceneType: sceneType);
     });
+  }
+
+  static resetDisplayTime() {
+    lastDisplayTime = DateTime.now().millisecondsSinceEpoch;
   }
 }

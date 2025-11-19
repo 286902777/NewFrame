@@ -269,7 +269,7 @@ class FireManager {
 
     final AppsFlyerOptions afiOS = AppsFlyerOptions(
       afDevKey: 'vJ6Sax2yK58yGZamTRTZZj',
-      appId: '6751944433',
+      appId: '6755174122',
       showDebug: true,
       timeToWaitForATTUserAuthorization: 15,
       manualStart: true,

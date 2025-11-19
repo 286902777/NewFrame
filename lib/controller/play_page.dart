@@ -221,8 +221,9 @@ class _PlayPageState extends State<PlayPage>
           _isShowSpeedView(model!);
         }
       }
-      if (position.inSeconds.toInt() % AdmobMaxTool.instance.playShowTime ==
-          0) {
+      if (position.inSeconds.toInt() > 1 &&
+          position.inSeconds.toInt() % AdmobMaxTool.instance.playShowTime ==
+              0) {
         eventAdsSource = AdmobSource.play_10;
         if (isCurrentPage) {
           bool suc = await AdmobMaxTool.showAdsScreen(AdsSceneType.play);
@@ -262,7 +263,7 @@ class _PlayPageState extends State<PlayPage>
       ad,
       sceneType,
     }) async {
-      if (isCurrentPage == false || isBackPage) {
+      if (isCurrentPage == false) {
         return;
       }
       if (state == AdsState.showing &&
@@ -328,30 +329,15 @@ class _PlayPageState extends State<PlayPage>
   }
 
   void showPlusAds() async {
-    // bool s = await MaxManager.disPlayAdmobOrMax(MaxSceneType.plus);
-    // if (s == false) {
-    //   subscriberSource = SubscriberSource.ad;
-    //   if (isBackPage) {
-    //     Get.back(result: true);
-    //   } else {
-    //     if (Platform.isIOS) {
-    //       if (_controller != null &&
-    //           (_controller?.value.isInitialized ?? false)) {
-    //         _controller?.play();
-    //         isPlay.value = true;
-    //         newVideoSuccess = true;
-    //         tempPlaying = false;
-    //       }
-    //     } else {
-    //       isAutoLoadShow = false;
-    //       if (isLoadShow.value == false) {
-    //         isLoadShow.value = true;
-    //         _disPlaySpeedView();
-    //       }
-    //       await _configPlayer();
-    //     }
-    //   }
-    // }
+    bool s = await AdmobMaxTool.showAdsScreen(AdsSceneType.plus);
+    if (s == false) {
+      // subscriberSource = SubscriberSource.ad;
+      if (isBackPage) {
+        Get.back(result: true);
+      } else {
+        await player.play();
+      }
+    }
   }
 
   @override
@@ -438,6 +424,7 @@ class _PlayPageState extends State<PlayPage>
     } else {
       player.open(Media(model!.movieUrl), play: false);
     }
+    await player.play();
   }
 
   void uploadPlayEvent() async {
@@ -518,9 +505,6 @@ class _PlayPageState extends State<PlayPage>
   }
 
   void savePlayTime() {
-    if (newVideoSuccess == false) {
-      return;
-    }
     if (model != null) {
       model?.playTime = start.value.inSeconds.toInt();
       int tot = total.value.inSeconds.toInt();
@@ -620,7 +604,7 @@ class _PlayPageState extends State<PlayPage>
     sliderValue.value = 0;
     start.value = Duration(milliseconds: 0);
     autoClick = isAuto;
-    // eventAdsSource = AdsSource.playlist_next;
+    eventAdsSource = AdmobSource.playlist_next;
     if (isAuto == false) {
       savePlayTime();
     }
@@ -669,12 +653,12 @@ class _PlayPageState extends State<PlayPage>
                   onTap: () {
                     displayTool(false);
                   },
-                  onDoubleTapDown: (TapDownDetails details) {
-                    if (newVideoSuccess == false) {
+                  onDoubleTapDown: (TapDownDetails details) async {
+                    if (newVideoSuccess == true) {
                       return;
                     }
                     final x = details.globalPosition.dx; // 全局X坐标
-                    if (x < Get.width / 2) {
+                    if (x < Get.width / 3) {
                       if ((start.value - Duration(seconds: 10)) >=
                           Duration(seconds: 0)) {
                         _changePlayValueTo(start.value - Duration(seconds: 10));
@@ -682,6 +666,8 @@ class _PlayPageState extends State<PlayPage>
                         _backEvent.forward();
                         _appendConfigTimer(DragEvent.left);
                       }
+                    } else if (x < Get.width / 3 * 2 && x > Get.width / 3) {
+                      await player.playOrPause();
                     } else {
                       if ((start.value + Duration(seconds: 10)) <=
                           total.value) {
@@ -749,20 +735,15 @@ class _PlayPageState extends State<PlayPage>
                     DeviceOrientation.portraitUp,
                   ]);
                   savePlayTime();
-                  // eventAdsSource = AdsSource.playback;
-                  // isBackPage = true;
-                  // bool suc = await MaxManager.disPlayAdmobOrMax(
-                  //   MaxSceneType.play,
-                  // );
-                  // if (suc) {
-                  //   _controller?.pause();
-                  //   tempPlaying = true;
-                  // } else {
-                  //   Get.back();
-                  // }
+                  eventAdsSource = AdmobSource.playback;
+                  isBackPage = true;
                   if (isFullScreen) {
                     _screenChange();
-                  } else {
+                  }
+                  bool suc = await AdmobMaxTool.showAdsScreen(
+                    AdsSceneType.play,
+                  );
+                  if (suc == false) {
                     Get.back();
                   }
                 },
@@ -983,7 +964,7 @@ class _PlayPageState extends State<PlayPage>
             },
             onChangeStart: (value) async {
               print('fffffff');
-              if (newVideoSuccess == false) {
+              if (newVideoSuccess == true) {
                 return;
               }
               isShowTool.value = true;
@@ -993,7 +974,7 @@ class _PlayPageState extends State<PlayPage>
             },
             onChangeEnd: (value) async {
               print('aaaaaa');
-              if (newVideoSuccess == false) {
+              if (newVideoSuccess == true) {
                 return;
               }
               displayTool(true);
@@ -1003,7 +984,7 @@ class _PlayPageState extends State<PlayPage>
               } else {
                 sliderValue.value = value;
               }
-              if (newVideoSuccess) {
+              if (newVideoSuccess == false) {
                 changeTime.value = total.value * value - start.value;
                 movedTime.value = total.value * value;
                 _changePlayValueTo(total.value * value);
@@ -1024,6 +1005,9 @@ class _PlayPageState extends State<PlayPage>
     // if (newVideoSuccess == false || MaxManager.maxState == MaxState.showing) {
     //   return;
     // }
+    if (isBackPage) {
+      return;
+    }
     if (position.inSeconds >= 0) {
       await player.seek(position);
       await player.play();
