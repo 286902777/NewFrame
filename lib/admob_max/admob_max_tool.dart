@@ -3,10 +3,13 @@ import 'dart:io';
 
 import 'package:applovin_max/applovin_max.dart' hide NativeAdListener;
 import 'package:frame/event/back_event_manager.dart';
+import 'package:frame/vip_page/user_vip_tool.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../event/event_manager.dart';
+import '../model/vip_data.dart';
 import '../source/Common.dart';
+import '../source/app_key.dart';
 import '../source/fire_manager.dart';
 
 typedef AdsDisplayStateChanged<AdsState> =
@@ -105,11 +108,10 @@ class AdmobMaxTool {
     AdsSceneType sceneType, {
     int? levelIndex,
   }) async {
-    // bool isSVip = await AppKey.getBool(AppKey.isVipUser) ?? false;
-    // if (MyUserManager.instance.vipData.value.status != SubscriberStatus.none ||
-    //     isSVip) {
-    //   return false;
-    // }
+    bool isSVip = await AppKey.getBool(AppKey.isVipUser) ?? false;
+    if (UserVipTool.instance.vipData.value.status != VipStatus.none || isSVip) {
+      return false;
+    }
 
     if (levelIndex == null) {
       //重置请求index
@@ -263,12 +265,10 @@ class AdmobMaxTool {
   ///返回是否显示成功
   static Future<bool> showAdsScreen(AdsSceneType sceneType) async {
     // //如果是vip则不展示广告
-    // return false;
-    // bool isSVip = await AppKey.getBool(AppKey.isVipUser) ?? false;
-    // if (MyUserManager.instance.vipData.value.status != SubscriberStatus.none ||
-    //     isSVip) {
-    //   return false;
-    // }
+    bool isSVip = await AppKey.getBool(AppKey.isVipUser) ?? false;
+    if (UserVipTool.instance.vipData.value.status != VipStatus.none || isSVip) {
+      return false;
+    }
 
     if (sceneType != AdsSceneType.plus) {
       AdmobMaxTool.startLoadingPlus(AdsSceneType.plus);
@@ -278,11 +278,15 @@ class AdmobMaxTool {
       return false;
     }
     //检查广告时间
-    if (sceneType != AdsSceneType.plus) {
+    if (sceneType == AdsSceneType.middle) {
       AdmobMaxTool.scene = sceneType;
-      bool isOk = await _checkDisplayTime();
-      if (isOk == false) {
-        return false;
+    } else {
+      if (sceneType != AdsSceneType.plus) {
+        AdmobMaxTool.scene = sceneType;
+        bool isOk = await _checkDisplayTime();
+        if (isOk == false) {
+          return false;
+        }
       }
     }
     currentScene = sceneType;

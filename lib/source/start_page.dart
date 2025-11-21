@@ -34,6 +34,7 @@ class _StartPageState extends State<StartPage> {
     Common.instance.networkStatus();
     startCountTime();
     googleGMP();
+    AppKey.save(AppKey.middlePlayCount, 0);
     EventManager.instance.session();
     AdmobMaxTool.addListener(hashCode.toString(), (
       state, {

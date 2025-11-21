@@ -47,28 +47,28 @@ class _AlertUserVipPageState extends State<AlertUserVipPage> {
       await UserVipTool.instance.queryProductInfo();
     }
 
-    // VipProductData s = VipProductData(
-    //   productId: 'sd',
+    // VipProductData sx = VipProductData(
+    //   productId: 'ssd',
     //   title: 'year',
     //   productInfo: 'productInfo',
-    //   price: 29.9,
-    //   showPrice: '29.9',
+    //   price: 19.99,
+    //   showPrice: '${'\$'}19.99',
     //   currency: '*',
     //   isSelect: true,
     //   hot: true,
     // );
-    // VipProductData sx = VipProductData(
+    // VipProductData ssx = VipProductData(
     //   productId: 'ssd',
     //   title: 'weak',
     //   productInfo: 'productInfo',
-    //   price: 9.9,
-    //   showPrice: '9.9',
+    //   price: 2.99,
+    //   showPrice: '${'\$'}2.99',
     //   currency: '*',
     //   isSelect: false,
     //   hot: false,
     // );
-    // lists.add(s);
     // lists.add(sx);
+    // lists.add(ssx);
 
     for (VipProductData m in UserVipTool.instance.productResultList.value) {
       if (m.productId != UserVipIdKey.year.value) {
@@ -130,118 +130,116 @@ class _AlertUserVipPageState extends State<AlertUserVipPage> {
             ),
           ),
           child: Padding(
-            padding: EdgeInsets.fromLTRB(15, 100, 15, 10),
-            // child: Container(
-            //   decoration: BoxDecoration(
-            //     borderRadius: BorderRadius.circular(16),
-            //     gradient: LinearGradient(
-            //       colors: [Color(0xFFF2FDF9), Color(0xFFF9F9F9)], // 中心到边缘颜色
-            //       begin: Alignment.topCenter,
-            //       end: Alignment.center,
-            //     ),
-            //   ),
-            //   child: Padding(
-            //     padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
-            child: Column(
-              children: [
-                if (lists.isNotEmpty) _listCell(lists.first),
-                if (lists.length >= 2) _listCell(lists.last),
-                SizedBox(height: 18),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 6),
-                  child: GestureDetector(
-                    onTap: () async {
-                      EasyLoading.show(
-                        status: 'loading...',
-                        maskType: EasyLoadingMaskType.clear,
-                        dismissOnTap: false,
-                      );
-                      await UserVipTool.instance.toGetPay(selectData);
-                    },
-                    child: SizedBox(
-                      height: 36,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(21),
-                          color: Color(0xFF136FF9),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Next',
-                              style: const TextStyle(
-                                letterSpacing: -0.5,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xFFFFFFFF),
-                              ),
-                            ),
-                            SizedBox(width: 12),
-                            Image.asset(
-                              Assets.svipSvipNext,
-                              width: 22,
-                              height: 22,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+            padding: EdgeInsets.fromLTRB(0, 76, 0, 0),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Colors.white,
+              ),
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+
+                child: Column(
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        Get.to(
-                          () => (WebPage(
-                            name: '',
-                            link: 'https://frameplayvid.com/terms/',
-                          )),
-                        );
-                      },
-                      child: Text(
-                        '·Terms of service',
-                        style: const TextStyle(
-                          letterSpacing: -0.5,
-                          fontSize: 12,
-                          color: Color(0xA11A1A1A),
-                          decoration: TextDecoration.underline,
-                          decorationColor: Color(0xA11A1A1A),
-                          decorationThickness: 1.0,
+                    if (lists.isNotEmpty) _listCell(lists.first),
+                    if (lists.length >= 2) _listCell(lists.last),
+                    SizedBox(height: 16),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 6),
+                      child: GestureDetector(
+                        onTap: () async {
+                          EasyLoading.show(
+                            status: 'loading...',
+                            maskType: EasyLoadingMaskType.clear,
+                            dismissOnTap: false,
+                          );
+                          await UserVipTool.instance.toGetPay(selectData);
+                        },
+                        child: SizedBox(
+                          height: 36,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(21),
+                              color: Color(0xFF136FF9),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Next',
+                                  style: const TextStyle(
+                                    letterSpacing: -0.5,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xFFFFFFFF),
+                                  ),
+                                ),
+                                SizedBox(width: 12),
+                                Image.asset(
+                                  Assets.svipSvipNext,
+                                  width: 22,
+                                  height: 22,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                    SizedBox(width: 24),
-                    GestureDetector(
-                      onTap: () {
-                        Get.to(
-                          () => (WebPage(
-                            name: '',
-                            link: 'https://frameplayvid.com/privacy/',
-                          )),
-                        );
-                      },
-                      child: Text(
-                        '·Privacy policy',
-                        style: const TextStyle(
-                          letterSpacing: -0.5,
-                          fontSize: 12,
-                          color: Color(0xA11A1A1A),
-                          decoration: TextDecoration.underline,
-                          decorationColor: Color(0xA11A1A1A),
-                          decorationThickness: 1.0,
+                    SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Get.to(
+                              () => (WebPage(
+                                name: '',
+                                link: 'https://frameplayvid.com/terms/',
+                              )),
+                            );
+                          },
+                          child: Text(
+                            '·Terms of service',
+                            style: const TextStyle(
+                              letterSpacing: -0.5,
+                              fontSize: 12,
+                              color: Color(0xA11A1A1A),
+                              decoration: TextDecoration.underline,
+                              decorationColor: Color(0xA11A1A1A),
+                              decorationThickness: 1.0,
+                            ),
+                          ),
                         ),
-                      ),
+                        SizedBox(width: 24),
+                        GestureDetector(
+                          onTap: () {
+                            Get.to(
+                              () => (WebPage(
+                                name: '',
+                                link: 'https://frameplayvid.com/privacy/',
+                              )),
+                            );
+                          },
+                          child: Text(
+                            '·Privacy policy',
+                            style: const TextStyle(
+                              letterSpacing: -0.5,
+                              fontSize: 12,
+                              color: Color(0xA11A1A1A),
+                              decoration: TextDecoration.underline,
+                              decorationColor: Color(0xA11A1A1A),
+                              decorationThickness: 1.0,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
+                  //       ),
                 ),
-              ],
-              //       ),
-              //     ),
+              ),
             ),
           ),
         );
@@ -272,14 +270,12 @@ class _AlertUserVipPageState extends State<AlertUserVipPage> {
               bottom: 0,
               child: Container(
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(
-                      mod.isSelect
-                          ? 'assets/svip/svip_sel.png'
-                          : 'assets/svip/svip_unsel.png',
-                    ),
-                    fit: BoxFit.fill,
+                  color: mod.isSelect ? Color(0xFFF1F6FF) : Color(0xFFF5F8FC),
+                  border: Border.all(
+                    color: mod.isSelect ? Color(0xFF5597FA) : Color(0xFFE1ECFF),
+                    width: 3.0,
                   ),
+                  borderRadius: BorderRadius.circular(14),
                 ),
                 child: Row(
                   children: [
@@ -293,7 +289,7 @@ class _AlertUserVipPageState extends State<AlertUserVipPage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 10),
+                        SizedBox(height: 8),
                         Text(
                           mod.title,
                           style: const TextStyle(
@@ -302,16 +298,15 @@ class _AlertUserVipPageState extends State<AlertUserVipPage> {
                             color: Color(0x801A1A1A),
                           ),
                         ),
-                        Spacer(),
                         Text(
-                          '${mod.currency}${mod.price.toStringAsFixed(2)}',
+                          mod.showPrice,
                           style: const TextStyle(
                             letterSpacing: -0.5,
                             fontSize: 20,
+                            fontWeight: FontWeight.w600,
                             color: Color(0xFF341B03),
                           ),
                         ),
-                        SizedBox(height: 10),
                       ],
                     ),
                   ],
@@ -321,7 +316,7 @@ class _AlertUserVipPageState extends State<AlertUserVipPage> {
             if (mod.hot)
               Positioned(
                 top: 0,
-                right: 24,
+                right: 12,
                 child: Image.asset(Assets.svipSvipHot, width: 70, height: 36),
               ),
           ],
