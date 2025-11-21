@@ -1,11 +1,9 @@
 import 'package:frame/source/app_key.dart';
 import 'package:frame/vip_page/user_vip_page.dart';
-import 'package:frame/vip_page/user_vip_tool.dart';
 import 'package:get/get.dart';
 
 import '../controller/play_page.dart';
 import '../model/videoModel.dart';
-import '../model/vip_data.dart';
 import 'Common.dart';
 
 class PlayManager {
@@ -21,7 +19,8 @@ class PlayManager {
   }
 
   static showResult(bool result) async {
-    if (result && UserVipTool.instance.vipData.value.status == VipStatus.none) {
+    bool isSVip = await AppKey.getBool(AppKey.isVipUser) ?? false;
+    if (result && isSVip == false) {
       int? showCount = await AppKey.getInt(AppKey.vipAlertShowCount);
       if ((showCount ?? 0) < 3) {
         int? time = await AppKey.getInt(AppKey.vipAlertTime);

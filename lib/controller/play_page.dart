@@ -28,6 +28,7 @@ import '../source/AppDataManager.dart';
 import '../source/Common.dart';
 import '../source/CusToast.dart';
 import '../source/app_key.dart';
+import '../vip_page/user_vip_page.dart';
 
 enum DragEvent { left, right, drag }
 
@@ -1465,63 +1466,68 @@ class _PlayPageState extends State<PlayPage>
   }
 
   void _pushVipPage() async {
-    _showAlertVipView();
-    // vipMethod = VipMethod.click;
-    // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    // await player.pause();
-    // isCurrentPage = false;
-    // Get.to(() => UserVipPage())?.then((_) async {
-    //   isCurrentPage = true;
-    //   if (isUsePause == false) {
-    //     await player.play();
-    //   }
-    // });
+    vipMethod = VipMethod.click;
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    await player.pause();
+    isCurrentPage = false;
+    Get.to(() => UserVipPage())?.then((_) async {
+      isCurrentPage = true;
+      if (isUsePause == false) {
+        await player.play();
+      }
+    });
   }
 
   void _showAlertVipView() async {
-    // int? vipPlayCount = await AppKey.getInt(AppKey.vipPlayCount);
-    // if ((vipPlayCount ?? 0) < 1) {
-    //   await AppKey.save(AppKey.vipPlayCount, 1);
-    //   await player.play();
-    //   return;
-    // }
-    // int? showCount = await AppKey.getInt(AppKey.vipAlertShowCount);
-    // if ((showCount ?? 0) >= 3) {
-    //   await player.play();
-    //   return;
-    // }
-    // bool day = await isShowedVipAlert();
-    // if (day) {
-    //   //同一天
-    //   await player.play();
-    //   return;
-    // }
-    // await player.pause();
-    //
-    // await AppKey.save(AppKey.vipPlayCount, vipPlayCount ?? 0 + 1);
-    // await AppKey.save(
-    //   AppKey.vipAlertPlayTime,
-    //   DateTime.now().millisecondsSinceEpoch.toInt(),
-    // );
-    // await AppKey.save(AppKey.vipAlertShowCount, (showCount ?? 0) + 1);
-    // isCurrentPage = false;
-    // vipSource = VipSource.ad;
-    // vipMethod = VipMethod.auto;
-    // vipType = VipType.popup;
-    // EventManager.instance.eventUpload(EventApi.premiumExpose, {
-    //   EventParaName.type.name: vipType.value, //type
-    //   EventParaName.method.name: vipMethod.value, //method
-    //   EventParaName.source.name: vipSource.value,
-    // });
+    bool isSVip = await AppKey.getBool(AppKey.isVipUser) ?? false;
+    if (isSVip) {
+      return;
+    }
+    int? vipPlayCount = await AppKey.getInt(AppKey.vipPlayCount);
+    if ((vipPlayCount ?? 0) < 1) {
+      await AppKey.save(AppKey.vipPlayCount, 1);
+      await player.play();
+      return;
+    }
+    int? showCount = await AppKey.getInt(AppKey.vipAlertShowCount);
+    if ((showCount ?? 0) >= 3) {
+      await player.play();
+      return;
+    }
+    bool day = await isShowedVipAlert();
+    if (day) {
+      //同一天
+      await player.play();
+      return;
+    }
+    await player.pause();
+
+    await AppKey.save(AppKey.vipPlayCount, vipPlayCount ?? 0 + 1);
+    await AppKey.save(
+      AppKey.vipAlertPlayTime,
+      DateTime.now().millisecondsSinceEpoch.toInt(),
+    );
+    await AppKey.save(AppKey.vipAlertShowCount, (showCount ?? 0) + 1);
+    isCurrentPage = false;
+    vipSource = VipSource.ad;
+    vipMethod = VipMethod.auto;
+    vipType = VipType.popup;
+    EventManager.instance.eventUpload(EventApi.premiumExpose, {
+      EventParaName.type.name: vipType.value, //type
+      EventParaName.method.name: vipMethod.value, //method
+      EventParaName.source.name: vipSource.value,
+    });
     if (isFullScreen) {
       isFullScreen = false;
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-      showDialog(
-        context: context,
-        builder: (context) => AlertUserVipPage(),
-      ).then((_) async {
-        isCurrentPage = true;
-        await player.play();
+      Future.delayed(Duration(milliseconds: 500), () {
+        showDialog(
+          context: context,
+          builder: (context) => AlertUserVipPage(),
+        ).then((_) async {
+          isCurrentPage = true;
+          await player.play();
+        });
       });
     } else {
       showDialog(
