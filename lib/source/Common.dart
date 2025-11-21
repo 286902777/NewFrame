@@ -2,6 +2,8 @@ import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../model/vip_data.dart';
+
 enum PlatformType {
   india('kidskin'), // cashsnap
   east('triformous'); //quickearn
@@ -12,62 +14,104 @@ enum PlatformType {
 
 enum BackEventSource {
   // midRecommend('mid_recommend'),
-  channelPage('xsdf'),
-  landPage('sdfa'),
-  history('sdfe'),
-  playlistRecommend('sews');
+  channelPage('puYBNbZr'),
+  landPage('yVQOjrKHd'),
+  history('pEpNEF'),
+  playlistRecommend('elSsM');
 
   final String name;
   const BackEventSource(this.name);
 }
 
 enum PlaySource {
-  landpage_hot('we'),
-  landpage_recently('wer'),
-  landpage_file('123'),
-  landpage_recommend('213'),
+  landpage_hot('NQfULornJ'),
+  landpage_recently('XQXG'),
+  landpage_file('gtSa'),
+  landpage_recommend('pRboQKtLwi'),
 
-  channel_hot('432'),
-  channel_recently('124'),
-  channel_file('123'),
-  channel_recommend('24'),
+  channel_hot('fmjBy'),
+  channel_recently('uuv'),
+  channel_file('dnCbhSqRbm'),
+  channel_recommend('hMoZyOpzHB'),
 
-  playlist_file('2412'),
-  playlist_recommend('12412324'),
-  import('wxw'),
-  history('12zq');
+  playlist_file('RhtvjY'),
+  playlist_recommend('elSsM'),
+  import('tqriQOIsxW'),
+  history('pEpNEF');
 
   final String name;
   const PlaySource(this.name);
 }
 
 enum ChannelSource {
-  landpage_avtor('xsjwxX1NXYi'),
-  landpage_recently('bsekIDPmk'),
-  landpage_recommend('sdfEcB'),
-  home_channel('sdfPwQUkzHtZ '),
-  channellist('xsUWvcMm'),
+  landpage_avtor('DdQDU'),
+  landpage_recently('XQXG'),
+  landpage_recommend('pRboQKtLwi'),
+  home_channel('faqrlxpn '),
+  channellist('cYwUmdW'),
 
-  channelpage_recommend('sfWYhy'),
-  channelpage_avtor('sgSIoGalmZZ');
+  channelpage_recommend('NUzNbjGoRd'),
+  channelpage_avtor('IYUgruZR');
 
   final String name;
   const ChannelSource(this.name);
 }
 
 enum AdmobSource {
-  cold_open('sd'),
-  hot_open('sdfs'),
-  cold_play('sw'),
-  play('taxfZ'),
-  playlist_next('bsx'),
-  playback('sdfa'),
-  play_10('obhZsdHj'),
-  channelpage('MaUasaFIrJ');
+  cold_open('uvJWP'),
+  hot_open('KGlN'),
+  cold_play('jdGaFgFSO'),
+  play('JJYqGr'),
+  playlist_next('xGEuENP'),
+  playback('XhM'),
+  play_10('pYym'),
+  channelpage('puYBNbZr');
 
   final String name;
   const AdmobSource(this.name);
 }
+
+enum VipProduct {
+  weekly('bprVmPWa'),
+  yearly('bitXZmZJQ'),
+  lifetime('eECjaM');
+
+  final String value;
+  const VipProduct(this.value);
+}
+
+enum VipType {
+  page('poJH'),
+  popup('vJETIg');
+
+  final String value;
+  const VipType(this.value);
+}
+
+enum VipMethod {
+  auto('YLQJVT'),
+  click('TfWCbFKVP');
+
+  final String value;
+  const VipMethod(this.value);
+}
+
+enum VipSource {
+  home('GURZ'),
+  playPage('mIxniF'),
+  channelPage('puYBNbZr'),
+  landPage('yVQOjrKHd'),
+  ad('MTuwX'),
+  accelerate('sXigZ');
+
+  final String value;
+  const VipSource(this.value);
+}
+
+VipType vipType = VipType.page;
+VipMethod vipMethod = VipMethod.auto;
+VipProduct vipProduct = VipProduct.lifetime;
+VipSource vipSource = VipSource.home;
 
 PlatformType apiPlatform = PlatformType.india;
 BackEventSource eventSource = BackEventSource.landPage;
@@ -84,11 +128,23 @@ bool isDeepComment = false;
 String playFileId = '';
 bool isDeepLink = false;
 
+bool isSimCard = false;
+bool isEmulator = false;
+bool isPad = false;
+bool isVpn = false;
+
+bool isSimLimit = false;
+bool isEmulatorLimit = false;
+bool isPadLimit = false;
+bool isVpnLimit = false;
+
 Function()? clickNativeAction;
 
 Function(int index)? clickTabItem;
 
 Function()? pushDeepPageInfo;
+
+Function(VipData mod, bool isPay)? vipDoneBlock;
 
 class Common {
   static Common instance = Common();

@@ -23,6 +23,7 @@ enum AdsSceneType {
   open('open'),
   play('play'),
   channel('channel'),
+  middle('middle'),
   plus('plus');
 
   final String value;
@@ -54,8 +55,14 @@ class AdmobMaxTool {
   int sameInterval = 60;
   int nativeTime = 3;
   int nativeClick = 80;
+  int middlePlayIdx = 5;
+  int middlePlayTime = 10;
+  int middlePlayCloseTime = 7;
+  int middlePlayCloseClick = 50;
+  int playMethod = 1;
   String msg = '';
 
+  static bool showed = false;
   static int? lastDisplayTime;
 
   static AdsSceneType currentScene = AdsSceneType.open;
@@ -202,12 +209,12 @@ class AdmobMaxTool {
         // startLoadingOtherAd(sceneType);
       }
     } else {
-      EventManager.instance.enventUpload(EventApi.adReqPlacement, {
-        'KsAj': eventAdsSource.name,
+      EventManager.instance.eventUpload(EventApi.adReqPlacement, {
+        EventParaName.value.name: eventAdsSource.name,
       });
-      EventManager.instance.enventUpload(EventApi.adReqSuc, {
-        'KsAj': eventAdsSource.name,
-        'jpKprFcDsL': sceneType == AdsSceneType.plus ? 2 : 1,
+      EventManager.instance.eventUpload(EventApi.adReqSuc, {
+        EventParaName.value.name: eventAdsSource.name,
+        EventParaName.type.name: sceneType == AdsSceneType.plus ? 2 : 1,
       });
       int timeStamp = DateTime.now().millisecondsSinceEpoch;
       adsMap[sceneType.value] = admobOrMaxAd;
@@ -218,13 +225,13 @@ class AdmobMaxTool {
   }
 
   void adRequestFail(AdsSceneType sceneType) {
-    EventManager.instance.enventUpload(EventApi.adReqPlacement, {
-      'KsAj': eventAdsSource.name,
+    EventManager.instance.eventUpload(EventApi.adReqPlacement, {
+      EventParaName.value.name: eventAdsSource.name,
     });
-    EventManager.instance.enventUpload(EventApi.adReqFail, {
-      'KsAj': eventAdsSource.name,
-      'IOz': sceneType == AdsSceneType.plus ? 2 : 1,
-      'NWp': AdmobMaxTool.instance.msg,
+    EventManager.instance.eventUpload(EventApi.adReqFail, {
+      EventParaName.value.name: eventAdsSource.name,
+      EventParaName.type.name: sceneType == AdsSceneType.plus ? 2 : 1,
+      EventParaName.code.name: AdmobMaxTool.instance.msg,
     });
   }
 
@@ -322,13 +329,13 @@ class AdmobMaxTool {
           return false;
         }
       }
-      EventManager.instance.enventUpload(EventApi.adNeedShow, {
-        'safasd': eventAdsSource.name,
-        'jpKprFcDsL': sceneType == AdsSceneType.plus ? 2 : 1,
+      EventManager.instance.eventUpload(EventApi.adNeedShow, {
+        EventParaName.value.name: eventAdsSource.name,
+        EventParaName.type.name: sceneType == AdsSceneType.plus ? 2 : 1,
       });
-      EventManager.instance.enventUpload(EventApi.adShowPlacement, {
-        '1asqAj': eventAdsSource.name,
-        'jpKprFcDsL': sceneType == AdsSceneType.plus ? 2 : 1,
+      EventManager.instance.eventUpload(EventApi.adShowPlacement, {
+        EventParaName.value.name: eventAdsSource.name,
+        EventParaName.type.name: sceneType == AdsSceneType.plus ? 2 : 1,
       });
 
       //显示完移出广告
@@ -338,7 +345,7 @@ class AdmobMaxTool {
       return true;
     } else {
       if (sceneType == AdsSceneType.plus) {
-        lastDisplayTime = DateTime.now().millisecondsSinceEpoch;
+        resetDisplayTime();
       }
       AdmobMaxTool.instance.showFailUpload(sceneType, 'UHdCR');
 
@@ -354,14 +361,14 @@ class AdmobMaxTool {
   }
 
   void showFailUpload(AdsSceneType sceneType, String msg) {
-    EventManager.instance.enventUpload(EventApi.adNeedShow, {
-      'KsAj': eventAdsSource.name,
-      'IOz': sceneType == AdsSceneType.plus ? 2 : 1,
+    EventManager.instance.eventUpload(EventApi.adNeedShow, {
+      EventParaName.value.name: eventAdsSource.name,
+      EventParaName.type.name: sceneType == AdsSceneType.plus ? 2 : 1,
     });
-    EventManager.instance.enventUpload(EventApi.adShowFail, {
-      'NWp': msg,
-      'KsAj': eventAdsSource.name,
-      'IOz': sceneType == AdsSceneType.plus ? 2 : 1,
+    EventManager.instance.eventUpload(EventApi.adShowFail, {
+      EventParaName.value.name: eventAdsSource.name,
+      EventParaName.type.name: sceneType == AdsSceneType.plus ? 2 : 1,
+      EventParaName.code.name: msg,
     });
   }
 
@@ -375,14 +382,15 @@ class AdmobMaxTool {
   ) {
     if (Platform.isIOS) {
       EventManager.instance.uploadAds({
-        'paterson': 'thereby',
-        'pro': type, //广告网络，广告真实的填充平台
-        'profile': numId,
-        'sacral': platform, //广告SDK，admob，max等
-        'usurious': adId, //广告位id
-        'plural': place, //广告类型，插屏，原生，banner，激励视频等
-        'bike': value, //预估收入
-        'muzak': 'USD',
+        'describe': {
+          'susanne': type, //广告网络，广告真实的填充平台
+          'mutandis': numId,
+          'helga': platform, //广告SDK，admob，max等
+          'hackle': adId, //广告位id
+          'prone': place, //广告类型，插屏，原生，banner，激励视频等
+          'laminar': value, //预估收入
+          'mailmen': 'USD',
+        },
       });
     }
   }
@@ -445,8 +453,8 @@ class AdmobMaxTool {
             },
             // Called when a click is recorded for an ad.
             onAdClicked: (ad) {
-              EventManager.instance.enventUpload(EventApi.adClick, {
-                'KsAj': eventAdsSource.name,
+              EventManager.instance.eventUpload(EventApi.adClick, {
+                EventParaName.value.name: eventAdsSource.name,
               });
             },
           );
@@ -524,8 +532,8 @@ class AdmobMaxTool {
             },
             // Called when a click is recorded for an ad.
             onAdClicked: (ad) {
-              EventManager.instance.enventUpload(EventApi.adClick, {
-                'KsAj': eventAdsSource.name,
+              EventManager.instance.eventUpload(EventApi.adClick, {
+                EventParaName.value.name: eventAdsSource.name,
               });
             },
           );
@@ -601,8 +609,8 @@ class AdmobMaxTool {
             },
             // Called when a click is recorded for an ad.
             onAdClicked: (ad) {
-              EventManager.instance.enventUpload(EventApi.adClick, {
-                'KsAj': eventAdsSource.name,
+              EventManager.instance.eventUpload(EventApi.adClick, {
+                EventParaName.value.name: eventAdsSource.name,
               });
             },
           );
@@ -635,8 +643,8 @@ class AdmobMaxTool {
         },
         // Called when a click is recorded for a NativeAd.
         onAdClicked: (ad) {
-          EventManager.instance.enventUpload(EventApi.adClick, {
-            'KsAj': eventAdsSource.name,
+          EventManager.instance.eventUpload(EventApi.adClick, {
+            EventParaName.value.name: eventAdsSource.name,
           });
           clickNativeAction?.call();
         },
@@ -708,8 +716,8 @@ class AdmobMaxTool {
           initAdmobOrMax(currentScene);
         },
         onAdClickedCallback: (ad) {
-          EventManager.instance.enventUpload(EventApi.adClick, {
-            'KsAj': eventAdsSource.name,
+          EventManager.instance.eventUpload(EventApi.adClick, {
+            EventParaName.value.name: eventAdsSource.name,
           });
         },
         onAdHiddenCallback: (ad) {
@@ -771,8 +779,8 @@ class AdmobMaxTool {
           initAdmobOrMax(currentScene);
         },
         onAdClickedCallback: (ad) {
-          EventManager.instance.enventUpload(EventApi.adClick, {
-            'KsAj': eventAdsSource.name,
+          EventManager.instance.eventUpload(EventApi.adClick, {
+            EventParaName.value.name: eventAdsSource.name,
           });
         },
         onAdHiddenCallback: (ad) {
@@ -834,8 +842,8 @@ class AdmobMaxTool {
           initAdmobOrMax(currentScene);
         },
         onAdClickedCallback: (ad) {
-          EventManager.instance.enventUpload(EventApi.adClick, {
-            'KsAj': eventAdsSource.name,
+          EventManager.instance.eventUpload(EventApi.adClick, {
+            EventParaName.value.name: eventAdsSource.name,
           });
         },
         onAdHiddenCallback: (ad) {
@@ -913,6 +921,8 @@ class AdmobMaxTool {
       // }
       resetDisplayTime();
       adsMap[sceneType?.value ?? AdsSceneType.open.value] = null;
+    } else {
+      showed = true;
     }
     _listenersMap.forEach((key, value) {
       value(state, adsType: adsType, ad: ad, sceneType: sceneType);
@@ -920,6 +930,9 @@ class AdmobMaxTool {
   }
 
   static resetDisplayTime() {
+    if (showed == false) {
+      return;
+    }
     lastDisplayTime = DateTime.now().millisecondsSinceEpoch;
   }
 }

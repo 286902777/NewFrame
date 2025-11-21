@@ -55,6 +55,8 @@ class AppKey {
 
   static const toDay = 'osatoDay';
 
+  static const middlePlayCount = 'middlePlayCount';
+
   static Future<bool> save(String key, dynamic value) async {
     SharedPreferences ns = await SharedPreferences.getInstance();
     if (value is Map) {

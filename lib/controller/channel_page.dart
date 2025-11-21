@@ -11,6 +11,7 @@ import 'package:frame/admob_max/admob_max_tool.dart';
 import 'package:frame/event/back_event_manager.dart';
 import 'package:frame/source/AppDataManager.dart';
 import 'package:frame/view/index_cell.dart';
+import 'package:frame/vip_page/user_vip_page.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -81,8 +82,8 @@ class _ChannelPageState extends State<ChannelPage>
     super.initState();
     eventSource = BackEventSource.channelPage;
     eventAdsSource = AdmobSource.channelpage;
-    EventManager.instance.enventUpload(EventApi.channelpageExpose, {
-      'GSjzKapRnA': channelSource.name,
+    EventManager.instance.eventUpload(EventApi.channelpageExpose, {
+      EventParaName.source.name: channelSource.name,
     });
     requestData();
     AdmobMaxTool.showAdsScreen(AdsSceneType.channel);
@@ -124,8 +125,7 @@ class _ChannelPageState extends State<ChannelPage>
       if (state == AdsState.dismissed &&
           AdmobMaxTool.scene == AdsSceneType.channel) {
         if (sceneType == AdsSceneType.plus || adsType == AdsType.rewarded) {
-          // subscriberSource = SubscriberSource.ad;
-          // PlayerManager.showResult(true);
+          PlayManager.showResult(true);
         } else {
           displayPlusAds();
         }
@@ -134,11 +134,10 @@ class _ChannelPageState extends State<ChannelPage>
   }
 
   void displayPlusAds() async {
-    // bool suc = await AdmobMaxTool.showAdsScreen(AdsSceneType.plus);
-    // if (suc == false) {
-    //   subscriberSource = SubscriberSource.ad;
-    //   PlayManager.showResult(true);
-    // }
+    bool suc = await AdmobMaxTool.showAdsScreen(AdsSceneType.plus);
+    if (suc == false) {
+      PlayManager.showResult(true);
+    }
   }
 
   @override
@@ -146,7 +145,7 @@ class _ChannelPageState extends State<ChannelPage>
     // TODO: implement dispose
     _refreshController.dispose();
     EasyLoading.dismiss();
-    // AdmobMaxTool.removeListener(hashCode.toString());
+    AdmobMaxTool.removeListener(hashCode.toString());
     super.dispose();
   }
 
@@ -440,21 +439,6 @@ class _ChannelPageState extends State<ChannelPage>
             child: Container(color: Color(0xFFD8D8D8)),
           ),
         ),
-        // Positioned(
-        //   top: 0,
-        //   left: 0,
-        //   right: 0,
-        //   child: Container(
-        //     height: Get.width / 375 * 230,
-        //     decoration: BoxDecoration(
-        //       gradient: LinearGradient(
-        //         colors: [Color(0xFFBCDAFF), Color(0xFF5E9EFF)], // 中心到边缘颜色
-        //         begin: Alignment.topCenter,
-        //         end: Alignment.bottomCenter,
-        //       ),
-        //     ),
-        //   ),
-        // ),
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: navbar(),
@@ -481,17 +465,17 @@ class _ChannelPageState extends State<ChannelPage>
           ),
         ],
       ),
-      // actions: [
-      //   GestureDetector(
-      //     onTap: () {
-      //       subscriberMethod = SubscriberMethod.click;
-      //       subscriberSource = SubscriberSource.channelPage;
-      //       Get.to(() => MyUserPage());
-      //     },
-      //     child: Image.asset(Assets.userVipNavBtn, width: 64, height: 28),
-      //   ),
-      //   SizedBox(width: 12),
-      // ],
+      actions: [
+        GestureDetector(
+          onTap: () {
+            vipMethod = VipMethod.click;
+            vipSource = VipSource.channelPage;
+            Get.to(() => UserVipPage());
+          },
+          child: Image.asset(Assets.svipProNav, width: 54, height: 22),
+        ),
+        SizedBox(width: 12),
+      ],
     );
   }
 

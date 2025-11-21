@@ -338,11 +338,11 @@ class _PlayListFullPageState extends State<PlayListFullPage> {
           m.isSelect = false;
         }
         model.isSelect = true;
-        // if (model.recommend == 1) {
-        //   playSource = PlaySource.playlist_recommend;
-        // } else {
-        //   playSource = PlaySource.playlist_file;
-        // }
+        if (model.recommend == 1) {
+          playSource = PlaySource.playlist_recommend;
+        } else {
+          playSource = PlaySource.playlist_file;
+        }
         setState(() {});
         widget.selectItem(dataList);
       },

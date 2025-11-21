@@ -3,44 +3,69 @@ import 'dart:ui';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:uuid/uuid.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:uuid/uuid.dart';
+
 import '../source/Common.dart';
 import '../source/app_key.dart';
 
 enum EventApi {
-  homeExpose('bxww'),
-  homeChannelExpose('pay42DsTpLo'),
-  homeHistoryExpose('x123'),
-  landpageExpose('ckDHswZx'),
-  landpageFail('FlGFf1xsmC'),
-  landpageUploadedExpose('ABwt123IuwR'),
+  homeExpose('eoLJNxP'),
+  homeChannelExpose('KHtwwcJs'),
+  homeHistoryExpose('AubmkzYllC'),
+  landpageExpose('GluL'),
+  landpageFail('GrQ'),
+  landpageUploadedExpose('wXklrPY'),
 
-  playStartAll('njVEu43WTD'),
-  playSource('x4'),
-  playSuc('x53s2'),
-  playFail('mJ2S'),
+  playStartAll('HgbGNVNtL'),
+  playSource('uTnjglYiP'),
+  playSuc('mkxsYcYNEr'),
+  playFail('jGylmDJcEz'),
 
-  adReqPlacement('I1DAMk'),
-  adReqSuc('k2yNHp42fbDKn'),
-  adReqFail('VPieXM421kZtd'),
-  adNeedShow('YziS23242hosBsS'),
-  adShowPlacement('woC423npUzkuZ'),
-  adShowFail('oolZb242JWNDM'),
-  adClick('Ic24up'),
-  historyExpose('R24YAAEZxgj'),
+  adReqPlacement('xHvR'),
+  adReqSuc('BxbMoMjzG'),
+  adReqFail('cWjaybGoQo'),
+  adNeedShow('TnXOjJOogl'),
+  adShowPlacement('Zlxd'),
+  adShowFail('xOsEDAMK'),
+  adClick('peepqwSXKW'),
+  historyExpose('MDqKpNEl'),
 
-  deeplinkOpen('PS24po'),
-  channellistExpose('IWiQeosdfsxCUv'),
-  channellistClick('nyZiiswegbJdO'),
-  channelpageExpose('slweN'),
-  session('xsxb'),
-  ads('xxsdc'),
-  install('xssxzz1z');
+  deeplinkOpen('KZq'),
+  channellistExpose('HRQ'),
+  channellistClick('gQtdhJPNBF'),
+  channelpageExpose('oXTgPJVCl'),
+  session('session'),
+  ads('ads'),
+  install('install'),
+
+  premiumExpose('nASVhcHarR'),
+  premiumSuc('pam'),
+  premiumFail('ImKRM'),
+  premiumClick('UcPBvMet');
 
   final String name;
   const EventApi(this.name);
+}
+
+enum EventParaName {
+  type('jnlwborM'),
+  value('GcQtp'),
+  method('cUKXY'),
+  sub('hqjBfWi'),
+  code('UwqPjxjdG'),
+  history('DGNQoeFT'),
+  entrance('llqpPe'),
+  linkIdLandPage('RHNPXB'),
+  linkSource('EfWifOMPU'),
+  isFirstLink('ISlfwk'),
+  iPlayerUid('rUDKr'),
+
+  source('hqujp');
+
+  final String name;
+  const EventParaName(this.name);
 }
 
 class EventManager extends GetConnect {
@@ -54,7 +79,7 @@ class EventManager extends GetConnect {
 
   @override
   void onInit() async {
-    httpClient.baseUrl = 'https://s.ewx.com/bs/wer';
+    httpClient.baseUrl = 'https://test-sculpin.frameplayvid.com/gannett/croix';
     httpClient.maxAuthRetries = 1;
     httpClient.defaultContentType = EventManager.contentType;
   }
@@ -69,8 +94,22 @@ class EventManager extends GetConnect {
     }
   }
 
-  Future<Map<String, dynamic>> _addPara(bool isUserId) async {
+  Future<String> getDistinctId() async {
+    String uniqueId = '';
+    if (Platform.isIOS) {
+      final storage = FlutterSecureStorage();
+      String? unique_Id = await storage.read(key: 'app_unique_id');
+      if (unique_Id != null) {
+        uniqueId = unique_Id;
+      } else {
+        uniqueId = Uuid().v4();
+        storage.write(key: 'app_unique_id', value: uniqueId);
+      }
+    }
+    return uniqueId;
+  }
 
+  Future<Map<String, dynamic>> _addPara(bool isUserId) async {
     String modelInfo = '';
     String brandInfo = '';
     String systemVersion = '';
@@ -101,33 +140,34 @@ class EventManager extends GetConnect {
 
     Map<String, dynamic> commonPara = {};
     commonPara = {
-      'applause': {
-        'dab': locale.languageCode, //system_language
-        'betony': 'mcc',
-        'clever': info.version, //应用的版本
-        'pompon': systemVersion, //操作系统版本号
-        'forcible': Uuid().v4(), //log_id
-        'bank': '', //android_id
+      'cove': {
+        'token': locale.languageCode, //system_language
+        'quilt': await getDistinctId(), //distinct_id
+        'offend': idfv, //idfv
+        'hasten': app_Bunlde_Id,
+        'pellucid': modelInfo, //手机型号
       },
-      'pelagic': {
-        'pimp': '${DateTime.now().millisecondsSinceEpoch}', //日志发生的客户端时间
-        'lithic': app_Bunlde_Id,
-        'modish': modelInfo,
-        'route': Uuid().v4(), //distinct_id
-        'already': idfv, //idfv
-        'methanol': brandInfo, //手机厂商，apple、 huawei、oppo
-        'sexton':
-            'tacoma', //映射关系：{“mac”: “android”, “tacoma”: “ios”, “moonlit”: “web”}
+      'pursuant': {
+        'peppery': 'mcc',
+        'kellogg': info.version, //应用的版本
+        'efface': systemVersion, //操作系统版本号
+        'subtlety': Uuid().v4(), //log_id
+        'neat': '${DateTime.now().millisecondsSinceEpoch}', //日志发生的客户端时间
+        'blunder': brandInfo, //手机厂商，apple、 huawei、oppo
+        'coates':
+            'usa', //映射关系：{“mac”: “android”, “tacoma”: “ios”, “moonlit”: “web”} // 操作系统
       },
 
-      ///自定义后台字段
-      'vftCKrlWGq/abdomen': linkId,
-      'xCTaWZT/abdomen': apiPlatform == PlatformType.india
-          ? 'YKozeiMhE'
-          : 'JiAYLbh',
-      'ChmtH/abdomen': email,
-      'PGMBmtgPlq/abdomen': userId,
-      'cJASu/abdomen': playFileId,
+      'springe': {
+        ///自定义后台字段
+        'ufFIwN': linkId,
+        'ueCbDyO': apiPlatform == PlatformType.india
+            ? 'cSCCcAmHL'
+            : 'LlEFAXhIW',
+        'oRFAZMRy': email,
+        'rUDKr': userId,
+        'yWadcl': playFileId,
+      },
     };
     return commonPara;
   }
@@ -138,19 +178,19 @@ class EventManager extends GetConnect {
   }) async {
     if (Platform.isIOS) {
       bool has = eventList.any(
-        (m) => m['applause']['forcible'] == para['applause']['forcible'],
+        (m) => m['pursuant']['subtlety'] == para['pursuant']['subtlety'],
       );
       if (has == false) {
         eventList.add(para);
-        logArr.add(para['applause']['forcible']);
+        logArr.add(para['pursuant']['subtlety']);
         Map<String, dynamic> saveData = {};
         eventList.forEach((m) {
-          saveData[m['applause']['forcible']] = m;
+          saveData[m['pursuant']['subtlety']] = m;
         });
         await AppKey.save(AppKey.eventList, saveData);
         postApiEvent();
       } else {
-        print('-------${para['applause']['forcible']}');
+        print('-------${para['pursuant']['subtlety']}');
         postApiEvent();
       }
       // } else {
@@ -183,29 +223,30 @@ class EventManager extends GetConnect {
             '',
             contentType: "application/json",
             para,
-            headers: {'sexton': 'tacoma'},
+            // headers: {'emeritus': 'tacoma'},
             query: {
-              'pimp': '${DateTime.now().millisecondsSinceEpoch}',
-              'dab': locale.languageCode, //日志发生的客户端时间
+              'quilt': await getDistinctId(), //distinct_id
+              'coates': 'usa',
+              'token': locale.languageCode,
             },
           );
           if (response.statusCode == 200) {
             EventManager.instance.eventList.removeWhere(
-              (m) => m['applause']['forcible'] == para['applause']['forcible'],
+              (m) => m['pursuant']['subtlety'] == para['pursuant']['subtlety'],
             );
             Map<String, dynamic> saveData = {};
             EventManager.instance.eventList.forEach((m) {
-              saveData[m['applause']['forcible']] = m;
+              saveData[m['pursuant']['subtlety']] = m;
             });
-            if (para['paterson'] == 'calico') {
+            if (para['saddle'] != null) {
               AppKey.save(AppKey.appInstall, true);
             }
-            if (para['paterson'] == 'ckDHZx') {
+            if (para['humane'] == EventApi.landpageExpose.name) {
               AppKey.save(AppKey.isFirstLink, true);
             }
             await AppKey.save(AppKey.eventList, saveData);
           } else if (response.statusCode != null) {
-            print("object");
+            print(response.status.code);
           }
           // } else {
           // String androidId = await AndroidId().getId() ?? '';
@@ -250,43 +291,26 @@ class EventManager extends GetConnect {
   Future<void> install(bool isUserId) async {
     PackageInfo info = await PackageInfo.fromPlatform();
     Map<String, dynamic> dict = {
-      'paterson': 'calico',
-      // 'periodic': 'build/${info.buildNumber}', //系统构建版本，Build.ID， 以 build/ 开头
-      // 'eta': '',
-      // 'salutary': 'consul', //映射关系：{“executor”: 0, “consul”: 1}
-      // 'diogenes': 0,
-      // 'confound': 0,
-      // 'steppe': 0,
-      // 'anywhere': 0,
-      // 'chess': 0,
-      // 'eurydice': 0,
+      'demand': 'build/${info.buildNumber}', //系统构建版本，Build.ID， 以 build/ 开头
+      'deadwood': '',
+      'sixteen': 'saga', //映射关系：{“executor”: 0, “consul”: 1}
+      'aback': 0,
+      'bookcase': 0,
+      'tack': 0,
+      'stare': 0,
+      'itt': 0,
+      'fungible': 0,
     };
 
-    // if (Platform.isIOS) {
-    //   dict = {
-    //     EventApi.install.name: {
-    //       'hudson': 'build/${info.buildNumber}', //系统构建版本，Build.ID， 以 build/ 开头
-    //       'except': '',
-    //       'grudge': 1,
-    //       'stalwart': 0,
-    //       'chancy': 0,
-    //       'robot': 0,
-    //       'manumit': 0,
-    //       'lutz': 0,
-    //       'cetera': 0,
-    //     },
-    //   };
-    // } else {
-    //   dict = {'seventy': 'tarpaper'};
-    // }
     Map<String, dynamic> commonPara = await _addPara(isUserId);
-    await postRequest(EventApi.install, para: commonPara..addAll(dict));
+    await postRequest(
+      EventApi.install,
+      para: commonPara..addAll({'saddle': dict}),
+    );
   }
 
   Future<void> session() async {
-    // Map<String, dynamic> dict =
-    //     Platform.isIOS ? {'flautist': 'blest'} : {'seventy': 'cranny'};
-    Map<String, dynamic> dict = {'bradbury': {}};
+    Map<String, dynamic> dict = {'humane': 'ny'};
     Map<String, dynamic> commonPara = await _addPara(true);
     await postRequest(EventApi.session, para: commonPara..addAll(dict));
   }
@@ -296,22 +320,22 @@ class EventManager extends GetConnect {
     await postRequest(EventApi.ads, para: commonPara..addAll(para ?? {}));
   }
 
-  Future<void> enventUpload(EventApi event, Map<String, dynamic>? para) async {
+  Future<void> eventUpload(EventApi event, Map<String, dynamic>? para) async {
     Map<String, dynamic> commonPara = await _addPara(true);
     if (para == null) {
       await postRequest(
         event,
-        para: {'paterson': event.name}..addAll(commonPara),
+        para: {'humane': event.name}..addAll(commonPara),
       );
     } else {
-      Map<String, dynamic> dict = {
-        for (var entry in para.entries) 'outlawry<${entry.key}': entry.value,
-      };
+      // Map<String, dynamic> dict = {
+      //   for (var entry in para.entries) 'outlawry<${entry.key}': entry.value,
+      // };
       await postRequest(
         event,
-        para: {'paterson': event.name}
+        para: {'humane': event.name}
           ..addAll(commonPara)
-          ..addAll(dict),
+          ..addAll({'whatnot': para}),
       );
     }
   }

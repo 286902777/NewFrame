@@ -25,6 +25,7 @@ class Assets {
   static const String assetsLogo48 = 'assets/logo_48.png';
   static const String assetsLogo88 = 'assets/logo_88.png';
   static const String assetsMore = 'assets/more.png';
+  static const String assetsNaviteClose = 'assets/navite_close.png';
   static const String assetsNoContent = 'assets/no_content.png';
   static const String assetsNoNetwork = 'assets/no_network.png';
   static const String assetsPause = 'assets/pause.png';
@@ -51,4 +52,20 @@ class Assets {
   static const String assetsUploadVideo = 'assets/upload_video.png';
   static const String assetsVideoBg = 'assets/video_bg.png';
   static const String assetsVolume = 'assets/volume.png';
+  static const String svipProNav = 'assets/svip/pro_nav.png';
+  static const String svipSvipAdsIcon = 'assets/svip/svip_ads_icon.png';
+  static const String svipSvipBg = 'assets/svip/svip_bg.png';
+  static const String svipSvipClose = 'assets/svip/svip_close.png';
+  static const String svipSvipFail = 'assets/svip/svip_fail.png';
+  static const String svipSvipHot = 'assets/svip/svip_hot.png';
+  static const String svipSvipNav = 'assets/svip/svip_nav.png';
+  static const String svipSvipNext = 'assets/svip/svip_next.png';
+  static const String svipSvipPopSmall = 'assets/svip/svip_pop_small.png';
+  static const String svipSvipPro = 'assets/svip/svip_pro.png';
+  static const String svipSvipSel = 'assets/svip/svip_sel.png';
+  static const String svipSvipSpeed = 'assets/svip/svip_speed.png';
+  static const String svipSvipSpeedUp = 'assets/svip/svip_speed_up.png';
+  static const String svipSvipSucBg = 'assets/svip/svip_suc_bg.png';
+  static const String svipSvipSucBtn = 'assets/svip/svip_suc_btn.png';
+  static const String svipSvipUnsel = 'assets/svip/svip_unsel.png';
 }

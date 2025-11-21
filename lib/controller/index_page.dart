@@ -22,6 +22,7 @@ import '../source/app_key.dart';
 import '../source/play_manager.dart';
 import '../view/index_histroy_cell.dart';
 import '../view/index_list_cell.dart';
+import '../vip_page/user_vip_page.dart';
 
 class IndexPage extends StatefulWidget {
   const IndexPage({super.key});
@@ -48,6 +49,7 @@ class _IndexPageState extends State<IndexPage>
   @override
   void didPopNext() {
     requsetChannelData();
+    indexServiceEvent();
     super.didPopNext();
   }
 
@@ -68,6 +70,7 @@ class _IndexPageState extends State<IndexPage>
     Common.instance.initTracking();
     isNetwork.value = Common.instance.netStatus;
     requsetChannelData();
+    indexServiceEvent();
     uploadOpenApp();
   }
 
@@ -213,19 +216,18 @@ class _IndexPageState extends State<IndexPage>
                     : _emptyWidget(),
               ),
             ),
-            // Positioned(
-            //   top: 8,
-            //   right: 12,
-            //   child: GestureDetector(
-            //     onTap: () {
-            //       subscriberMethod = SubscriberMethod.click;
-            //       subscriberSource = SubscriberSource.home;
-            //       Get.to(() => MyUserPage());
-            //       // Get.to(() => MyDeepPage(linkId: '1966441526041255937'));
-            //     },
-            //     child: Image.asset(Assets.userVipNavBtn, width: 64, height: 28),
-            //   ),
-            // ),
+            Positioned(
+              top: 9,
+              right: 12,
+              child: GestureDetector(
+                onTap: () {
+                  vipMethod = VipMethod.click;
+                  vipSource = VipSource.home;
+                  Get.to(() => UserVipPage());
+                },
+                child: Image.asset(Assets.svipProNav, width: 54, height: 22),
+              ),
+            ),
           ],
         ),
       ),
@@ -340,11 +342,12 @@ class _IndexPageState extends State<IndexPage>
                     channelSource = ChannelSource.home_channel;
                     if (userLists.length > index) {
                       EventManager.instance
-                          .enventUpload(EventApi.channellistClick, {
-                            'KsAj': userLists[index].recommend == 0
+                          .eventUpload(EventApi.channellistClick, {
+                            EventParaName.value.name:
+                                userLists[index].recommend == 0
                                 ? 'IqYl'
                                 : 'oAkJkCeuEa',
-                            'pfGl': 'ayiqpkj',
+                            EventParaName.entrance.name: 'ayiqpkj',
                           });
                     }
                     Get.to(
@@ -549,5 +552,19 @@ class _IndexPageState extends State<IndexPage>
         ),
       ],
     );
+  }
+
+  void indexServiceEvent() async {
+    if (AppDataBase.instance.users.isNotEmpty) {
+      EventManager.instance.eventUpload(EventApi.homeChannelExpose, {
+        EventParaName.sub.name: AppDataBase.instance.users.length,
+      });
+    }
+    if (AppDataBase.instance.historyItems.isNotEmpty) {
+      EventManager.instance.eventUpload(EventApi.homeHistoryExpose, {
+        EventParaName.history.name: AppDataBase.instance.historyItems.length,
+      });
+    }
+    EventManager.instance.eventUpload(EventApi.homeExpose, null);
   }
 }

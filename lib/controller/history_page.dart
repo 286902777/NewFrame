@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../event/event_manager.dart';
 import '../generated/assets.dart';
 import '../model/videoModel.dart';
@@ -25,7 +26,7 @@ class _HistoryPageState extends State<HistoryPage> {
     super.initState();
     Common.instance.initTracking();
     eventSource = BackEventSource.history;
-    EventManager.instance.enventUpload(EventApi.historyExpose, null);
+    EventManager.instance.eventUpload(EventApi.historyExpose, null);
   }
 
   @override

@@ -23,6 +23,7 @@ import '../source/Common.dart';
 import '../source/CusToast.dart';
 import '../source/RefreshPage.dart';
 import '../source/play_manager.dart';
+import '../vip_page/user_vip_page.dart';
 import 'channel_page.dart';
 import 'file_list_page.dart';
 import 'image_page.dart';
@@ -175,18 +176,22 @@ class _DeepPageState extends State<DeepPage>
             }
           }
           bool isFirst = await AppKey.getBool(AppKey.isFirstLink) ?? false;
-          // EventManager.instance.enventUpload(EventApi.landpageExpose, {
-          //   'KsAj': apiPlatform == PlatformType.india ? 'JiAYLbh' : 'YKozeiMhE',
-          //   'FYYS': isDeepLink ? 'yZLK' : 'ndwTflNXN',
-          //   'pDTFjZl': !isFirst,
-          // });
+          EventManager.instance.eventUpload(EventApi.landpageExpose, {
+            EventParaName.value.name: apiPlatform == PlatformType.india
+                ? 'cSCCcAmHL'
+                : 'LlEFAXhIW',
+            EventParaName.linkSource.name: isDeepLink ? 'HuN' : 'ExzSkQi',
+            EventParaName.isFirstLink.name: !isFirst,
+          });
           _refreshController.loadComplete();
         },
         failHandle: (refresh, code, msg) {
           if (refresh) {
             requestNetworkData();
           } else {
-            EventManager.instance.enventUpload(EventApi.landpageFail, null);
+            EventManager.instance.eventUpload(EventApi.landpageFail, {
+              EventParaName.value.name: 'request fail',
+            });
             _refreshController.loadFailed();
             CusToast.show(message: msg, type: CusToastType.fail);
           }
@@ -487,16 +492,16 @@ class _DeepPageState extends State<DeepPage>
         },
       ),
       actions: [
-        // GestureDetector(
-        //   onTap: () {
-        //     subscriberMethod = SubscriberMethod.click;
-        //     subscriberSource = SubscriberSource.landPage;
-        //     Get.to(() => MyUserPage());
-        //   },
-        //   child: Image.asset(Assets.userVipNavBtn, width: 64, height: 28),
-        // ),
-        // SizedBox(width: 12),
-        SizedBox(width: 76),
+        SizedBox(width: 10),
+        GestureDetector(
+          onTap: () {
+            vipMethod = VipMethod.click;
+            vipSource = VipSource.landPage;
+            Get.to(() => UserVipPage());
+          },
+          child: Image.asset(Assets.svipProNav, width: 54, height: 22),
+        ),
+        SizedBox(width: 12),
       ],
     );
   }
@@ -612,7 +617,7 @@ class _DeepPageState extends State<DeepPage>
                     onTap: () {
                       selectIndex.value = lists[index].idx;
                       if (index > 0) {
-                        EventManager.instance.enventUpload(
+                        EventManager.instance.eventUpload(
                           EventApi.landpageUploadedExpose,
                           null,
                         );

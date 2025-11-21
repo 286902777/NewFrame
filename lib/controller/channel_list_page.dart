@@ -33,7 +33,7 @@ class _ChannelListPageState extends State<ChannelListPage> {
     // TODO: implement initState
     super.initState();
     _requestUserListInfo();
-    EventManager.instance.enventUpload(EventApi.channellistExpose, null);
+    EventManager.instance.eventUpload(EventApi.channellistExpose, null);
   }
 
   Future<void> _requestUserListInfo() async {
@@ -218,10 +218,10 @@ class _ChannelListPageState extends State<ChannelListPage> {
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
                   channelSource = ChannelSource.channellist;
-                  EventManager.instance.enventUpload(
-                    EventApi.channellistClick,
-                    {'KsAj': 'IqYl', 'pfGl': 'QTt'},
-                  );
+                  EventManager.instance.eventUpload(EventApi.channellistClick, {
+                    EventParaName.value.name: 'pEpNEF',
+                    EventParaName.entrance.name: 'fiVZL',
+                  });
                   Get.to(
                     () => ChannelPage(
                       userId: allUsers[index].id,
@@ -328,9 +328,9 @@ class _ChannelListPageState extends State<ChannelListPage> {
       behavior: HitTestBehavior.opaque,
       onTap: () {
         channelSource = ChannelSource.channelpage_recommend;
-        EventManager.instance.enventUpload(EventApi.channellistClick, {
-          'KsAj': 'oAkJkCeuEa',
-          'pfGl': 'QTt',
+        EventManager.instance.eventUpload(EventApi.channellistClick, {
+          EventParaName.value.name: 'pEpNEF',
+          EventParaName.entrance.name: 'refcWIw',
         });
         Get.to(
           () => ChannelPage(userId: map['cipherable'], platform: userPlatform),

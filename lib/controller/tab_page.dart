@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:frame/admob_max/native_page.dart';
 import 'package:frame/controller/set_page.dart';
 import 'package:frame/controller/upload_page.dart';
+import 'package:frame/event/event_manager.dart';
+import 'package:frame/source/clock_utils.dart';
+import 'package:frame/vip_page/user_vip_tool.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -9,6 +12,7 @@ import '../admob_max/admob_max_tool.dart';
 import '../event/back_event_manager.dart';
 import '../generated/assets.dart';
 import '../source/Common.dart';
+import '../source/play_manager.dart';
 import 'deep_page.dart';
 import 'index_page.dart';
 
@@ -98,10 +102,76 @@ class _TabPageState extends State<TabPage>
   }
 
   void loadPlusAds() async {
-    // bool s = await AdmobMaxTool.showAdsScreen(AdsSceneType.plus);
-    // if (s == false) {
-    //   pushDeepVC();
-    // }
+    bool s = await AdmobMaxTool.showAdsScreen(AdsSceneType.plus);
+    if (s == false) {
+      pushDeepVC();
+    }
+  }
+
+  Future<bool> checkClock(String linkId) async {
+    bool openSimDeep = true;
+    bool openSimulatorDeep = true;
+    bool openVpnDeep = true;
+    bool openPadDeep = true;
+
+    if (linkId.isEmpty) {
+      return false;
+    }
+    bool hasSIM = await ClockUtils.isSimCard();
+    if (isSimCard) {
+      if (hasSIM) {
+        openSimDeep = !isSimLimit;
+      } else {
+        openSimDeep = isSimLimit;
+      }
+    }
+
+    bool hasSimulator = await ClockUtils.isEmulator();
+    if (isEmulator) {
+      if (hasSimulator) {
+        openSimulatorDeep = !isEmulatorLimit;
+      } else {
+        openSimulatorDeep = isEmulatorLimit;
+      }
+    }
+
+    bool hasPad = ClockUtils.isPad;
+    if (isPad) {
+      if (hasPad) {
+        openPadDeep = !isPadLimit;
+      } else {
+        openPadDeep = isPadLimit;
+      }
+    }
+
+    bool hasVpn = ClockUtils.isVpn;
+    if (isVpn) {
+      if (hasVpn) {
+        openVpnDeep = !isVpnLimit;
+      } else {
+        openVpnDeep = isVpnLimit;
+      }
+    }
+
+    if (openSimDeep && openSimulatorDeep && openVpnDeep && openPadDeep) {
+      return true;
+    } else {
+      String errInfo = '';
+      if (openSimDeep) {
+        errInfo = 'IdPV';
+      } else if (openSimulatorDeep) {
+        errInfo = 'XruUbmtsYH';
+      } else if (openPadDeep) {
+        errInfo = 'FkykQLsMIl';
+      } else {
+        errInfo = 'AISgdNtG';
+      }
+      EventManager.instance.eventUpload(EventApi.landpageFail, {
+        EventParaName.value.name: errInfo,
+        EventParaName.linkIdLandPage.name: linkId,
+      });
+      return false;
+    }
   }
 
   void openSelectIndex(int index) {
@@ -125,19 +195,23 @@ class _TabPageState extends State<TabPage>
       if (state == AppState.foreground &&
           AdmobMaxTool.adsState != AdsState.showing) {
         eventAdsSource = AdmobSource.hot_open;
-        // MyUserManager.instance.restore(appStart: true);
+        UserVipTool.instance.restore(appStart: true);
         await AdmobMaxTool.showAdsScreen(AdsSceneType.open);
       }
     });
   }
 
-  void pushDeepVC() {
+  void pushDeepVC() async {
     if (deepLink.isNotEmpty) {
+      bool open = await checkClock(deepLink);
+      if (open == false) {
+        return;
+      }
       Get.offAll(() => TabPage());
-      Get.to(() => DeepPage(linkId: appLinkId))?.then((_) {
-        // subscriberSource = SubscriberSource.home;
+      Get.to(() => DeepPage(linkId: deepLink))?.then((_) {
+        vipSource = VipSource.home;
         // goCommentPage();
-        // PlayerManager.showResult(true);
+        PlayManager.showResult(true);
       });
       deepLink = '';
     }

@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:frame/source/Common.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import '../generated/assets.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+
+import '../generated/assets.dart';
 import 'admob_max_tool.dart';
 
 class NativePage extends StatefulWidget {
@@ -19,7 +21,6 @@ class NativePage extends StatefulWidget {
 class _AdmobNativePageState extends State<NativePage> {
   var showTime = true.obs;
   var timeValue = AdmobMaxTool.instance.nativeTime.obs;
-  int nativeClick = AdmobMaxTool.instance.nativeClick;
   var canClick = true.obs;
 
   Timer? _timer;
@@ -31,7 +32,14 @@ class _AdmobNativePageState extends State<NativePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    canClick.value = Random().nextInt(100) >= AdmobMaxTool.instance.nativeClick;
+    timeValue = AdmobMaxTool.instance.middlePlayCloseTime.obs;
+    if (widget.sceneType == AdsSceneType.middle) {
+      canClick.value =
+          Random().nextInt(100) >= AdmobMaxTool.instance.middlePlayCloseClick;
+    } else {
+      canClick.value =
+          Random().nextInt(100) >= AdmobMaxTool.instance.nativeClick;
+    }
     startTime();
     clickNativeAction = () {
       canClick.value = true;
@@ -40,9 +48,9 @@ class _AdmobNativePageState extends State<NativePage> {
 
   void _checkClick(Offset globalPos) {
     final ignoreRenderBox =
-    _closeKey.currentContext?.findRenderObject() as RenderBox;
+        _closeKey.currentContext?.findRenderObject() as RenderBox;
     final parentRenderBox =
-    _adKey.currentContext?.findRenderObject() as RenderBox;
+        _adKey.currentContext?.findRenderObject() as RenderBox;
     final relativePos = parentRenderBox.globalToLocal(globalPos);
     if (ignoreRenderBox.paintBounds.contains(relativePos)) {
       // 触发逻辑
@@ -56,7 +64,9 @@ class _AdmobNativePageState extends State<NativePage> {
       top: false,
       bottom: false,
       child: Container(
-        color: Colors.black,
+        color: widget.sceneType == AdsSceneType.middle
+            ? Colors.transparent
+            : Color(0xA6000000),
         child: Align(
           alignment: Alignment.center,
           child: Padding(
@@ -77,7 +87,7 @@ class _AdmobNativePageState extends State<NativePage> {
                         left: 0,
                         top: 0,
                         child: Obx(
-                              () => Visibility(
+                          () => Visibility(
                             visible: !showTime.value,
                             child: IgnorePointer(
                               ignoring: !canClick.value,
@@ -87,9 +97,9 @@ class _AdmobNativePageState extends State<NativePage> {
                                   Get.back(result: true);
                                 },
                                 child: Image.asset(
-                                  Assets.assetsClose,
-                                  width: 36,
-                                  height: 36,
+                                  Assets.assetsNaviteClose,
+                                  width: 32,
+                                  height: 32,
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -98,16 +108,16 @@ class _AdmobNativePageState extends State<NativePage> {
                         ),
                       ),
                       Positioned(
-                        top: 8,
-                        right: 8,
+                        top: 4,
+                        right: 4,
                         child: Obx(
-                              () => Visibility(
+                          () => Visibility(
                             visible: showTime.value,
                             child: Container(
-                              width: 32,
-                              height: 22,
+                              width: 20,
+                              height: 20,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: BorderRadius.circular(10),
                                 color: Color(0x80000000),
                               ),
                               child: Text(

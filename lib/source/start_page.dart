@@ -5,6 +5,7 @@ import 'package:frame/admob_max/admob_max_tool.dart';
 import 'package:frame/controller/tab_page.dart';
 import 'package:frame/event/back_event_manager.dart';
 import 'package:frame/source/app_key.dart';
+import 'package:frame/vip_page/user_vip_tool.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -179,9 +180,21 @@ class _StartPageState extends State<StartPage> {
     Get.offAll(() => TabPage());
   }
 
+  void isRequestAdInfo() async {
+    bool isVip = await AppKey.getBool(AppKey.isVipUser) ?? false;
+    if (isVip == false) {
+      requestAds();
+    }
+    UserVipTool.instance.restore(appStart: true);
+    if (UserVipTool.instance.productResultList.value.isEmpty) {
+      await UserVipTool.instance.queryProductInfo();
+    }
+  }
+
   void requestAds() async {
     dynamic openSuc = await AdmobMaxTool.initAdmobOrMax(AdsSceneType.open);
     AdmobMaxTool.initAdmobOrMax(AdsSceneType.play);
+    AdmobMaxTool.initAdmobOrMax(AdsSceneType.middle);
     AdmobMaxTool.initAdmobOrMax(AdsSceneType.channel);
     bool noStart = await AppKey.getBool(AppKey.onceInstallApp) ?? false;
     if (noStart == true) {
@@ -236,6 +249,8 @@ class _StartPageState extends State<StartPage> {
             if (loadAndShowError != null) {
               if (install == false) {
                 reSetRootPage();
+              } else {
+                isRequestAdInfo();
               }
               await AppKey.save(AppKey.onceInstallApp, true);
             } else {
@@ -250,6 +265,8 @@ class _StartPageState extends State<StartPage> {
               MobileAds.instance.updateRequestConfiguration(config);
               if (install == false) {
                 reSetRootPage();
+              } else {
+                isRequestAdInfo();
               }
               await AppKey.save(AppKey.onceInstallApp, true);
             }
@@ -257,11 +274,11 @@ class _StartPageState extends State<StartPage> {
         },
         (FormError error) {
           print('=--=-=-=-=-=-=-$error.message');
-          requestAds();
+          isRequestAdInfo();
         },
       );
     } else {
-      requestAds();
+      isRequestAdInfo();
     }
   }
 }

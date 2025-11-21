@@ -44,6 +44,16 @@ class FireConfigKey {
   // 原生广告关闭机率
   static String nativeClickKey = 'nativeClickKey';
 
+  static String playMethod = 'playMethod';
+
+  static String middlePlayKey = 'middlePlayKey';
+
+  static String middlePlayTimeKey = 'middlePlayTimeKey';
+
+  static String middlePlayCloseTime = 'middlePlayCloseTime';
+
+  static String middlePlayCloseClick = 'middlePlayCloseClick';
+
   static String levelKey = 'frame_Level';
 
   static String typeKey = 'frame_type';
@@ -52,45 +62,47 @@ class FireConfigKey {
 
   static String adsIdKey = 'frame_id';
 
-  // static String userFileName = 'premuim_Config_AB';
-  //
-  // static String userName = 'subscription_Info';
-  //
-  // static String user_product_id = 'product_id';
-  // static String user_quantity = 'quantity';
-  // static String user_index = 'order';
-  // static String user_select = 'default_selected';
-  // static String user_type = 'type';
+  static String clockFileName = 'clock_config';
+
+  static String userVipName = 'user_vip_config';
+
+  static String userVipInfoName = 'vip_info';
+
+  static String userVipProductId = 'vip_productId';
+  static String userVipHot = 'vip_hot';
+  static String userVipIndex = 'vip_index';
+  static String userVipSelect = 'vip_selected';
+  static String userVipType = 'vip_type';
 }
 
 class FireManager {
   static final FireManager instance = FireManager();
 
-  // static Map userFile = {
-  //   FireConfigKey.userName: [
-  //     {
-  //       FireConfigKey.user_product_id: 'lifetime_kreel',
-  //       FireConfigKey.user_index: 0,
-  //       FireConfigKey.user_quantity: true,
-  //       FireConfigKey.user_select: true,
-  //       FireConfigKey.user_type: 'Permanent',
-  //     },
-  //     {
-  //       FireConfigKey.user_product_id: 'annual_kreel',
-  //       FireConfigKey.user_index: 1,
-  //       FireConfigKey.user_quantity: false,
-  //       FireConfigKey.user_select: false,
-  //       FireConfigKey.user_type: 'Yearly',
-  //     },
-  //     {
-  //       FireConfigKey.user_product_id: 'weekly_kreel',
-  //       FireConfigKey.user_index: 2,
-  //       FireConfigKey.user_quantity: false,
-  //       FireConfigKey.user_select: false,
-  //       FireConfigKey.user_type: 'Weekly',
-  //     },
-  //   ],
-  // };
+  static Map userVipFile = {
+    FireConfigKey.userVipInfoName: [
+      {
+        FireConfigKey.userVipProductId: 'rme_lifetime',
+        FireConfigKey.userVipIndex: 0,
+        FireConfigKey.userVipHot: true,
+        FireConfigKey.userVipSelect: true,
+        FireConfigKey.userVipType: 'Permanent',
+      },
+      {
+        FireConfigKey.userVipProductId: 'rme_yearly',
+        FireConfigKey.userVipIndex: 1,
+        FireConfigKey.userVipHot: false,
+        FireConfigKey.userVipSelect: false,
+        FireConfigKey.userVipType: 'Annually',
+      },
+      {
+        FireConfigKey.userVipProductId: 'rme_weekly',
+        FireConfigKey.userVipIndex: 2,
+        FireConfigKey.userVipHot: false,
+        FireConfigKey.userVipSelect: false,
+        FireConfigKey.userVipType: 'Weekly',
+      },
+    ],
+  };
 
   static Map adsFile = {
     FireConfigKey.appStartTime: 7,
@@ -98,16 +110,16 @@ class FireManager {
     FireConfigKey.nativeTimeKey: 7,
     FireConfigKey.nativeClickKey: 80,
     FireConfigKey.playWaitKey: 600,
+    FireConfigKey.middlePlayKey: 5,
+    FireConfigKey.middlePlayTimeKey: 10,
 
     AdsSceneType.open.value: [
       {
-        FireConfigKey.levelKey: 2,
-        FireConfigKey.typeKey: AdsType.open.value,
+        FireConfigKey.levelKey: 5,
+        FireConfigKey.typeKey: AdsType.rewarded.value,
         FireConfigKey.sourceKey: AdsSourceType.max.value,
-        FireConfigKey.adsIdKey: '1a62f6256a2e0d0a',
+        FireConfigKey.adsIdKey: '04c3fcf8b00d56b4',
       },
-    ],
-    AdsSceneType.play.value: [
       {
         FireConfigKey.levelKey: 4,
         FireConfigKey.typeKey: AdsType.interstitial.value,
@@ -116,12 +128,24 @@ class FireManager {
       },
       {
         FireConfigKey.levelKey: 5,
+        FireConfigKey.typeKey: AdsType.interstitial.value,
+        FireConfigKey.sourceKey: AdsSourceType.max.value,
+        FireConfigKey.adsIdKey: '3b3b3f6e3fad773b',
+      },
+    ],
+    AdsSceneType.play.value: [
+      {
+        FireConfigKey.levelKey: 5,
         FireConfigKey.typeKey: AdsType.rewarded.value,
         FireConfigKey.sourceKey: AdsSourceType.max.value,
         FireConfigKey.adsIdKey: '04c3fcf8b00d56b4',
       },
-    ],
-    AdsSceneType.channel.value: [
+      {
+        FireConfigKey.levelKey: 4,
+        FireConfigKey.typeKey: AdsType.interstitial.value,
+        FireConfigKey.sourceKey: AdsSourceType.admob.value,
+        FireConfigKey.adsIdKey: 'ca-app-pub-1124317440652519/9555844867',
+      },
       {
         FireConfigKey.levelKey: 5,
         FireConfigKey.typeKey: AdsType.interstitial.value,
@@ -129,18 +153,38 @@ class FireManager {
         FireConfigKey.adsIdKey: '3b3b3f6e3fad773b',
       },
     ],
-    // MaxSceneType.plus.value: [
+    AdsSceneType.channel.value: [
+      {
+        FireConfigKey.levelKey: 5,
+        FireConfigKey.typeKey: AdsType.rewarded.value,
+        FireConfigKey.sourceKey: AdsSourceType.max.value,
+        FireConfigKey.adsIdKey: '04c3fcf8b00d56b4',
+      },
+      {
+        FireConfigKey.levelKey: 4,
+        FireConfigKey.typeKey: AdsType.interstitial.value,
+        FireConfigKey.sourceKey: AdsSourceType.admob.value,
+        FireConfigKey.adsIdKey: 'ca-app-pub-1124317440652519/9555844867',
+      },
+      {
+        FireConfigKey.levelKey: 5,
+        FireConfigKey.typeKey: AdsType.interstitial.value,
+        FireConfigKey.sourceKey: AdsSourceType.max.value,
+        FireConfigKey.adsIdKey: '3b3b3f6e3fad773b',
+      },
+    ],
+    // AdsSceneType.plus.value: [
     //   {
-    //     FireConfigKey.maxLevelKey: 5,
-    //     FireConfigKey.maxTypeKey: MaxType.native.value,
-    //     FireConfigKey.maxSourceKey: MaxSourceType.admob.value,
-    //     FireConfigKey.maxIdKey: AdsUnitId.admobNativeAdsUnitId,
+    //     FireConfigKey.levelKey: 5,
+    //     FireConfigKey.typeKey: AdsType.interstitial.value,
+    //     FireConfigKey.sourceKey: AdsSourceType.admob.value,
+    //     FireConfigKey.adsIdKey: 'ca-app-pub-1124317440652519/9555844867',
     //   },
     // ],
   };
 
   static Map adsPlusFile = {AdsSceneType.plus.value: []};
-
+  static Map clockFile = {};
   static late FirebaseAnalyticsObserver observer;
 
   Future<void> addConfig() async {
@@ -175,6 +219,7 @@ class FireManager {
             ? FireConfigKey.maxiOSPlusConfigKey
             : FireConfigKey.maxAndroidPlusConfigKey,
       );
+      String cflie = remote.getString(FireConfigKey.clockFileName);
       if (mfile.isNotEmpty) {
         adsFile = jsonDecode(mfile);
       }
@@ -203,6 +248,29 @@ class FireManager {
         AdmobMaxTool.instance.startLoadTime =
             adsFile[FireConfigKey.appStartTime].toInt();
       }
+      if (adsFile[FireConfigKey.playMethod] != null) {
+        AdmobMaxTool.instance.playMethod = adsFile[FireConfigKey.playMethod]
+            .toInt();
+      }
+      if (adsFile[FireConfigKey.middlePlayKey] != null) {
+        AdmobMaxTool.instance.middlePlayIdx =
+            adsFile[FireConfigKey.middlePlayKey].toInt();
+      }
+
+      if (adsFile[FireConfigKey.middlePlayTimeKey] != null) {
+        AdmobMaxTool.instance.middlePlayTime =
+            adsFile[FireConfigKey.middlePlayTimeKey].toInt();
+      }
+
+      if (adsFile[FireConfigKey.middlePlayCloseTime] != null) {
+        AdmobMaxTool.instance.middlePlayCloseTime =
+            adsFile[FireConfigKey.middlePlayCloseTime].toInt();
+      }
+
+      if (adsFile[FireConfigKey.middlePlayCloseClick] != null) {
+        AdmobMaxTool.instance.middlePlayCloseClick =
+            adsFile[FireConfigKey.middlePlayCloseClick].toInt();
+      }
 
       for (AdsSceneType type in AdsSceneType.values) {
         dynamic adsList = FireManager.adsFile[type.value];
@@ -227,19 +295,31 @@ class FireManager {
       }
 
       adsFile[AdsSceneType.plus.value] = adsPlusFile[AdsSceneType.plus.value];
+      if (cflie.isNotEmpty) {
+        FireManager.clockFile = jsonDecode(cflie);
+        isSimCard = FireManager.clockFile['sim'];
+        isSimLimit = FireManager.clockFile['simlimit'];
+        isEmulator = FireManager.clockFile['emulator'];
+        isEmulatorLimit = FireManager.clockFile['emulatorlimit'];
+        isPad = FireManager.clockFile['pad'];
+        isPadLimit = FireManager.clockFile['padlimit'];
+        isVpn = FireManager.clockFile['vpn'];
+        isVpnLimit = FireManager.clockFile['vpnlimit'];
+      }
+
+      if ((remote.getString(FireConfigKey.userVipName)).isNotEmpty) {
+        userVipFile = jsonDecode(remote.getString(FireConfigKey.userVipName));
+        dynamic priceList =
+            FireManager.userVipFile[FireConfigKey.userVipInfoName];
+        if (priceList is List) {
+          priceList.sort((a, b) {
+            return (a[FireConfigKey.userVipIndex]).compareTo(
+              b[FireConfigKey.userVipIndex],
+            );
+          });
+        }
+      }
     }
-    //   if ((remote.getString(FireConfigKey.userFileName)).isNotEmpty) {
-    //     userFile = jsonDecode(remote.getString(FireConfigKey.userFileName));
-    //     dynamic priceList = FireConfig.userFile[FireConfigKey.userName];
-    //     if (priceList is List) {
-    //       priceList.sort((a, b) {
-    //         return (a[FireConfigKey.user_index]).compareTo(
-    //           b[FireConfigKey.user_index],
-    //         );
-    //       });
-    //     }
-    //   }
-    // }
 
     remote
         .setConfigSettings(
@@ -335,9 +415,9 @@ Future<void> getDeepDetails(String info) async {
   }
   await AppKey.save(AppKey.appPlatform, plat);
   bool isFirst = await AppKey.getBool('getDeepLink') ?? false;
-  EventManager.instance.enventUpload(EventApi.deeplinkOpen, {
-    'HLIage': isDeepLink ? 'aljUjha' : 'BkaYYva',
-    'UKMkpe': isFirst,
+  EventManager.instance.eventUpload(EventApi.deeplinkOpen, {
+    EventParaName.linkSource.name: isDeepLink ? 'HuN' : 'ExzSkQi',
+    EventParaName.isFirstLink.name: isFirst,
   });
   pushDeepPageInfo?.call();
 }

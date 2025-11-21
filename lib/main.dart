@@ -9,6 +9,8 @@ import 'package:get/get.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:oktoast/oktoast.dart';
 
+import 'event/event_manager.dart';
+
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 final RouteObserver<PageRoute> routeObserver = RouteObserver();
 
@@ -18,6 +20,8 @@ void main() async {
   Get.put(AppDataBase());
   await FireManager.instance.addConfig();
   Common.instance.initTracking();
+  await EventManager.instance.getLocalData();
+  EventManager.instance.postApiEvent();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
   runApp(const MyApp());
 }
