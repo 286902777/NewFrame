@@ -213,7 +213,6 @@ class _TabPageState extends State<TabPage>
         // goCommentPage();
         PlayManager.showResult(true);
       });
-      deepLink = '';
     }
   }
 

@@ -558,30 +558,60 @@ class _UserVipPageState extends State<UserVipPage>
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 20),
-          Container(
-            height: 26,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color(0x0060E7AE),
-                  Color(0xFF60E7AE),
-                  Color(0x0060E7AE),
-                ], // 中心到边缘颜色
-                begin: Alignment(-0.5, 0),
-                end: Alignment(0.5, 0),
-              ),
-            ),
-            child: Text(
-              titleName,
-              style: const TextStyle(
-                letterSpacing: -0.5,
-                fontSize: 16,
-                color: Color(0xFF1A1A1A),
-              ),
+          SizedBox(height: 15),
+          SizedBox(
+            height: 50,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Positioned(
+                  top: 0,
+                  child: Image.asset(
+                    Assets.svipSvipSucBtn,
+                    width: 260,
+                    height: 50,
+                  ),
+                ),
+                Positioned(
+                  child: Center(
+                    child: Text(
+                      titleName,
+                      style: const TextStyle(
+                        letterSpacing: -0.5,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF1A1A1A),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
+          // Container(
+          //   height: 26,
+          //   alignment: Alignment.center,
+          //   decoration: BoxDecoration(
+          //     gradient: LinearGradient(
+          //       colors: [
+          //         Color(0x0060E7AE),
+          //         Color(0xFF60E7AE),
+          //         Color(0x0060E7AE),
+          //       ], // 中心到边缘颜色
+          //       begin: Alignment(-0.5, 0),
+          //       end: Alignment(0.5, 0),
+          //     ),
+          //   ),
+          //   child: Text(
+          //     titleName,
+          //     style: const TextStyle(
+          //       letterSpacing: -0.5,
+          //       fontSize: 16,
+          //       fontWeight: FontWeight.w500,
+          //       color: Color(0xFF1A1A1A),
+          //     ),
+          //   ),
+          // ),
           SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

@@ -382,9 +382,6 @@ class _PlayPageState extends State<PlayPage>
               _showAlertVipView();
             }
           } else {
-            if (isUsePause == false) {
-              await player.play();
-            }
             showPlusAds();
           }
         }
@@ -399,7 +396,9 @@ class _PlayPageState extends State<PlayPage>
       if (isBackPage) {
         Get.back(result: true);
       } else {
-        await player.play();
+        if (isUsePause == false) {
+          await player.play();
+        }
         _showAlertVipView();
       }
     }

@@ -155,7 +155,7 @@ class EventManager extends GetConnect {
         'neat': '${DateTime.now().millisecondsSinceEpoch}', //日志发生的客户端时间
         'blunder': brandInfo, //手机厂商，apple、 huawei、oppo
         'coates':
-            'usa', //映射关系：{“mac”: “android”, “tacoma”: “ios”, “moonlit”: “web”} // 操作系统
+            'usa', //映射关系: {“stowage”: “android”, “usa”: “ios”, “sung”: “web”, “gawk”: “macos”, “armhole”: “windows”}
       },
 
       'springe': {
@@ -315,7 +315,7 @@ class EventManager extends GetConnect {
     await postRequest(EventApi.session, para: commonPara..addAll(dict));
   }
 
-  Future<void> uploadAds(Map<String, dynamic>? para) async {
+  Future<void> adsEventUpload(Map<String, dynamic>? para) async {
     Map<String, dynamic> commonPara = await _addPara(true);
     await postRequest(EventApi.ads, para: commonPara..addAll(para ?? {}));
   }

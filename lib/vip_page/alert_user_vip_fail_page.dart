@@ -42,7 +42,7 @@ class _AlertUserVipFailPageState extends State<AlertUserVipFailPage> {
             Image.asset(Assets.svipSvipFail, width: 28, height: 28),
             SizedBox(height: 12),
             Text(
-              'Payment failure',
+              'Failed to Process Payment',
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,

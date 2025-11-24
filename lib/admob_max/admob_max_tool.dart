@@ -379,7 +379,7 @@ class AdmobMaxTool {
     });
   }
 
-  void tbaAdsUpload(
+  void admobMaxUploadTba(
     String adId,
     String platform,
     String type,
@@ -388,7 +388,7 @@ class AdmobMaxTool {
     double value,
   ) {
     if (Platform.isIOS) {
-      EventManager.instance.uploadAds({
+      EventManager.instance.adsEventUpload({
         'describe': {
           'susanne': type, //广告网络，广告真实的填充平台
           'mutandis': numId,
@@ -422,7 +422,7 @@ class AdmobMaxTool {
               );
               ad.onPaidEvent =
                   (Ad ad, double value, PrecisionType precision, String code) {
-                    AdmobMaxTool.instance.tbaAdsUpload(
+                    AdmobMaxTool.instance.admobMaxUploadTba(
                       ad.adUnitId,
                       'admob',
                       ad.responseInfo?.mediationAdapterClassName ?? '',
@@ -501,7 +501,7 @@ class AdmobMaxTool {
               );
               ad.onPaidEvent =
                   (Ad ad, double value, PrecisionType precision, String code) {
-                    AdmobMaxTool.instance.tbaAdsUpload(
+                    AdmobMaxTool.instance.admobMaxUploadTba(
                       ad.adUnitId,
                       'admob',
                       ad.responseInfo?.mediationAdapterClassName ?? '',
@@ -578,7 +578,7 @@ class AdmobMaxTool {
               );
               ad.onPaidEvent =
                   (Ad ad, double value, PrecisionType precision, String code) {
-                    AdmobMaxTool.instance.tbaAdsUpload(
+                    AdmobMaxTool.instance.admobMaxUploadTba(
                       ad.adUnitId,
                       'admob',
                       ad.responseInfo?.mediationAdapterClassName ?? '',
@@ -666,7 +666,7 @@ class AdmobMaxTool {
             BackEventManager.instance.ad_userId,
             BackEventManager.instance.ad_fileId,
           );
-          AdmobMaxTool.instance.tbaAdsUpload(
+          AdmobMaxTool.instance.admobMaxUploadTba(
             ad.adUnitId,
             'admob',
             ad.responseInfo?.mediationAdapterClassName ?? '',
@@ -703,7 +703,7 @@ class AdmobMaxTool {
             ad: ad,
             sceneType: currentScene,
           );
-          AdmobMaxTool.instance.tbaAdsUpload(
+          AdmobMaxTool.instance.admobMaxUploadTba(
             ad.adUnitId,
             'max',
             ad.networkName,
@@ -766,7 +766,7 @@ class AdmobMaxTool {
             ad: ad,
             sceneType: currentScene,
           );
-          AdmobMaxTool.instance.tbaAdsUpload(
+          AdmobMaxTool.instance.admobMaxUploadTba(
             ad.adUnitId,
             'max',
             ad.networkPlacement,
@@ -828,7 +828,7 @@ class AdmobMaxTool {
             ad: ad,
             sceneType: currentScene,
           );
-          AdmobMaxTool.instance.tbaAdsUpload(
+          AdmobMaxTool.instance.admobMaxUploadTba(
             ad.adUnitId,
             'max',
             ad.networkPlacement,

@@ -503,7 +503,7 @@ class UserVipTool with ChangeNotifier {
     SKRequestMaker().startRefreshReceiptRequest();
     String receipt = await SKReceiptManager.retrieveReceiptData();
     String productId = await AppKey.getString(AppKey.vipProductId) ?? '';
-    if (productResultList.value.isNotEmpty) {
+    if (productResultList.value.isNotEmpty && productId.isNotEmpty) {
       productInfo = productResultList.value.firstWhere(
         (element) => element.productId == productId,
       );

@@ -74,6 +74,7 @@ class _DeepPageState extends State<DeepPage>
   void initState() {
     // TODO: implement initState
     super.initState();
+    deepLink = '';
     _scrollController.addListener(() {
       double offset = _scrollController.offset / 64;
       _onOffSet.value = offset;
