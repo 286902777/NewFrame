@@ -230,67 +230,71 @@ class _UserVipPageState extends State<UserVipPage>
   }
 
   Widget _vipView() {
-    return Container(
-      padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _nameView('Premium benefit'),
-          SizedBox(height: 15),
-          _subContentView(),
-          Expanded(
-            child: Stack(
-              children: [
-                Positioned(
-                  top: 55,
-                  left: 18,
-                  child: Image.asset(Assets.svipSvipPro, width: 86, height: 86),
+    return Column(
+      // mainAxisAlignment: MainAxisAlignment.start,
+      // crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+          child: _nameView('Premium benefit'),
+        ),
+        SizedBox(height: 15),
+        Padding(
+          padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+          child: _subContentView(),
+        ),
+        Expanded(
+          child: Stack(
+            children: [
+              // Positioned(
+              //   top: 55,
+              //   left: 18,
+              //   child: Image.asset(Assets.svipSvipPro, width: 86, height: 86),
+              // ),
+              Positioned(
+                top: -60,
+                left: 0,
+                right: 0,
+                child: Image.asset(
+                  Assets.svipSvipSucBg,
+                  fit: BoxFit.cover,
+                  // width: Get.width,
+                  // height: Get.width * 0.7,
                 ),
-                Positioned(
-                  top: 107,
-                  left: 110,
-                  child: Image.asset(
-                    Assets.svipSvipSucBg,
-                    width: 180,
-                    height: 60,
-                  ),
-                ),
-                Positioned(
-                  top: 120,
-                  left: 88,
+              ),
+              // Positioned(
+              //   top: 120,
+              //   left: 88,
+              //   child: Text(
+              //     'Congratulations!',
+              //     style: const TextStyle(
+              //       letterSpacing: -0.5,
+              //       fontSize: 24,
+              //       color: Color(0xFF1A1A1A),
+              //     ),
+              //   ),
+              // ),
+              Positioned(
+                top: Get.width * 0.4,
+                left: 28,
+                right: 28,
+                child: Center(
                   child: Text(
-                    'Congratulations!',
+                    'Congrats! You’ve become a member and are entitled to all the premium perks.',
                     style: const TextStyle(
                       letterSpacing: -0.5,
-                      fontSize: 24,
+                      fontSize: 16,
                       color: Color(0xFF1A1A1A),
                     ),
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
                   ),
                 ),
-                Positioned(
-                  top: 180,
-                  left: 0,
-                  right: 0,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 34),
-                    child: Text(
-                      'You are now a member and can enjoy all the premium benefits.',
-                      style: const TextStyle(
-                        letterSpacing: -0.5,
-                        fontSize: 16,
-                        color: Color(0xFF1A1A1A),
-                      ),
-                      maxLines: 2,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -647,10 +651,10 @@ class _UserVipPageState extends State<UserVipPage>
     }
     if (Platform.isIOS) {
       switch (selectData?.productId) {
-        case 'weekly':
+        case 'rme_weekly':
           payInfo =
               '$price weekly subscription with automatic renewal. Cancel at any time';
-        case 'annual':
+        case 'rme_yearly':
           payInfo =
               '$price. per year with automatic renewal. You can cancel at any time';
         default:

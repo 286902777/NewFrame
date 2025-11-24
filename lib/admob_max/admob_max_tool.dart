@@ -75,6 +75,7 @@ class AdmobMaxTool {
     AdsSceneType.open.value: 0,
     AdsSceneType.play.value: 0,
     AdsSceneType.channel.value: 0,
+    AdsSceneType.middle.value: 0,
     AdsSceneType.plus.value: 0,
   };
 
@@ -83,6 +84,7 @@ class AdmobMaxTool {
     AdsSceneType.open.value: null,
     AdsSceneType.play.value: null,
     AdsSceneType.channel.value: null,
+    AdsSceneType.middle.value: null,
     AdsSceneType.plus.value: null,
   };
 
@@ -91,6 +93,7 @@ class AdmobMaxTool {
     AdsSceneType.open.value: null,
     AdsSceneType.play.value: null,
     AdsSceneType.channel.value: null,
+    AdsSceneType.middle.value: null,
     AdsSceneType.plus.value: null,
   };
 
@@ -356,7 +359,7 @@ class AdmobMaxTool {
       ///No padding
       //如果没有就去加载广告
       initAdmobOrMax(sceneType);
-      if (sceneType != AdsSceneType.plus) {
+      if (sceneType != AdsSceneType.plus && sceneType != AdsSceneType.middle) {
         showAdsScreen(AdsSceneType.plus);
         return false;
       }

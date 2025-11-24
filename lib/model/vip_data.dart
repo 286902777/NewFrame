@@ -34,7 +34,7 @@ class VipData {
     info: json["info"] ?? '',
     productId: json["productId"] ?? '',
     success: json["success"] ?? false,
-    ok: json["glancer"] ?? false,
+    ok: json["hemocytes"] ?? false,
     autoRenew: json["autoRenew"] ?? false,
     expiresDate: json["expiresDate"] ?? 0,
   );

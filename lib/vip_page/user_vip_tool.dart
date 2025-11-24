@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frame/source/app_key.dart';
@@ -309,16 +310,25 @@ class UserVipTool with ChangeNotifier {
             EventParaName.iPlayerUid.name: userId,
           });
         }
+        await AppKey.save(AppKey.isVipUser, model.ok);
         vipDoneBlock?.call(model, isStore == false);
         return model;
+      } else {
+        await AppKey.save(AppKey.isVipUser, false);
+        vipDoneBlock?.call(
+          VipData(purchaseDetails: purchaseDetails),
+          isStore == false,
+        );
+        return VipData(purchaseDetails: purchaseDetails);
       }
+    } else {
+      await AppKey.save(AppKey.isVipUser, false);
+      vipDoneBlock?.call(
+        VipData(purchaseDetails: purchaseDetails),
+        isStore == false,
+      );
+      return VipData(purchaseDetails: purchaseDetails);
     }
-    await AppKey.save(AppKey.isVipUser, false);
-    vipDoneBlock?.call(
-      VipData(purchaseDetails: purchaseDetails),
-      isStore == false,
-    );
-    return VipData(purchaseDetails: purchaseDetails);
   }
 
   // ///走自己后端验证票据
@@ -454,6 +464,23 @@ class UserVipTool with ChangeNotifier {
       );
     } catch (e) {
       EasyLoading.dismiss();
+      if (e is PlatformException) {
+        if (e.code.contains('cancelled')) {
+          String msg = e.details;
+          if (msg.contains('rme_weekly')) {
+            vipProduct = VipProduct.weekly;
+          }
+          if (msg.contains('rme_yearly')) {
+            vipProduct = VipProduct.yearly;
+          }
+          if (msg.contains('rme_lifetime')) {
+            vipProduct = VipProduct.lifetime;
+          }
+          EventManager.instance.eventUpload(EventApi.premiumFail, {
+            EventParaName.value.name: vipProduct.value,
+          });
+        }
+      }
       if (completer.isCompleted == false) {
         completer.complete(VipData());
       }
@@ -540,12 +567,23 @@ class UserVipTool with ChangeNotifier {
             EventParaName.iPlayerUid.name: userId,
           });
         }
+        EasyLoading.dismiss();
+        await AppKey.save(AppKey.isVipUser, model.ok);
         vipDoneBlock?.call(model, isStore == false);
+        _noticePurchaseStatusListener(model);
         return model;
+      } else {
+        EasyLoading.dismiss();
+        await AppKey.save(AppKey.isVipUser, false);
+        _noticePurchaseStatusListener(VipData());
+        vipDoneBlock?.call(VipData(), isStore == false);
       }
+    } else {
+      EasyLoading.dismiss();
+      await AppKey.save(AppKey.isVipUser, false);
+      _noticePurchaseStatusListener(VipData());
+      vipDoneBlock?.call(VipData(), isStore == false);
     }
-    await AppKey.save(AppKey.isVipUser, false);
-    vipDoneBlock?.call(VipData(), isStore == false);
   }
 
   Future<void> clearFailedPurchases() async {
@@ -570,10 +608,8 @@ class UserVipTool with ChangeNotifier {
 
   void _noticePurchaseStatusListener(VipData data) {
     EasyLoading.dismiss();
-    if (data.purchaseDetails != null || data.ok == false) {
-      UserVipTool.instance.vipData.value = data;
-      UserVipTool.instance.vipData.notifyListeners();
-    }
+    UserVipTool.instance.vipData.value = data;
+    UserVipTool.instance.vipData.notifyListeners();
   }
 }
 

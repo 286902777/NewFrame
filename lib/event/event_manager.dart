@@ -79,7 +79,7 @@ class EventManager extends GetConnect {
 
   @override
   void onInit() async {
-    httpClient.baseUrl = 'https://test-sculpin.frameplayvid.com/gannett/croix';
+    httpClient.baseUrl = 'https://sculpin.frameplayvid.com/bead/best';
     httpClient.maxAuthRetries = 1;
     httpClient.defaultContentType = EventManager.contentType;
   }

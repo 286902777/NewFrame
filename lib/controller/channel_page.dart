@@ -107,12 +107,13 @@ class _ChannelPageState extends State<ChannelPage>
           '',
         );
         if (adsType == AdsType.native) {
-          Get.to(
-            () => NativePage(
+          showDialog(
+            context: context,
+            builder: (context) => NativePage(
               ad: ad,
               sceneType: sceneType ?? AdsSceneType.channel,
             ),
-          )?.then((result) {
+          ).then((result) {
             AdmobMaxTool.instance.nativeDismiss(
               AdsState.dismissed,
               adsType: AdsType.native,

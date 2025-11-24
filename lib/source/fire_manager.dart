@@ -110,9 +110,11 @@ class FireManager {
     FireConfigKey.nativeTimeKey: 7,
     FireConfigKey.nativeClickKey: 80,
     FireConfigKey.playWaitKey: 600,
+    FireConfigKey.playMethod: 0,
     FireConfigKey.middlePlayKey: 5,
     FireConfigKey.middlePlayTimeKey: 10,
-
+    FireConfigKey.middlePlayCloseTime: 7,
+    FireConfigKey.middlePlayCloseClick: 80,
     AdsSceneType.open.value: [
       {
         FireConfigKey.levelKey: 5,
@@ -127,7 +129,7 @@ class FireManager {
         FireConfigKey.adsIdKey: 'ca-app-pub-1124317440652519/9555844867',
       },
       {
-        FireConfigKey.levelKey: 5,
+        FireConfigKey.levelKey: 2,
         FireConfigKey.typeKey: AdsType.interstitial.value,
         FireConfigKey.sourceKey: AdsSourceType.max.value,
         FireConfigKey.adsIdKey: '3b3b3f6e3fad773b',
@@ -135,7 +137,7 @@ class FireManager {
     ],
     AdsSceneType.play.value: [
       {
-        FireConfigKey.levelKey: 5,
+        FireConfigKey.levelKey: 7,
         FireConfigKey.typeKey: AdsType.rewarded.value,
         FireConfigKey.sourceKey: AdsSourceType.max.value,
         FireConfigKey.adsIdKey: '04c3fcf8b00d56b4',
@@ -155,7 +157,7 @@ class FireManager {
     ],
     AdsSceneType.channel.value: [
       {
-        FireConfigKey.levelKey: 5,
+        FireConfigKey.levelKey: 6,
         FireConfigKey.typeKey: AdsType.rewarded.value,
         FireConfigKey.sourceKey: AdsSourceType.max.value,
         FireConfigKey.adsIdKey: '04c3fcf8b00d56b4',
@@ -173,17 +175,26 @@ class FireManager {
         FireConfigKey.adsIdKey: '3b3b3f6e3fad773b',
       },
     ],
-    // AdsSceneType.plus.value: [
+    // AdsSceneType.middle.value: [
     //   {
     //     FireConfigKey.levelKey: 5,
-    //     FireConfigKey.typeKey: AdsType.interstitial.value,
+    //     FireConfigKey.typeKey: AdsType.native.value,
     //     FireConfigKey.sourceKey: AdsSourceType.admob.value,
-    //     FireConfigKey.adsIdKey: 'ca-app-pub-1124317440652519/9555844867',
+    //     FireConfigKey.adsIdKey: 'ca-app-pub-1124317440652519/7831645754',
     //   },
     // ],
   };
 
-  static Map adsPlusFile = {AdsSceneType.plus.value: []};
+  static Map adsPlusFile = {
+    AdsSceneType.plus.value: [
+      // {
+      //   FireConfigKey.levelKey: 5,
+      //   FireConfigKey.typeKey: AdsType.native.value,
+      //   FireConfigKey.sourceKey: AdsSourceType.admob.value,
+      //   FireConfigKey.adsIdKey: 'ca-app-pub-1124317440652519/7831645754',
+      // },
+    ],
+  };
   static Map clockFile = {};
   static late FirebaseAnalyticsObserver observer;
 

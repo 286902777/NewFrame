@@ -57,9 +57,11 @@ class _StartPageState extends State<StartPage> {
         );
         if (adsType == AdsType.native) {
           _timer?.cancel();
-          Get.to(
-            () => NativePage(ad: ad, sceneType: sceneType ?? AdsSceneType.open),
-          )?.then((result) {
+          showDialog(
+            context: context,
+            builder: (context) =>
+                NativePage(ad: ad, sceneType: sceneType ?? AdsSceneType.open),
+          ).then((result) {
             AdmobMaxTool.instance.nativeDismiss(
               AdsState.dismissed,
               adsType: AdsType.native,

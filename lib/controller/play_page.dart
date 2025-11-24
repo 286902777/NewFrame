@@ -242,7 +242,7 @@ class _PlayPageState extends State<PlayPage>
               await AppKey.getInt(AppKey.middlePlayCount) ?? 0;
           if (middlePlayCount >= AdmobMaxTool.instance.middlePlayIdx) {
             eventAdsSource = AdmobSource.play;
-            if (isCurrentPage) {
+            if (isCurrentPage && AdmobMaxTool.adsState != AdsState.showing) {
               bool suc = await AdmobMaxTool.showAdsScreen(AdsSceneType.middle);
               if (suc) {
                 await AppKey.save(AppKey.middlePlayCount, 0);
@@ -301,86 +301,92 @@ class _PlayPageState extends State<PlayPage>
       if (isCurrentPage == false) {
         return;
       }
-      if (state == AdsState.showing &&
-          AdmobMaxTool.scene == AdsSceneType.middle) {
+      if (state == AdsState.showing) {
         await player.pause();
-        if (adsType == AdsType.native) {
-          Get.to(
-            () =>
-                NativePage(ad: ad, sceneType: sceneType ?? AdsSceneType.middle),
-          )?.then((result) {
-            AdmobMaxTool.instance.nativeDismiss(
-              AdsState.dismissed,
-              adsType: AdsType.native,
-              ad: ad,
-              sceneType: sceneType ?? AdsSceneType.middle,
-            );
-          });
-        }
-      }
-      if (state == AdsState.showing &&
-          AdmobMaxTool.scene == AdsSceneType.play) {
-        String linkId = '';
-        String platform = await AppKey.getString(AppKey.appPlatform) ?? '';
-        PlatformType currentPlat = PlatformType.india;
-        if (model != null) {
-          if (model!.platform == 0) {
-            currentPlat = PlatformType.india;
-          } else {
-            currentPlat = PlatformType.east;
-          }
-          if (platform == currentPlat.name) {
-            linkId = model!.linkId;
+        if (AdmobMaxTool.scene == AdsSceneType.middle) {
+          if (adsType == AdsType.native) {
+            showDialog(
+              context: context,
+              builder: (context) => NativePage(
+                ad: ad,
+                sceneType: sceneType ?? AdsSceneType.middle,
+              ),
+            ).then((result) async {
+              if (isUsePause == false) {
+                await player.play();
+              }
+              AdmobMaxTool.instance.nativeDismiss(
+                AdsState.dismissed,
+                adsType: AdsType.native,
+                ad: ad,
+                sceneType: sceneType ?? AdsSceneType.middle,
+              );
+            });
           }
         }
+        if (AdmobMaxTool.scene == AdsSceneType.play) {
+          String linkId = '';
+          String platform = await AppKey.getString(AppKey.appPlatform) ?? '';
+          PlatformType currentPlat = PlatformType.india;
+          if (model != null) {
+            if (model!.platform == 0) {
+              currentPlat = PlatformType.india;
+            } else {
+              currentPlat = PlatformType.east;
+            }
+            if (platform == currentPlat.name) {
+              linkId = model!.linkId;
+            }
+          }
 
-        BackEventManager.instance.getAdsValue(
-          model?.netMovie == 0
-              ? BackEventName.appAdvProfit
-              : BackEventName.advProfit,
-          model?.platform == 0 ? PlatformType.india : PlatformType.east,
-          ad,
-          linkId,
-          model?.userId ?? '',
-          model?.movieId ?? '',
-        );
-        await player.pause();
-        if (adsType == AdsType.native) {
-          Get.to(
-            () => NativePage(ad: ad, sceneType: sceneType ?? AdsSceneType.play),
-          )?.then((result) {
-            AdmobMaxTool.instance.nativeDismiss(
-              AdsState.dismissed,
-              adsType: AdsType.native,
-              ad: ad,
-              sceneType: sceneType ?? AdsSceneType.play,
-            );
-          });
+          BackEventManager.instance.getAdsValue(
+            model?.netMovie == 0
+                ? BackEventName.appAdvProfit
+                : BackEventName.advProfit,
+            model?.platform == 0 ? PlatformType.india : PlatformType.east,
+            ad,
+            linkId,
+            model?.userId ?? '',
+            model?.movieId ?? '',
+          );
+          if (adsType == AdsType.native) {
+            showDialog(
+              context: context,
+              builder: (context) =>
+                  NativePage(ad: ad, sceneType: sceneType ?? AdsSceneType.play),
+            ).then((result) async {
+              if (isUsePause == false) {
+                await player.play();
+              }
+              AdmobMaxTool.instance.nativeDismiss(
+                AdsState.dismissed,
+                adsType: AdsType.native,
+                ad: ad,
+                sceneType: sceneType ?? AdsSceneType.play,
+              );
+            });
+          }
         }
       }
-
-      if (state == AdsState.dismissed &&
-          AdmobMaxTool.scene == AdsSceneType.middle) {
-        if (isUsePause == false) {
-          await player.play();
+      if (state == AdsState.dismissed) {
+        if (AdmobMaxTool.scene == AdsSceneType.middle) {
+          if (isUsePause == false) {
+            await player.play();
+          }
         }
-      }
-      if (state == AdsState.dismissed &&
-          AdmobMaxTool.scene == AdsSceneType.play) {
-        if (sceneType == AdsSceneType.plus || adsType == AdsType.rewarded) {
-          if (isBackPage) {
-            Get.back(result: true);
+        if (AdmobMaxTool.scene == AdsSceneType.play) {
+          if (sceneType == AdsSceneType.plus || adsType == AdsType.rewarded) {
+            if (isBackPage) {
+              Get.back(result: true);
+            } else {
+              _showAlertVipView();
+            }
           } else {
             if (isUsePause == false) {
               await player.play();
             }
-            _showAlertVipView();
+            showPlusAds();
           }
-        } else {
-          if (isUsePause == false) {
-            await player.play();
-          }
-          showPlusAds();
         }
       }
     });
@@ -394,6 +400,7 @@ class _PlayPageState extends State<PlayPage>
         Get.back(result: true);
       } else {
         await player.play();
+        _showAlertVipView();
       }
     }
   }
