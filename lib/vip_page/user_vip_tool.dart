@@ -57,7 +57,7 @@ class UserVipTool with ChangeNotifier {
       },
       onError: (error) {
         EasyLoading.dismiss();
-        print(error.hashCode);
+        vipDoneBlock?.call(VipData(), isStore == false);
       },
     );
 
@@ -236,6 +236,10 @@ class UserVipTool with ChangeNotifier {
 
     if (receipt.isEmpty) {
       receipt = purchaseDetails.verificationData.serverVerificationData;
+    }
+    if (receipt.isEmpty) {
+      vipDoneBlock?.call(VipData(), isStore == false);
+      return VipData();
     }
     if (productResultList.value.isNotEmpty) {
       productInfo = productResultList.value.firstWhere(
@@ -499,91 +503,92 @@ class UserVipTool with ChangeNotifier {
         dismissOnTap: false,
       );
     }
-    VipProductData? productInfo;
-    SKRequestMaker().startRefreshReceiptRequest();
-    String receipt = await SKReceiptManager.retrieveReceiptData();
-    String productId = await AppKey.getString(AppKey.vipProductId) ?? '';
-    if (productResultList.value.isNotEmpty && productId.isNotEmpty) {
-      productInfo = productResultList.value.firstWhere(
-        (element) => element.productId == productId,
-      );
-    }
-
-    String url = 'https://rme.frameplayvid.com/horsecar/skwmvb8osg/rantism';
-    final storage = FlutterSecureStorage();
-    String? uniqueId = await storage.read(key: 'unique_id');
-    String uuId = '';
-    if (uniqueId != null) {
-      uuId = uniqueId;
-    } else {
-      uuId = Uuid().v4();
-      storage.write(key: 'unique_id', value: uuId);
-    }
-    Map params = {};
-    params['catalin'] = uuId;
-    params['hamates'] = (await PackageInfo.fromPlatform()).packageName;
-    params['indivinity'] = productId;
-    params['polyptych'] = receipt;
-    Response response = await GetConnect().post(
-      url,
-      params,
-      contentType: 'application/json',
-      headers: {'humbly': 'unitooth', 'Host': 'rme.frameplayvid.com'},
-    );
-    dynamic responseBody = response.body;
-
-    if (responseBody is Map) {
-      dynamic entity = responseBody['moles']; //entity
-      if (entity is Map<String, dynamic>) {
-        VipData model = VipData.fromJson(entity);
-        model.success = true;
-        model.name = productInfo?.title;
-        model.productId = productId;
-
-        if (Platform.isIOS) {
-          List pendingRenewalInfo =
-              entity['gmsko6t1ir'] ?? []; //pending_renewal_info
-          if (pendingRenewalInfo.isNotEmpty) {
-            model.autoRenew =
-                (pendingRenewalInfo[0]['peavie']) == '1'; //auto_renew_status
-          }
-
-          List latestReceiptInfo =
-              entity['adversed'] ?? []; //latest_receipt_info
-          if (latestReceiptInfo.isNotEmpty) {
-            model.expiresDate = latestReceiptInfo[0]['bilby']; //expires_date_ms
-          }
-        }
-        await AppKey.save(AppKey.isVipUser, model.ok);
-        await AppKey.save(AppKey.vipProductId, model.productId);
-        if (model.ok == true) {
-          print('premium_suc');
-          String userId = await AppKey.getString(AppKey.appUserId) ?? '';
-          EventManager.instance.eventUpload(EventApi.premiumSuc, {
-            EventParaName.value.name: vipProduct.value,
-            EventParaName.type.name: vipType.value, //type
-            EventParaName.method.name: vipMethod.value, //method
-            EventParaName.source.name: vipSource.value, //source
-            EventParaName.iPlayerUid.name: userId,
-          });
-        }
-        EasyLoading.dismiss();
-        await AppKey.save(AppKey.isVipUser, model.ok);
-        vipDoneBlock?.call(model, isStore == false);
-        _noticePurchaseStatusListener(model);
-        return model;
-      } else {
-        EasyLoading.dismiss();
-        await AppKey.save(AppKey.isVipUser, false);
-        _noticePurchaseStatusListener(VipData());
-        vipDoneBlock?.call(VipData(), isStore == false);
-      }
-    } else {
-      EasyLoading.dismiss();
-      await AppKey.save(AppKey.isVipUser, false);
-      _noticePurchaseStatusListener(VipData());
-      vipDoneBlock?.call(VipData(), isStore == false);
-    }
+    InAppPurchase.instance.restorePurchases();
+    //   VipProductData? productInfo;
+    //   SKRequestMaker().startRefreshReceiptRequest();
+    //   String receipt = await SKReceiptManager.retrieveReceiptData();
+    //   String productId = await AppKey.getString(AppKey.vipProductId) ?? '';
+    //   if (productResultList.value.isNotEmpty && productId.isNotEmpty) {
+    //     productInfo = productResultList.value.firstWhere(
+    //       (element) => element.productId == productId,
+    //     );
+    //   }
+    //
+    //   String url = 'https://rme.frameplayvid.com/horsecar/skwmvb8osg/rantism';
+    //   final storage = FlutterSecureStorage();
+    //   String? uniqueId = await storage.read(key: 'unique_id');
+    //   String uuId = '';
+    //   if (uniqueId != null) {
+    //     uuId = uniqueId;
+    //   } else {
+    //     uuId = Uuid().v4();
+    //     storage.write(key: 'unique_id', value: uuId);
+    //   }
+    //   Map params = {};
+    //   params['catalin'] = uuId;
+    //   params['hamates'] = (await PackageInfo.fromPlatform()).packageName;
+    //   params['indivinity'] = productId;
+    //   params['polyptych'] = receipt;
+    //   Response response = await GetConnect().post(
+    //     url,
+    //     params,
+    //     contentType: 'application/json',
+    //     headers: {'humbly': 'unitooth', 'Host': 'rme.frameplayvid.com'},
+    //   );
+    //   dynamic responseBody = response.body;
+    //
+    //   if (responseBody is Map) {
+    //     dynamic entity = responseBody['moles']; //entity
+    //     if (entity is Map<String, dynamic>) {
+    //       VipData model = VipData.fromJson(entity);
+    //       model.success = true;
+    //       model.name = productInfo?.title;
+    //       model.productId = productId;
+    //
+    //       if (Platform.isIOS) {
+    //         List pendingRenewalInfo =
+    //             entity['gmsko6t1ir'] ?? []; //pending_renewal_info
+    //         if (pendingRenewalInfo.isNotEmpty) {
+    //           model.autoRenew =
+    //               (pendingRenewalInfo[0]['peavie']) == '1'; //auto_renew_status
+    //         }
+    //
+    //         List latestReceiptInfo =
+    //             entity['adversed'] ?? []; //latest_receipt_info
+    //         if (latestReceiptInfo.isNotEmpty) {
+    //           model.expiresDate = latestReceiptInfo[0]['bilby']; //expires_date_ms
+    //         }
+    //       }
+    //       await AppKey.save(AppKey.isVipUser, model.ok);
+    //       await AppKey.save(AppKey.vipProductId, model.productId);
+    //       if (model.ok == true) {
+    //         print('premium_suc');
+    //         String userId = await AppKey.getString(AppKey.appUserId) ?? '';
+    //         EventManager.instance.eventUpload(EventApi.premiumSuc, {
+    //           EventParaName.value.name: vipProduct.value,
+    //           EventParaName.type.name: vipType.value, //type
+    //           EventParaName.method.name: vipMethod.value, //method
+    //           EventParaName.source.name: vipSource.value, //source
+    //           EventParaName.iPlayerUid.name: userId,
+    //         });
+    //       }
+    //       EasyLoading.dismiss();
+    //       await AppKey.save(AppKey.isVipUser, model.ok);
+    //       vipDoneBlock?.call(model, isStore == false);
+    //       _noticePurchaseStatusListener(model);
+    //       return model;
+    //     } else {
+    //       EasyLoading.dismiss();
+    //       await AppKey.save(AppKey.isVipUser, false);
+    //       _noticePurchaseStatusListener(VipData());
+    //       vipDoneBlock?.call(VipData(), isStore == false);
+    //     }
+    //   } else {
+    //     EasyLoading.dismiss();
+    //     await AppKey.save(AppKey.isVipUser, false);
+    //     _noticePurchaseStatusListener(VipData());
+    //     vipDoneBlock?.call(VipData(), isStore == false);
+    //   }
   }
 
   Future<void> clearFailedPurchases() async {

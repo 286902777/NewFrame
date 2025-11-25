@@ -301,89 +301,88 @@ class _PlayPageState extends State<PlayPage>
       if (isCurrentPage == false) {
         return;
       }
-      if (state == AdsState.showing) {
+      if (state == AdsState.showing &&
+          AdmobMaxTool.scene == AdsSceneType.middle) {
         await player.pause();
-        if (AdmobMaxTool.scene == AdsSceneType.middle) {
-          if (adsType == AdsType.native) {
-            showDialog(
-              context: context,
-              builder: (context) => NativePage(
-                ad: ad,
-                sceneType: sceneType ?? AdsSceneType.middle,
-              ),
-            ).then((result) async {
-              if (isUsePause == false) {
-                await player.play();
-              }
-              AdmobMaxTool.instance.nativeDismiss(
-                AdsState.dismissed,
-                adsType: AdsType.native,
-                ad: ad,
-                sceneType: sceneType ?? AdsSceneType.middle,
-              );
-            });
-          }
-        }
-        if (AdmobMaxTool.scene == AdsSceneType.play) {
-          String linkId = '';
-          String platform = await AppKey.getString(AppKey.appPlatform) ?? '';
-          PlatformType currentPlat = PlatformType.india;
-          if (model != null) {
-            if (model!.platform == 0) {
-              currentPlat = PlatformType.india;
-            } else {
-              currentPlat = PlatformType.east;
+        if (adsType == AdsType.native) {
+          showDialog(
+            context: context,
+            builder: (context) =>
+                NativePage(ad: ad, sceneType: sceneType ?? AdsSceneType.middle),
+          ).then((result) async {
+            if (isUsePause == false) {
+              await player.play();
             }
-            if (platform == currentPlat.name) {
-              linkId = model!.linkId;
-            }
-          }
-
-          BackEventManager.instance.getAdsValue(
-            model?.netMovie == 0
-                ? BackEventName.appAdvProfit
-                : BackEventName.advProfit,
-            model?.platform == 0 ? PlatformType.india : PlatformType.east,
-            ad,
-            linkId,
-            model?.userId ?? '',
-            model?.movieId ?? '',
-          );
-          if (adsType == AdsType.native) {
-            showDialog(
-              context: context,
-              builder: (context) =>
-                  NativePage(ad: ad, sceneType: sceneType ?? AdsSceneType.play),
-            ).then((result) async {
-              if (isUsePause == false) {
-                await player.play();
-              }
-              AdmobMaxTool.instance.nativeDismiss(
-                AdsState.dismissed,
-                adsType: AdsType.native,
-                ad: ad,
-                sceneType: sceneType ?? AdsSceneType.play,
-              );
-            });
-          }
+            AdmobMaxTool.instance.nativeDismiss(
+              AdsState.dismissed,
+              adsType: AdsType.native,
+              ad: ad,
+              sceneType: sceneType ?? AdsSceneType.middle,
+            );
+          });
         }
       }
-      if (state == AdsState.dismissed) {
-        if (AdmobMaxTool.scene == AdsSceneType.middle) {
-          if (isUsePause == false) {
-            await player.play();
+      if (state == AdsState.showing &&
+          AdmobMaxTool.scene == AdsSceneType.play) {
+        await player.pause();
+        String linkId = '';
+        String platform = await AppKey.getString(AppKey.appPlatform) ?? '';
+        PlatformType currentPlat = PlatformType.india;
+        if (model != null) {
+          if (model!.platform == 0) {
+            currentPlat = PlatformType.india;
+          } else {
+            currentPlat = PlatformType.east;
+          }
+          if (platform == currentPlat.name) {
+            linkId = model!.linkId;
           }
         }
-        if (AdmobMaxTool.scene == AdsSceneType.play) {
-          if (sceneType == AdsSceneType.plus || adsType == AdsType.rewarded) {
-            if (isBackPage) {
-              Get.back(result: true);
-            } else {
-              _showAlertVipView();
+
+        BackEventManager.instance.getAdsValue(
+          model?.netMovie == 0
+              ? BackEventName.appAdvProfit
+              : BackEventName.advProfit,
+          model?.platform == 0 ? PlatformType.india : PlatformType.east,
+          ad,
+          linkId,
+          model?.userId ?? '',
+          model?.movieId ?? '',
+        );
+        if (adsType == AdsType.native) {
+          showDialog(
+            context: context,
+            builder: (context) =>
+                NativePage(ad: ad, sceneType: sceneType ?? AdsSceneType.play),
+          ).then((result) async {
+            if (isUsePause == false) {
+              await player.play();
             }
+            AdmobMaxTool.instance.nativeDismiss(
+              AdsState.dismissed,
+              adsType: AdsType.native,
+              ad: ad,
+              sceneType: sceneType ?? AdsSceneType.play,
+            );
+          });
+        }
+      }
+      if (state == AdsState.dismissed &&
+          AdmobMaxTool.scene == AdsSceneType.middle) {
+        if (isUsePause == false) {
+          await player.play();
+        }
+      }
+      if (state == AdsState.dismissed &&
+          AdmobMaxTool.scene == AdsSceneType.play) {
+        if (sceneType == AdsSceneType.plus || adsType == AdsType.rewarded) {
+          if (isBackPage) {
+            Get.back(result: true);
           } else {
-            showPlusAds();
+            _showAlertVipView();
           }
+        } else {
+          showPlusAds();
         }
       }
     });
@@ -1487,6 +1486,7 @@ class _PlayPageState extends State<PlayPage>
   void _showAlertVipView() async {
     bool isSVip = await AppKey.getBool(AppKey.isVipUser) ?? false;
     if (isSVip) {
+      await player.play();
       return;
     }
     int? vipPlayCount = await AppKey.getInt(AppKey.vipPlayCount);
@@ -1524,18 +1524,10 @@ class _PlayPageState extends State<PlayPage>
       EventParaName.source.name: vipSource.value,
     });
     if (isFullScreen) {
-      isFullScreen = false;
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-      Future.delayed(Duration(milliseconds: 500), () {
-        showDialog(
-          context: context,
-          builder: (context) => AlertUserVipPage(),
-        ).then((_) async {
-          isCurrentPage = true;
-          await player.play();
-        });
-      });
-    } else {
+      isFullScreen = false;
+    }
+    Future.delayed(Duration(milliseconds: 500), () {
       showDialog(
         context: context,
         builder: (context) => AlertUserVipPage(),
@@ -1543,7 +1535,7 @@ class _PlayPageState extends State<PlayPage>
         isCurrentPage = true;
         await player.play();
       });
-    }
+    });
   }
 
   void _isShowSpeedView(VideoModel model) async {
