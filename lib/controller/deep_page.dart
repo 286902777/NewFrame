@@ -75,6 +75,7 @@ class _DeepPageState extends State<DeepPage>
     // TODO: implement initState
     super.initState();
     deepLink = '';
+    closeDeep = false;
     _scrollController.addListener(() {
       double offset = _scrollController.offset / 64;
       _onOffSet.value = offset;
@@ -417,6 +418,7 @@ class _DeepPageState extends State<DeepPage>
           CupertinoButton(
             onPressed: () {
               isDeepComment = true;
+              closeDeep = true;
               Get.back();
             },
             padding: EdgeInsets.zero,

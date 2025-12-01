@@ -128,6 +128,12 @@ bool isDeepComment = false;
 String playFileId = '';
 bool isDeepLink = false;
 
+bool simResult = false;
+bool simulatorResult = false;
+bool padResult = false;
+bool vpnResult = false;
+
+bool closeDeep = false;
 bool isSimCard = false;
 bool isEmulator = false;
 bool isPad = false;

@@ -35,12 +35,6 @@ class _UserVipPageState extends State<UserVipPage>
   void initState() {
     super.initState();
     _loadData();
-    vipType = VipType.page;
-    EventManager.instance.eventUpload(EventApi.premiumExpose, {
-      EventParaName.type.name: vipType.value, //type
-      EventParaName.method.name: vipMethod.value, //method
-      EventParaName.source.name: vipSource.value, //source
-    });
     vipDoneBlock = (mod, pay) {
       if (mod.purchaseDetails?.status != PurchaseStatus.canceled &&
           pay == true) {
@@ -52,6 +46,12 @@ class _UserVipPageState extends State<UserVipPage>
         }
       }
     };
+    vipType = VipType.page;
+    EventManager.instance.eventUpload(EventApi.premiumExpose, {
+      EventParaName.type.name: vipType.value, //type
+      EventParaName.method.name: vipMethod.value, //method
+      EventParaName.source.name: vipSource.value, //source
+    });
   }
 
   void _loadData() async {
@@ -122,7 +122,7 @@ class _UserVipPageState extends State<UserVipPage>
     return UserVipBasePage(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: navbar(),
+        appBar: addNavbar(),
         body: Stack(
           children: [
             Positioned(
@@ -139,10 +139,10 @@ class _UserVipPageState extends State<UserVipPage>
                 builder: (BuildContext context, VipData vip, Widget? child) {
                   return Column(
                     children: [
-                      Expanded(child: _contentWidget(vip)),
+                      Expanded(child: _mainView(vip)),
                       vip.status == VipStatus.none
-                          ? _normalBottomV(vip)
-                          : _userBottomV(vip),
+                          ? _normalBottomView(vip)
+                          : _userBottomView(vip),
                     ],
                   );
                 },
@@ -159,7 +159,7 @@ class _UserVipPageState extends State<UserVipPage>
     );
   }
 
-  AppBar navbar() {
+  AppBar addNavbar() {
     return AppBar(
       backgroundColor: Colors.transparent,
       leading: Row(
@@ -206,7 +206,7 @@ class _UserVipPageState extends State<UserVipPage>
     );
   }
 
-  Widget _contentWidget(VipData vip) {
+  Widget _mainView(VipData vip) {
     return ClipRRect(
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(24),
@@ -231,12 +231,10 @@ class _UserVipPageState extends State<UserVipPage>
 
   Widget _vipView() {
     return Column(
-      // mainAxisAlignment: MainAxisAlignment.start,
-      // crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
-          child: _nameView('Premium benefit'),
+          child: _cusNameView('Premium benefit'),
         ),
         SizedBox(height: 15),
         Padding(
@@ -313,17 +311,17 @@ class _UserVipPageState extends State<UserVipPage>
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _nameView('Premium benefit'),
+                  _cusNameView('Premium benefit'),
                   SizedBox(height: 15),
                   _subContentView(),
                   SizedBox(height: 28),
-                  _nameView('Premium plan'),
+                  _cusNameView('Premium plan'),
                   Wrap(
                     spacing: 0, // 主轴间距
                     runSpacing: 0, // 换行间距
                     children: List.generate(
                       proList.length,
-                      (index) => _listCell(proList[index]),
+                      (index) => _productCell(proList[index]),
                     ),
                   ),
                   SizedBox(height: 10),
@@ -343,7 +341,7 @@ class _UserVipPageState extends State<UserVipPage>
     );
   }
 
-  Widget _listCell(VipProductData mod) {
+  Widget _productCell(VipProductData mod) {
     return GestureDetector(
       onTap: () {
         for (VipProductData m in UserVipTool.instance.productResultList.value) {
@@ -421,7 +419,7 @@ class _UserVipPageState extends State<UserVipPage>
     );
   }
 
-  Widget _nameView(String name) {
+  Widget _cusNameView(String name) {
     return SizedBox(
       height: 24,
       child: Stack(
@@ -500,7 +498,7 @@ class _UserVipPageState extends State<UserVipPage>
     );
   }
 
-  Widget _userBottomV(VipData vip) {
+  Widget _userBottomView(VipData vip) {
     String titleInfo = '';
     String titleName = '';
     String time = '';
@@ -669,7 +667,7 @@ class _UserVipPageState extends State<UserVipPage>
     );
   }
 
-  Widget _normalBottomV(VipData vip) {
+  Widget _normalBottomView(VipData vip) {
     String payInfo = '';
     String price = '';
     if (UserVipTool.instance.productResultList.value.isNotEmpty) {

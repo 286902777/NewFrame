@@ -4,7 +4,6 @@ import 'package:frame/controller/set_page.dart';
 import 'package:frame/controller/upload_page.dart';
 import 'package:frame/event/event_manager.dart';
 import 'package:frame/source/clock_utils.dart';
-import 'package:frame/vip_page/user_vip_tool.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -159,12 +158,16 @@ class _TabPageState extends State<TabPage>
       String errInfo = '';
       if (openSimDeep) {
         errInfo = 'IdPV';
+        simResult = true;
       } else if (openSimulatorDeep) {
         errInfo = 'XruUbmtsYH';
+        simulatorResult = true;
       } else if (openPadDeep) {
         errInfo = 'FkykQLsMIl';
+        padResult = true;
       } else {
         errInfo = 'AISgdNtG';
+        vpnResult = true;
       }
       EventManager.instance.eventUpload(EventApi.landpageFail, {
         EventParaName.value.name: errInfo,
@@ -195,7 +198,7 @@ class _TabPageState extends State<TabPage>
       if (state == AppState.foreground &&
           AdmobMaxTool.adsState != AdsState.showing) {
         eventAdsSource = AdmobSource.hot_open;
-        UserVipTool.instance.restore(appStart: true);
+        // UserVipTool.instance.restore(appStart: true);
         await AdmobMaxTool.showAdsScreen(AdsSceneType.open);
       }
     });
@@ -209,9 +212,11 @@ class _TabPageState extends State<TabPage>
       }
       Get.offAll(() => TabPage());
       Get.to(() => DeepPage(linkId: deepLink))?.then((_) {
-        vipSource = VipSource.home;
-        // goCommentPage();
-        PlayManager.showResult(true);
+        if (closeDeep == true) {
+          vipSource = VipSource.home;
+          // goCommentPage();
+          PlayManager.showResult(true);
+        }
       });
     }
   }

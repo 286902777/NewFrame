@@ -295,6 +295,10 @@ class AdmobMaxTool {
     currentScene = sceneType;
     dynamic ad = adsMap[sceneType.value];
     if (ad != null) {
+      EventManager.instance.eventUpload(EventApi.adNeedShow, {
+        EventParaName.value.name: eventAdsSource.name,
+        EventParaName.type.name: sceneType == AdsSceneType.plus ? 2 : 1,
+      });
       if (ad is AppOpenAd) {
         ad.show();
       } else if (ad is InterstitialAd) {
@@ -302,7 +306,6 @@ class AdmobMaxTool {
       } else if (ad is RewardedAd) {
         ad.show(onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {});
       } else if (ad is NativeAd) {
-        print("object");
         _noticeListeners(
           AdsState.showing,
           adsType: AdsType.native,
@@ -336,14 +339,6 @@ class AdmobMaxTool {
           return false;
         }
       }
-      EventManager.instance.eventUpload(EventApi.adNeedShow, {
-        EventParaName.value.name: eventAdsSource.name,
-        EventParaName.type.name: sceneType == AdsSceneType.plus ? 2 : 1,
-      });
-      EventManager.instance.eventUpload(EventApi.adShowPlacement, {
-        EventParaName.value.name: eventAdsSource.name,
-        EventParaName.type.name: sceneType == AdsSceneType.plus ? 2 : 1,
-      });
 
       //显示完移出广告
       //广告在显示的时候不能马上去加载下一个广告，
@@ -354,7 +349,18 @@ class AdmobMaxTool {
       if (sceneType == AdsSceneType.plus) {
         resetDisplayTime();
       }
-      AdmobMaxTool.instance.showFailUpload(sceneType, 'UHdCR');
+      // AdmobMaxTool.instance.showFailUpload(sceneType, 'UHdCR');
+      if (sceneType != AdsSceneType.middle) {
+        EventManager.instance.eventUpload(EventApi.adNeedShow, {
+          EventParaName.value.name: eventAdsSource.name,
+          EventParaName.type.name: sceneType == AdsSceneType.plus ? 2 : 1,
+        });
+        EventManager.instance.eventUpload(EventApi.adShowFail, {
+          EventParaName.value.name: eventAdsSource.name,
+          EventParaName.type.name: sceneType == AdsSceneType.plus ? 2 : 1,
+          EventParaName.code.name: 'UHdCR',
+        });
+      }
 
       ///No padding
       //如果没有就去加载广告
@@ -368,10 +374,10 @@ class AdmobMaxTool {
   }
 
   void showFailUpload(AdsSceneType sceneType, String msg) {
-    EventManager.instance.eventUpload(EventApi.adNeedShow, {
-      EventParaName.value.name: eventAdsSource.name,
-      EventParaName.type.name: sceneType == AdsSceneType.plus ? 2 : 1,
-    });
+    // EventManager.instance.eventUpload(EventApi.adNeedShow, {
+    //   EventParaName.value.name: eventAdsSource.name,
+    //   EventParaName.type.name: sceneType == AdsSceneType.plus ? 2 : 1,
+    // });
     EventManager.instance.eventUpload(EventApi.adShowFail, {
       EventParaName.value.name: eventAdsSource.name,
       EventParaName.type.name: sceneType == AdsSceneType.plus ? 2 : 1,
@@ -929,6 +935,10 @@ class AdmobMaxTool {
       resetDisplayTime();
       adsMap[sceneType?.value ?? AdsSceneType.open.value] = null;
     } else {
+      EventManager.instance.eventUpload(EventApi.adShowPlacement, {
+        EventParaName.value.name: eventAdsSource.name,
+        EventParaName.type.name: sceneType == AdsSceneType.plus ? 2 : 1,
+      });
       showed = true;
     }
     _listenersMap.forEach((key, value) {

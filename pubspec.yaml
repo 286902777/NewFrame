@@ -54,7 +54,7 @@ dependencies:
 
   sim_reader: ^1.0.4
   vpn_detector: ^1.2.0
-  in_app_purchase: ^3.2.3
+  in_app_purchase: ^3.2.2 # 3.2.3 订阅状态不对
   in_app_purchase_storekit: 0.4.4 # 版本高了没有取消的回调
 
   firebase_core: ^4.2.0

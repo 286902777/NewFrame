@@ -195,16 +195,15 @@ class _StartPageState extends State<StartPage> {
   }
 
   void requestAds() async {
-    dynamic openSuc = await AdmobMaxTool.initAdmobOrMax(AdsSceneType.open);
+    await AdmobMaxTool.initAdmobOrMax(AdsSceneType.open);
     AdmobMaxTool.initAdmobOrMax(AdsSceneType.play);
     AdmobMaxTool.initAdmobOrMax(AdsSceneType.middle);
     AdmobMaxTool.initAdmobOrMax(AdsSceneType.channel);
     bool noStart = await AppKey.getBool(AppKey.onceInstallApp) ?? false;
     if (noStart == true) {
       if (isSetRoot == false) {
-        if (openSuc != null) {
-          await AdmobMaxTool.showAdsScreen(AdsSceneType.open);
-        } else {
+        bool success = await AdmobMaxTool.showAdsScreen(AdsSceneType.open);
+        if (success == false) {
           showPlusAds();
         }
       }

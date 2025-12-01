@@ -80,27 +80,27 @@ class _PlayPageState extends State<PlayPage>
   Timer? _disTimer;
   Timer? _toolTimer;
   bool isUsePause = false;
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    // TODO: implement didChangeAppLifecycleState
-    super.didChangeAppLifecycleState(state);
-    if (isCurrentPage == false ||
-        AdmobMaxTool.adsState == AdsState.showing ||
-        isBackPage) {
-      return;
-    }
-    if (state == AppLifecycleState.paused) {
-      savePlayTime();
-      await player.pause();
-    }
-    if (state == AppLifecycleState.resumed) {
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
-      if (isUsePause == false) {
-        await player.play();
-      }
-    }
-  }
+  bool speedIsLoad = false;
+  //@override
+  // void didChangeAppLifecycleState(AppLifecycleState state) async {
+  //   // TODO: implement didChangeAppLifecycleState
+  //   super.didChangeAppLifecycleState(state);
+  //   if (isCurrentPage == false ||
+  //       AdmobMaxTool.adsState == AdsState.showing ||
+  //       isBackPage) {
+  //     return;
+  //   }
+  //   if (state == AppLifecycleState.paused) {
+  //     savePlayTime();
+  //     await player.pause();
+  //   }
+  //   if (state == AppLifecycleState.resumed) {
+  //     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+  //     if (isUsePause == false) {
+  //       await player.play();
+  //     }
+  //   }
+  // }
 
   void _appendConfigTimer(DragEvent type) {
     _disTimer?.cancel();
@@ -202,17 +202,31 @@ class _PlayPageState extends State<PlayPage>
     });
 
     player.stream.buffering.listen((bool buffer) {
-      // print(buffer);
-      if (buffer) {
-        _disPlaySpeedView();
-      } else {
-        if (newVideoSuccess) {
+      print(buffer);
+      if (speedIsLoad) {
+        if (buffer) {
+          _disPlaySpeedView();
+        } else {
           _removeSpeed();
         }
       }
     });
 
+    player.stream.videoParams.listen((VideoParams para) {
+      int w = para.w ?? 0;
+      int h = para.h ?? 0;
+      if (w > 0 && h > 0) {
+        speedIsLoad = true;
+        _removeSpeed();
+      }
+    });
     player.stream.position.listen((Duration position) async {
+      if (position.inSeconds == 0) {
+        return;
+      }
+      // if (speedIsLoad == false) {
+      //   speedIsLoad = true;
+      // }
       start.value = position;
       if (total.value.inMicroseconds.toDouble() > 0) {
         sliderValue.value =
@@ -221,14 +235,22 @@ class _PlayPageState extends State<PlayPage>
       } else {
         sliderValue.value = 0;
       }
-      if (newVideoSuccess) {
+      if (newVideoSuccess == false) {
         uploadPlayEvent();
+        EventManager.instance.eventUpload(EventApi.playStartAll, {
+          EventParaName.source.name: playSource.name,
+        });
+        if (autoClick == false) {
+          EventManager.instance.eventUpload(EventApi.playSource, {
+            EventParaName.source.name: playSource.name,
+          });
+        }
         EventManager.instance.eventUpload(EventApi.playSuc, null);
         int plays = await AppKey.getInt(AppKey.commentPlayCount) ?? 0;
         await AppKey.save(AppKey.commentPlayCount, plays + 1);
         int middlePlayCount = await AppKey.getInt(AppKey.middlePlayCount) ?? 0;
         await AppKey.save(AppKey.middlePlayCount, middlePlayCount + 1);
-        newVideoSuccess = false;
+        newVideoSuccess = true;
       }
       if (position.inSeconds.toInt() > total.value.inSeconds.toInt() * 0.3 &&
           total.value.inSeconds.toInt() >= 15) {
@@ -240,13 +262,13 @@ class _PlayPageState extends State<PlayPage>
         if (position.inSeconds.toInt() > AdmobMaxTool.instance.middlePlayTime) {
           int middlePlayCount =
               await AppKey.getInt(AppKey.middlePlayCount) ?? 0;
-          if (middlePlayCount >= AdmobMaxTool.instance.middlePlayIdx) {
+          if (middlePlayCount == AdmobMaxTool.instance.middlePlayIdx) {
             eventAdsSource = AdmobSource.play;
             if (isCurrentPage && AdmobMaxTool.adsState != AdsState.showing) {
               bool suc = await AdmobMaxTool.showAdsScreen(AdsSceneType.middle);
               if (suc) {
                 await AppKey.save(AppKey.middlePlayCount, 0);
-                player.pause();
+                await player.pause();
               }
             }
           }
@@ -267,27 +289,19 @@ class _PlayPageState extends State<PlayPage>
     });
     player.stream.duration.listen((Duration duration) {
       total.value = duration;
-      if (duration.inMicroseconds.toInt() > 0) {
-        newVideoSuccess = true;
-      }
+      // if (duration.inMicroseconds.toInt() > 0) {
+      //   newVideoSuccess = true;
+      // }
     });
     player.stream.error.listen((String error) {
       if (error.contains('Failed to open') == false) {
         return;
       }
       _removeSpeed();
-      CusToast.show(message: 'video load failed!', type: CusToastType.fail);
-      EventManager.instance.eventUpload(EventApi.playStartAll, {
-        EventParaName.source.name: playSource.name,
-      });
       EventManager.instance.eventUpload(EventApi.playFail, {
         EventParaName.value.name: error,
       });
-      if (autoClick == false) {
-        EventManager.instance.eventUpload(EventApi.playSource, {
-          EventParaName.source.name: playSource.name,
-        });
-      }
+      CusToast.show(message: 'video load failed!', type: CusToastType.fail);
       playEventUpload = true;
       _goNextEvent(true);
     });
@@ -301,18 +315,17 @@ class _PlayPageState extends State<PlayPage>
       if (isCurrentPage == false) {
         return;
       }
+      if (state == AdsState.showing) {
+        await player.pause();
+      }
       if (state == AdsState.showing &&
           AdmobMaxTool.scene == AdsSceneType.middle) {
-        await player.pause();
         if (adsType == AdsType.native) {
           showDialog(
             context: context,
             builder: (context) =>
                 NativePage(ad: ad, sceneType: sceneType ?? AdsSceneType.middle),
           ).then((result) async {
-            if (isUsePause == false) {
-              await player.play();
-            }
             AdmobMaxTool.instance.nativeDismiss(
               AdsState.dismissed,
               adsType: AdsType.native,
@@ -324,7 +337,6 @@ class _PlayPageState extends State<PlayPage>
       }
       if (state == AdsState.showing &&
           AdmobMaxTool.scene == AdsSceneType.play) {
-        await player.pause();
         String linkId = '';
         String platform = await AppKey.getString(AppKey.appPlatform) ?? '';
         PlatformType currentPlat = PlatformType.india;
@@ -355,9 +367,6 @@ class _PlayPageState extends State<PlayPage>
             builder: (context) =>
                 NativePage(ad: ad, sceneType: sceneType ?? AdsSceneType.play),
           ).then((result) async {
-            if (isUsePause == false) {
-              await player.play();
-            }
             AdmobMaxTool.instance.nativeDismiss(
               AdsState.dismissed,
               adsType: AdsType.native,
@@ -369,9 +378,7 @@ class _PlayPageState extends State<PlayPage>
       }
       if (state == AdsState.dismissed &&
           AdmobMaxTool.scene == AdsSceneType.middle) {
-        if (isUsePause == false) {
-          await player.play();
-        }
+        await player.play();
       }
       if (state == AdsState.dismissed &&
           AdmobMaxTool.scene == AdsSceneType.play) {
@@ -395,9 +402,6 @@ class _PlayPageState extends State<PlayPage>
       if (isBackPage) {
         Get.back(result: true);
       } else {
-        if (isUsePause == false) {
-          await player.play();
-        }
         _showAlertVipView();
       }
     }
@@ -437,11 +441,6 @@ class _PlayPageState extends State<PlayPage>
     }
 
     isAutoLoadShow = false;
-    if (isLoadShow.value == false) {
-      isLoadShow.value = true;
-      _disPlaySpeedView();
-    }
-
     if (lists != null) {
       for (VideoModel m in lists!) {
         m.isSelect = false;
@@ -477,6 +476,7 @@ class _PlayPageState extends State<PlayPage>
     }
     reloadPlay = true;
     isAutoLoadShow = false;
+    speedIsLoad = false;
     if (isLoadShow.value == false) {
       isLoadShow.value = true;
       _disPlaySpeedView();
@@ -1037,7 +1037,7 @@ class _PlayPageState extends State<PlayPage>
               // sliderValue.value = value;
             },
             onChangeStart: (value) async {
-              if (newVideoSuccess == true) {
+              if (newVideoSuccess == false) {
                 return;
               }
               isShowTool.value = true;
@@ -1046,7 +1046,7 @@ class _PlayPageState extends State<PlayPage>
               isDragging = true;
             },
             onChangeEnd: (value) async {
-              if (newVideoSuccess == true) {
+              if (newVideoSuccess == false) {
                 return;
               }
               displayTool(true);
@@ -1056,17 +1056,15 @@ class _PlayPageState extends State<PlayPage>
               } else {
                 sliderValue.value = value;
               }
-              if (newVideoSuccess == false) {
-                changeTime.value = total.value * value - start.value;
-                movedTime.value = total.value * value;
-                _changePlayValueTo(total.value * value);
-                _progressPromptEvent.forward();
-                _appendConfigTimer(DragEvent.drag);
-                if (isLoadShow.value == false) {
-                  isLoadShow.value = true;
-                }
-                _removeSpeed();
+              changeTime.value = total.value * value - start.value;
+              movedTime.value = total.value * value;
+              _changePlayValueTo(total.value * value);
+              _progressPromptEvent.forward();
+              _appendConfigTimer(DragEvent.drag);
+              if (isLoadShow.value == false) {
+                isLoadShow.value = true;
               }
+              _removeSpeed();
             },
           ),
         ),
@@ -1441,21 +1439,23 @@ class _PlayPageState extends State<PlayPage>
   }
 
   void _disPlaySpeedView() {
-    if (isLoadShow.value == true) {
-      speedTimer = Timer.periodic(const Duration(seconds: 2), (_) {
-        videoSpeed.value = Random().nextInt(20);
-      });
-    }
+    if (model != null && model!.netMovie == 1) {
+      if (isLoadShow.value == true) {
+        speedTimer = Timer.periodic(const Duration(seconds: 2), (_) {
+          videoSpeed.value = Random().nextInt(80);
+        });
+      }
 
-    if (isAutoLoadShow) {
-      Future.delayed(Duration(seconds: 6), () async {
-        isAutoLoadShow = false;
-        isLoadShow.value = false;
-        speedTimer?.cancel();
-        if (isCurrentPage) {
-          await player.play();
-        }
-      });
+      if (isAutoLoadShow) {
+        Future.delayed(Duration(seconds: 6), () async {
+          isAutoLoadShow = false;
+          isLoadShow.value = false;
+          speedTimer?.cancel();
+          if (isCurrentPage) {
+            await player.play();
+          }
+        });
+      }
     }
   }
 

@@ -42,6 +42,8 @@ class UserVipTool with ChangeNotifier {
   List<PurchaseDetails> _purchaseList = [];
 
   bool isStore = false;
+  bool isPay = false;
+
   factory UserVipTool() {
     return instance;
   }
@@ -241,6 +243,13 @@ class UserVipTool with ChangeNotifier {
       vipDoneBlock?.call(VipData(), isStore == false);
       return VipData();
     }
+    if (isStore == false) {
+      EasyLoading.show(
+        status: 'loading...',
+        maskType: EasyLoadingMaskType.clear,
+        dismissOnTap: false,
+      );
+    }
     if (productResultList.value.isNotEmpty) {
       productInfo = productResultList.value.firstWhere(
         (element) => element.productId == purchaseDetails.productID,
@@ -263,7 +272,7 @@ class UserVipTool with ChangeNotifier {
     // params['package_name'] = (await PackageInfo.fromPlatform()).packageName;
     // params['product_id'] = purchaseDetails.productID;
     // params['receipt_base64_data'] =
-    //     purchaseDetails.verificationData.serverVerificationData;
+    // purchaseDetails.verificationData.serverVerificationData;
     params['catalin'] = uuId;
     params['hamates'] = (await PackageInfo.fromPlatform()).packageName;
     params['indivinity'] = purchaseDetails.productID;
@@ -301,10 +310,7 @@ class UserVipTool with ChangeNotifier {
         }
         await AppKey.save(AppKey.isVipUser, model.ok);
         await AppKey.save(AppKey.vipProductId, model.productId);
-        if (model.ok == true &&
-            purchaseDetails.status == PurchaseStatus.purchased &&
-            isStore == false) {
-          print('premium_suc');
+        if (model.ok == true && isPay == true) {
           String userId = await AppKey.getString(AppKey.appUserId) ?? '';
           EventManager.instance.eventUpload(EventApi.premiumSuc, {
             EventParaName.value.name: vipProduct.value,
@@ -313,24 +319,30 @@ class UserVipTool with ChangeNotifier {
             EventParaName.source.name: vipSource.value, //source
             EventParaName.iPlayerUid.name: userId,
           });
+          isPay = false;
         }
         await AppKey.save(AppKey.isVipUser, model.ok);
         vipDoneBlock?.call(model, isStore == false);
+        EasyLoading.dismiss();
         return model;
       } else {
+        isPay = false;
         await AppKey.save(AppKey.isVipUser, false);
         vipDoneBlock?.call(
           VipData(purchaseDetails: purchaseDetails),
           isStore == false,
         );
+        EasyLoading.dismiss();
         return VipData(purchaseDetails: purchaseDetails);
       }
     } else {
+      isPay = false;
       await AppKey.save(AppKey.isVipUser, false);
       vipDoneBlock?.call(
         VipData(purchaseDetails: purchaseDetails),
         isStore == false,
       );
+      EasyLoading.dismiss();
       return VipData(purchaseDetails: purchaseDetails);
     }
   }
@@ -416,6 +428,7 @@ class UserVipTool with ChangeNotifier {
     Completer<VipData> completer = Completer();
 
     isStore = false;
+    isPay = true;
 
     ///完结以前的订单
     await clearFailedPurchases();
@@ -496,6 +509,7 @@ class UserVipTool with ChangeNotifier {
   ///恢复之前的购买
   Future restore({bool? appStart = false, bool? isClick = false}) async {
     isStore = true;
+    isPay = false;
     if (appStart == false) {
       EasyLoading.show(
         status: 'loading...',
@@ -503,92 +517,92 @@ class UserVipTool with ChangeNotifier {
         dismissOnTap: false,
       );
     }
-    InAppPurchase.instance.restorePurchases();
-    //   VipProductData? productInfo;
-    //   SKRequestMaker().startRefreshReceiptRequest();
-    //   String receipt = await SKReceiptManager.retrieveReceiptData();
-    //   String productId = await AppKey.getString(AppKey.vipProductId) ?? '';
-    //   if (productResultList.value.isNotEmpty && productId.isNotEmpty) {
-    //     productInfo = productResultList.value.firstWhere(
-    //       (element) => element.productId == productId,
-    //     );
-    //   }
-    //
-    //   String url = 'https://rme.frameplayvid.com/horsecar/skwmvb8osg/rantism';
-    //   final storage = FlutterSecureStorage();
-    //   String? uniqueId = await storage.read(key: 'unique_id');
-    //   String uuId = '';
-    //   if (uniqueId != null) {
-    //     uuId = uniqueId;
-    //   } else {
-    //     uuId = Uuid().v4();
-    //     storage.write(key: 'unique_id', value: uuId);
-    //   }
-    //   Map params = {};
-    //   params['catalin'] = uuId;
-    //   params['hamates'] = (await PackageInfo.fromPlatform()).packageName;
-    //   params['indivinity'] = productId;
-    //   params['polyptych'] = receipt;
-    //   Response response = await GetConnect().post(
-    //     url,
-    //     params,
-    //     contentType: 'application/json',
-    //     headers: {'humbly': 'unitooth', 'Host': 'rme.frameplayvid.com'},
-    //   );
-    //   dynamic responseBody = response.body;
-    //
-    //   if (responseBody is Map) {
-    //     dynamic entity = responseBody['moles']; //entity
-    //     if (entity is Map<String, dynamic>) {
-    //       VipData model = VipData.fromJson(entity);
-    //       model.success = true;
-    //       model.name = productInfo?.title;
-    //       model.productId = productId;
-    //
-    //       if (Platform.isIOS) {
-    //         List pendingRenewalInfo =
-    //             entity['gmsko6t1ir'] ?? []; //pending_renewal_info
-    //         if (pendingRenewalInfo.isNotEmpty) {
-    //           model.autoRenew =
-    //               (pendingRenewalInfo[0]['peavie']) == '1'; //auto_renew_status
-    //         }
-    //
-    //         List latestReceiptInfo =
-    //             entity['adversed'] ?? []; //latest_receipt_info
-    //         if (latestReceiptInfo.isNotEmpty) {
-    //           model.expiresDate = latestReceiptInfo[0]['bilby']; //expires_date_ms
-    //         }
-    //       }
-    //       await AppKey.save(AppKey.isVipUser, model.ok);
-    //       await AppKey.save(AppKey.vipProductId, model.productId);
-    //       if (model.ok == true) {
-    //         print('premium_suc');
-    //         String userId = await AppKey.getString(AppKey.appUserId) ?? '';
-    //         EventManager.instance.eventUpload(EventApi.premiumSuc, {
-    //           EventParaName.value.name: vipProduct.value,
-    //           EventParaName.type.name: vipType.value, //type
-    //           EventParaName.method.name: vipMethod.value, //method
-    //           EventParaName.source.name: vipSource.value, //source
-    //           EventParaName.iPlayerUid.name: userId,
-    //         });
-    //       }
-    //       EasyLoading.dismiss();
-    //       await AppKey.save(AppKey.isVipUser, model.ok);
-    //       vipDoneBlock?.call(model, isStore == false);
-    //       _noticePurchaseStatusListener(model);
-    //       return model;
-    //     } else {
-    //       EasyLoading.dismiss();
-    //       await AppKey.save(AppKey.isVipUser, false);
-    //       _noticePurchaseStatusListener(VipData());
-    //       vipDoneBlock?.call(VipData(), isStore == false);
-    //     }
-    //   } else {
-    //     EasyLoading.dismiss();
-    //     await AppKey.save(AppKey.isVipUser, false);
-    //     _noticePurchaseStatusListener(VipData());
-    //     vipDoneBlock?.call(VipData(), isStore == false);
-    //   }
+    // InAppPurchase.instance.restorePurchases();
+    VipProductData? productInfo;
+    SKRequestMaker().startRefreshReceiptRequest();
+    String receipt = await SKReceiptManager.retrieveReceiptData();
+    String productId = await AppKey.getString(AppKey.vipProductId) ?? '';
+    if (productResultList.value.isNotEmpty && productId.isNotEmpty) {
+      productInfo = productResultList.value.firstWhere(
+        (element) => element.productId == productId,
+      );
+    }
+
+    String url = 'https://rme.frameplayvid.com/horsecar/skwmvb8osg/rantism';
+    final storage = FlutterSecureStorage();
+    String? uniqueId = await storage.read(key: 'unique_id');
+    String uuId = '';
+    if (uniqueId != null) {
+      uuId = uniqueId;
+    } else {
+      uuId = Uuid().v4();
+      storage.write(key: 'unique_id', value: uuId);
+    }
+    Map params = {};
+    params['catalin'] = uuId;
+    params['hamates'] = (await PackageInfo.fromPlatform()).packageName;
+    params['indivinity'] = productId;
+    params['polyptych'] = receipt;
+    Response response = await GetConnect().post(
+      url,
+      params,
+      contentType: 'application/json',
+      headers: {'humbly': 'unitooth', 'Host': 'rme.frameplayvid.com'},
+    );
+    dynamic responseBody = response.body;
+
+    if (responseBody is Map) {
+      dynamic entity = responseBody['moles']; //entity
+      if (entity is Map<String, dynamic>) {
+        VipData model = VipData.fromJson(entity);
+        model.success = true;
+        model.name = productInfo?.title;
+        model.productId = productId;
+
+        if (Platform.isIOS) {
+          List pendingRenewalInfo =
+              entity['gmsko6t1ir'] ?? []; //pending_renewal_info
+          if (pendingRenewalInfo.isNotEmpty) {
+            model.autoRenew =
+                (pendingRenewalInfo[0]['peavie']) == '1'; //auto_renew_status
+          }
+
+          List latestReceiptInfo =
+              entity['adversed'] ?? []; //latest_receipt_info
+          if (latestReceiptInfo.isNotEmpty) {
+            model.expiresDate = latestReceiptInfo[0]['bilby']; //expires_date_ms
+          }
+        }
+        await AppKey.save(AppKey.isVipUser, model.ok);
+        await AppKey.save(AppKey.vipProductId, model.productId);
+        // if (model.ok == true) {
+        //   print('premium_suc');
+        // String userId = await AppKey.getString(AppKey.appUserId) ?? '';
+        // EventManager.instance.eventUpload(EventApi.premiumSuc, {
+        //   EventParaName.value.name: vipProduct.value,
+        //   EventParaName.type.name: vipType.value, //type
+        //   EventParaName.method.name: vipMethod.value, //method
+        //   EventParaName.source.name: vipSource.value, //source
+        //   EventParaName.iPlayerUid.name: userId,
+        // });
+        // }
+        EasyLoading.dismiss();
+        await AppKey.save(AppKey.isVipUser, model.ok);
+        vipDoneBlock?.call(model, isStore == false);
+        _noticePurchaseStatusListener(model);
+        return model;
+      } else {
+        EasyLoading.dismiss();
+        await AppKey.save(AppKey.isVipUser, false);
+        _noticePurchaseStatusListener(VipData());
+        vipDoneBlock?.call(VipData(), isStore == false);
+      }
+    } else {
+      EasyLoading.dismiss();
+      await AppKey.save(AppKey.isVipUser, false);
+      _noticePurchaseStatusListener(VipData());
+      vipDoneBlock?.call(VipData(), isStore == false);
+    }
   }
 
   Future<void> clearFailedPurchases() async {

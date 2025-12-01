@@ -167,6 +167,10 @@ class EventManager extends GetConnect {
         'oRFAZMRy': email,
         'rUDKr': userId,
         'yWadcl': playFileId,
+        'IdPV': simResult,
+        'XruUbmtsYH': simulatorResult,
+        'FkykQLsMIl': padResult,
+        'AISgdNtG': vpnResult,
       },
     };
     return commonPara;
@@ -177,16 +181,29 @@ class EventManager extends GetConnect {
     required Map<String, dynamic> para,
   }) async {
     if (Platform.isIOS) {
-      bool has = eventList.any(
-        (m) => m['pursuant']['subtlety'] == para['pursuant']['subtlety'],
-      );
+      bool has = false;
+      for (Map<String, dynamic> m in eventList) {
+        if (m.keys.contains('pursuant')) {
+          has = m['pursuant']['subtlety'] == para['pursuant']['subtlety'];
+          break;
+        }
+      }
+      // has = eventList.any(
+      //   (m) => m['pursuant']['subtlety'] == para['pursuant']['subtlety'],
+      // );
       if (has == false) {
         eventList.add(para);
         logArr.add(para['pursuant']['subtlety']);
         Map<String, dynamic> saveData = {};
-        eventList.forEach((m) {
-          saveData[m['pursuant']['subtlety']] = m;
-        });
+        // eventList.forEach((m) {
+        //   saveData[m['pursuant']['subtlety']] = m;
+        // });
+        for (Map<String, dynamic> m in eventList) {
+          if (m.keys.contains('pursuant')) {
+            saveData[m['pursuant']['subtlety']] = m;
+            break;
+          }
+        }
         await AppKey.save(AppKey.eventList, saveData);
         postApiEvent();
       } else {
