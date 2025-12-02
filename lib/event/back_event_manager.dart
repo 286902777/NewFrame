@@ -87,7 +87,7 @@ class BackEventManager {
           'outclasses': unique_id,
 
           /// unique_id
-          'wisure': info.version,
+          'richeted': info.version,
           'euryscope': deviceVersion,
           '1emejsbrma': {
             'handy': {'cowbell': deviceModel},

@@ -260,6 +260,7 @@ class HttpManager extends GetConnect {
     );
     try {
       Map<String, dynamic> newPara = {}..addAll(para ?? {});
+      // print(HttpManager.instance.sshToKey(jsonEncode([newPara])));
       Response response = await instance.post(
         ApiKey.event.address,
         {

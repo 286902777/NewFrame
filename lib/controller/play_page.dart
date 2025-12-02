@@ -34,6 +34,7 @@ enum DragEvent { left, right, drag }
 
 class PlayPage extends StatefulWidget {
   const PlayPage({super.key, required this.currentModel, this.playList});
+
   final VideoModel currentModel;
   final List<VideoModel>? playList;
 
@@ -81,6 +82,7 @@ class _PlayPageState extends State<PlayPage>
   Timer? _toolTimer;
   bool isUsePause = false;
   bool speedIsLoad = false;
+
   //@override
   // void didChangeAppLifecycleState(AppLifecycleState state) async {
   //   // TODO: implement didChangeAppLifecycleState
@@ -224,9 +226,10 @@ class _PlayPageState extends State<PlayPage>
       if (position.inSeconds == 0) {
         return;
       }
-      // if (speedIsLoad == false) {
-      //   speedIsLoad = true;
-      // }
+      if (AdmobMaxTool.adsState == AdsState.showing) {
+        await player.pause();
+      }
+
       start.value = position;
       if (total.value.inMicroseconds.toDouble() > 0) {
         sliderValue.value =
@@ -315,9 +318,6 @@ class _PlayPageState extends State<PlayPage>
       if (isCurrentPage == false) {
         return;
       }
-      if (state == AdsState.showing) {
-        await player.pause();
-      }
       if (state == AdsState.showing &&
           AdmobMaxTool.scene == AdsSceneType.middle) {
         if (adsType == AdsType.native) {
@@ -376,10 +376,7 @@ class _PlayPageState extends State<PlayPage>
           });
         }
       }
-      if (state == AdsState.dismissed &&
-          AdmobMaxTool.scene == AdsSceneType.middle) {
-        await player.play();
-      }
+
       if (state == AdsState.dismissed &&
           AdmobMaxTool.scene == AdsSceneType.play) {
         if (sceneType == AdsSceneType.plus || adsType == AdsType.rewarded) {
@@ -652,7 +649,8 @@ class _PlayPageState extends State<PlayPage>
     } else {
       showModalBottomSheet(
         context: context,
-        isDismissible: false, // 点击背景是否关闭
+        isDismissible: false,
+        // 点击背景是否关闭
         enableDrag: false,
         isScrollControlled: true,
         builder: (context) => PlayListPage(
@@ -792,7 +790,9 @@ class _PlayPageState extends State<PlayPage>
   }
 
   void _onHorizontalDragStart(DragStartDetails details) async {}
+
   void _onHorizontalDragUpdate(DragUpdateDetails details) {}
+
   void _onHorizontalDragEnd(DragEndDetails details) async {}
 
   Widget _firstTopView() {
@@ -1452,7 +1452,9 @@ class _PlayPageState extends State<PlayPage>
           isLoadShow.value = false;
           speedTimer?.cancel();
           if (isCurrentPage) {
-            await player.play();
+            if (isPlay.value == false) {
+              await player.play();
+            }
           }
         });
       }
@@ -1477,36 +1479,27 @@ class _PlayPageState extends State<PlayPage>
     isCurrentPage = false;
     Get.to(() => UserVipPage())?.then((_) async {
       isCurrentPage = true;
-      if (isUsePause == false) {
-        await player.play();
-      }
     });
   }
 
   void _showAlertVipView() async {
     bool isSVip = await AppKey.getBool(AppKey.isVipUser) ?? false;
     if (isSVip) {
-      await player.play();
       return;
     }
     int? vipPlayCount = await AppKey.getInt(AppKey.vipPlayCount);
     if ((vipPlayCount ?? 0) < 1) {
       await AppKey.save(AppKey.vipPlayCount, 1);
-      await player.play();
       return;
     }
     int? showCount = await AppKey.getInt(AppKey.vipAlertShowCount);
     if ((showCount ?? 0) >= 3) {
-      await player.play();
       return;
     }
     bool day = await isShowedVipAlert();
     if (day) {
-      //同一天
-      await player.play();
       return;
     }
-    await player.pause();
 
     await AppKey.save(AppKey.vipPlayCount, vipPlayCount ?? 0 + 1);
     await AppKey.save(
@@ -1533,7 +1526,6 @@ class _PlayPageState extends State<PlayPage>
         builder: (context) => AlertUserVipPage(),
       ).then((_) async {
         isCurrentPage = true;
-        await player.play();
       });
     });
   }
