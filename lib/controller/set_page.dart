@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import '../generated/assets.dart';
 import '../source/AppBasePage.dart';
 import '../source/web_page.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class SetPage extends StatefulWidget {
   const SetPage({super.key});
@@ -47,7 +48,7 @@ class _SetPageState extends State<SetPage>
   void didPushNext() {}
 
   void openEmail() async {
-    String email = 'lichengshuo@hktairanxingtra.asia';
+    String email = 'chengshuo1947@outlook.com';
     launchUrl(Uri(scheme: 'mailto', path: email));
   }
 
@@ -173,9 +174,13 @@ class _SetPageState extends State<SetPage>
         openEmail();
       // MobileAds.instance.openAdInspector((error) {});
       case 1:
-        Get.to(() => (WebPage(name: '', link: 'https://frameplayvid.com/terms/')));
+        Get.to(
+          () => (WebPage(name: '', link: 'https://frameplayvid.com/terms/')),
+        );
       default:
-        Get.to(() => (WebPage(name: '', link: 'https://frameplayvid.com/privacy/')));
+        Get.to(
+          () => (WebPage(name: '', link: 'https://frameplayvid.com/privacy/')),
+        );
     }
   }
 }
