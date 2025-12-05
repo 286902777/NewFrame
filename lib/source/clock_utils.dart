@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:sim_reader/sim_reader.dart';
+import 'package:vpn_detector/vpn_detector.dart';
 
 class ClockUtils {
   static bool get isPad {
@@ -12,10 +14,9 @@ class ClockUtils {
     return size.shortestSide >= 600;
   }
 
-  static bool get isVpn {
-    // final status = await VpnDetector().isVpnActive();
-    // return status;
-    return false;
+  static Future<bool> isVpn() async {
+    final status = await VpnDetector().isVpnActive();
+    return status == VpnStatus.active;
   }
 
   static Future<bool> isEmulator() async {
@@ -23,10 +24,10 @@ class ClockUtils {
     try {
       if (Platform.isIOS) {
         final IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-        return iosInfo.isPhysicalDevice;
+        return !iosInfo.isPhysicalDevice;
       } else {
         final AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-        return androidInfo.isPhysicalDevice;
+        return !androidInfo.isPhysicalDevice;
       }
     } catch (e) {
       return false;
@@ -34,8 +35,7 @@ class ClockUtils {
   }
 
   static Future<bool> isSimCard() async {
-    // final hasSim = await SimReader.hasSimCard();
-    // return hasSim;
-    return false;
+    final hasSim = await SimReader.hasSimCard();
+    return hasSim;
   }
 }

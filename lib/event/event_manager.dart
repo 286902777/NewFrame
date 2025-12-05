@@ -164,8 +164,8 @@ class EventManager extends GetConnect {
         'ueCbDyO': apiPlatform == PlatformType.india
             ? 'cSCCcAmHL'
             : 'LlEFAXhIW',
-        'oRFAZMRy': email,
-        'rUDKr': userId,
+        'kDbSpBhz': email,
+        'GqPtJl': userId,
         'yWadcl': playFileId,
         'IdPV': simResult,
         'XruUbmtsYH': simulatorResult,

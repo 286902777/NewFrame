@@ -143,7 +143,7 @@ class _TabPageState extends State<TabPage>
       }
     }
 
-    bool hasVpn = ClockUtils.isVpn;
+    bool hasVpn = await ClockUtils.isVpn();
     if (isVpn) {
       if (hasVpn) {
         openVpnDeep = !isVpnLimit;

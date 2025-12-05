@@ -245,7 +245,7 @@ class _PlayPageState extends State<PlayPage>
         });
         if (autoClick == false) {
           EventManager.instance.eventUpload(EventApi.playSource, {
-            EventParaName.source.name: playSource.name,
+            EventParaName.value.name: playSource.name,
           });
         }
         EventManager.instance.eventUpload(EventApi.playSuc, null);
