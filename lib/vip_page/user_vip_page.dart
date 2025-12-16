@@ -580,6 +580,7 @@ class _UserVipPageState extends State<UserVipPage>
                         fontWeight: FontWeight.w500,
                         color: Color(0xFF1A1A1A),
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ),
